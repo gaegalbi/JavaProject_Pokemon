@@ -1,0 +1,118 @@
+
+players.png
+size: 256, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+dawn_stand_east
+  rotate: false
+  xy: 122, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: -1
+dawn_walk_east
+  rotate: false
+  xy: 122, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: 1
+dawn_stand_north
+  rotate: false
+  xy: 179, 5
+  size: 17, 23
+  orig: 17, 23
+  offset: 0, 0
+  index: -1
+dawn_walk_north
+  rotate: false
+  xy: 179, 5
+  size: 17, 23
+  orig: 17, 23
+  offset: 0, 0
+  index: 1
+dawn_stand_south
+  rotate: false
+  xy: 141, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: -1
+dawn_walk_south
+  rotate: false
+  xy: 141, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: 1
+dawn_stand_west
+  rotate: false
+  xy: 160, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: -1
+dawn_walk_west
+  rotate: false
+  xy: 160, 4
+  size: 17, 24
+  orig: 17, 24
+  offset: 0, 0
+  index: 1
+dawn_walk_east
+  rotate: false
+  xy: 82, 4
+  size: 18, 24
+  orig: 18, 24
+  offset: 0, 0
+  index: 2
+dawn_walk_east
+  rotate: false
+  xy: 198, 3
+  size: 16, 25
+  orig: 16, 25
+  offset: 0, 0
+  index: 0
+dawn_walk_north
+  rotate: false
+  xy: 42, 3
+  size: 18, 25
+  orig: 18, 25
+  offset: 0, 0
+  index: 0
+dawn_walk_north
+  rotate: false
+  xy: 62, 3
+  size: 18, 25
+  orig: 18, 25
+  offset: 0, 0
+  index: 2
+dawn_walk_south
+  rotate: false
+  xy: 2, 2
+  size: 18, 26
+  orig: 18, 26
+  offset: 0, 0
+  index: 0
+dawn_walk_south
+  rotate: false
+  xy: 22, 2
+  size: 18, 26
+  orig: 18, 26
+  offset: 0, 0
+  index: 2
+dawn_walk_west
+  rotate: false
+  xy: 102, 4
+  size: 18, 24
+  orig: 18, 24
+  offset: 0, 0
+  index: 0
+dawn_walk_west
+  rotate: false
+  xy: 216, 3
+  size: 16, 25
+  orig: 16, 25
+  offset: 0, 0
+  index: 2
