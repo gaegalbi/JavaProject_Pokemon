@@ -1,14 +1,13 @@
 package com.pokemon.world;
 
-import com.badlogic.gdx.utils.Array;
-import com.pokemon.model.Portal;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
 
 public class Mine implements World{
 
     private final TileMap map = new TileMap(10,10);
-    private String texName = "stone";
+    private TextureAtlas.AtlasRegion tex = atlas.findRegion("stone");
 
     public Mine() {
         for (int x = 0; x < map.getWidth(); x++) {
@@ -20,11 +19,11 @@ public class Mine implements World{
 
     @Override
     public TileMap getMap() {
-        return null;
+        return map;
     }
 
     @Override
-    public String getTexName() {
-        return null;
+    public TextureAtlas.AtlasRegion getTex() {
+        return tex;
     }
 }

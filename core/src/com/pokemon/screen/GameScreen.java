@@ -15,6 +15,7 @@ import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.World;
+import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
 
 public class GameScreen implements Screen {
@@ -24,7 +25,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Player player;
     private PlayerController playerController;
-    private World world;
+    private static World world;
     private WorldRenderer worldRenderer;
     private WorldRestrict worldRestrict;
     private GameController gameController;
@@ -52,9 +53,9 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, 800, 480);
         player = new Player(0,0,animations);
         world = new MainWorld();
-        worldRenderer = new WorldRenderer(world);
+        worldRenderer = new WorldRenderer();
         playerController = new PlayerController(player);
-        worldRestrict = new WorldRestrict(world, player);
+        worldRestrict = new WorldRestrict(player);
         gameController = new GameController(game);
     }
 
@@ -103,5 +104,13 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         assetManager.dispose();
+    }
+
+    public static World getWorld() {
+        return world;
+    }
+
+    public static void setWorld(World world) {
+        GameScreen.world = world;
     }
 }

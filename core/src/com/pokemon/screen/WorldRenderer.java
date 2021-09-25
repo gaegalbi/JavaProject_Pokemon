@@ -13,21 +13,10 @@ import com.pokemon.world.World;
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
 public class WorldRenderer {
-    private AssetManager assetManager;
-    private World world;
-    private TextureAtlas atlas = new TextureAtlas("texture/texture.atlas");
-
-    private TextureAtlas.AtlasRegion tex;
-
-    public WorldRenderer(World world) {
-        this.world = world;
-        tex = atlas.findRegion(world.getTexName());
-    }
-
     public void render(Batch batch) {
-        for (int x = 0; x < world.getMap().getWidth(); x++) {
-            for (int y = 0; y < world.getMap().getHeight(); y++) {
-                batch.draw(tex,
+        for (int x = 0; x < GameScreen.getWorld().getMap().getWidth(); x++) {
+            for (int y = 0; y < GameScreen.getWorld().getMap().getHeight(); y++) {
+                batch.draw(GameScreen.getWorld().getTex(),
                         x * Settings.SCALED_TILE_SIZE,
                         y * Settings.SCALED_TILE_SIZE,
                         Settings.SCALED_TILE_SIZE,
@@ -35,9 +24,5 @@ public class WorldRenderer {
                 );
             }
         }
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
     }
 }
