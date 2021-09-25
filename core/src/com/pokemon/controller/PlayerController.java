@@ -5,6 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
+import com.pokemon.screen.GameScreen;
+import com.pokemon.world.MainWorld;
+import com.pokemon.world.Mine;
 import com.pokemon.world.World;
 
 import static com.pokemon.game.Settings.PLAYER_MOVE_SPEED;
@@ -44,6 +47,18 @@ public class PlayerController extends InputAdapter {
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             System.out.println("player.x = " + player.x);
             System.out.println("player.y = " + player.y);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            GameScreen.setWorld(new Mine(player));
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+            GameScreen.setWorld(new MainWorld(player));
         }
     }
 }

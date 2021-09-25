@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
-import com.pokemon.controller.WorldRestrict;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
@@ -20,14 +19,13 @@ import com.pokemon.world.MainWorld;
 
 public class GameScreen implements Screen {
     final Pokemon game;
+    private static World world;
 
     private AssetManager assetManager;
     private OrthographicCamera camera;
     private Player player;
     private PlayerController playerController;
-    private static World world;
     private WorldRenderer worldRenderer;
-    private WorldRestrict worldRestrict;
     private GameController gameController;
 
     public GameScreen(Pokemon game) {
@@ -52,10 +50,9 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
         player = new Player(0,0,animations);
-        world = new MainWorld();
+        world = new MainWorld(player);
         worldRenderer = new WorldRenderer();
         playerController = new PlayerController(player);
-        worldRestrict = new WorldRestrict(player);
         gameController = new GameController(game);
     }
 
@@ -77,7 +74,7 @@ public class GameScreen implements Screen {
         game.batch.end();
         playerController.update();
         player.update(delta);
-        worldRestrict.update();
+        world.update();
         gameController.update();
     }
 
