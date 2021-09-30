@@ -34,7 +34,7 @@ public class GameScreen implements Screen {
         assetManager.load("players/players.atlas", TextureAtlas.class);
         assetManager.finishLoading();
 
-        TextureAtlas playerTexture = assetManager.get("players/players.atlas",TextureAtlas.class);
+        TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
 
         AnimationSet<TextureRegion> animations = new AnimationSet<>(
                 new Animation<TextureRegion>(0.3f / 2f, playerTexture.findRegions("dawn_walk_north"), Animation.PlayMode.LOOP_PINGPONG),
@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        player = new Player(0,0,animations);
+        player = new Player(0, 0, animations);
         world = new MainWorld(player);
         worldRenderer = new WorldRenderer();
         playerController = new PlayerController(player);
@@ -63,14 +63,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0,0,0,1);
+        ScreenUtils.clear(0, 0, 0, 1);
         camera.position.x = player.x;
         camera.position.y = player.y;
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         worldRenderer.render(game.batch);
-        game.batch.draw(player.getSprites(), player.x, player.y,player.getPlayerSizeX(),player.getPlayerSizeY());
+        game.batch.draw(player.getSprites(), player.x, player.y, player.getPlayerSizeX(), player.getPlayerSizeY());
         game.batch.end();
         playerController.update();
         player.update(delta);

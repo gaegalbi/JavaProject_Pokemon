@@ -16,7 +16,7 @@ public class WorldRenderer {
     public void render(Batch batch) {
         for (int x = 0; x < GameScreen.getWorld().getMap().getWidth(); x++) {
             for (int y = 0; y < GameScreen.getWorld().getMap().getHeight(); y++) {
-                batch.draw(GameScreen.getWorld().getTex(),
+                batch.draw(GameScreen.getWorld().getMap().getTile(x, y).getTex(),
                         x * Settings.SCALED_TILE_SIZE,
                         y * Settings.SCALED_TILE_SIZE,
                         Settings.SCALED_TILE_SIZE,

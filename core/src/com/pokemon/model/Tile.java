@@ -2,12 +2,16 @@ package com.pokemon.model;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class Tile {
-    private int x,y;
+import static com.pokemon.world.World.atlas;
 
-    public Tile(int x, int y) {
+public class Tile {
+    private int x, y;
+    private TextureAtlas.AtlasRegion texture;
+
+    public Tile(int x, int y, String tex) {
         this.x = x;
         this.y = y;
+        this.texture = atlas.findRegion(tex);
     }
 
     public int getX() {
@@ -16,6 +20,10 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public TextureAtlas.AtlasRegion getTex() {
+        return texture;
     }
 
     // 좌표 디버깅용

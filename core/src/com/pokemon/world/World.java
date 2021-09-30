@@ -8,7 +8,5 @@ public interface World {
 
     TileMap getMap();
 
-    TextureAtlas.AtlasRegion getTex();
-
     void update();
 }
