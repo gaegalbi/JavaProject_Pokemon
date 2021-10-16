@@ -2,114 +2,113 @@ package com.pokemon.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.util.TableUtils;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.kotcrab.vis.ui.util.form.SimpleFormValidator;
-import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.VisWindow;
+import com.pokemon.screen.GameScreen;
+import com.pokemon.screen.MainMenuScreen;
 
-class LoginUiForm extends VisWindow {
-    public LoginUiForm() {
-        super("form validator");
+public class LoginUi extends AbstractUi {
+    Skin skin;
+    Stage stage;
+    SpriteBatch batch;
+    MainMenuScreen mainMenuScreen;
 
-        TableUtils.setSpacingDefaults(this);
-        defaults().padRight(1);
-        defaults().padLeft(1);
-        columnDefaults(0).left();
-
-        VisTextButton cancelButton = new VisTextButton("cancel");
-        VisTextButton acceptButton = new VisTextButton("accept");
-
-        VisValidatableTextField firstNameField = new VisValidatableTextField();
-        VisValidatableTextField lastNameField = new VisValidatableTextField();
-        VisValidatableTextField age = new VisValidatableTextField();
-        VisCheckBox termsCheckbox = new VisCheckBox("accept terms");
-
-        VisLabel errorLabel = new VisLabel();
-        errorLabel.setColor(Color.RED);
-
-        VisTable buttonTable = new VisTable(true);
-        buttonTable.add(errorLabel).expand().fill();
-        buttonTable.add(cancelButton);
-        buttonTable.add(acceptButton);
-
-        add(new VisLabel("first name: "));
-        add(firstNameField).expand().fill();
-        row();
-        add(new VisLabel("last name: "));
-        add(lastNameField).expand().fill();
-        row();
-        add(new VisLabel("age: "));
-        add(age).expand().fill();
-        row();
-        add(termsCheckbox).colspan(2);
-        row();
-        add(buttonTable).fill().expand().colspan(2).padBottom(3);
-
-        SimpleFormValidator validator; //for GWT compatibility
-        validator = new SimpleFormValidator(acceptButton, errorLabel, "smooth");
-        validator.setSuccessMessage("all good!");
-        validator.notEmpty(firstNameField, "first name cannot be empty");
-        validator.notEmpty(lastNameField, "last name cannot be empty");
-        validator.notEmpty(age, "age cannot be empty");
-        validator.integerNumber(age, "age must be a number");
-        validator.valueGreaterThan(age, "you must be at least 18 years old", 18, true);
-        validator.checked(termsCheckbox, "you must accept terms");
-
-        acceptButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Dialogs.showOKDialog(getStage(), "message", "you made it!");
-            }
-        });
-
-        cancelButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-
-            }
-        });
-
-        pack();
-        setSize(getWidth() + 60, getHeight());
-        centerWindow();
-        //setPosition(getWidth()/2, getHeight()/2);
-    }
-}
-
-public class LoginUi {
-    private Stage stage;
-    public LoginUi() {
+    public LoginUi(final MainMenuScreen mainMenuScreen) {
         VisUI.load(VisUI.SkinScale.X1);
 
-        stage = new Stage(new ScreenViewport());
-        final Table root = new Table();
-        root.setFillParent(true);
-        stage.addActor(root);
-
+        batch = new SpriteBatch();
+        stage = new Stage();
+        this.mainMenuScreen = mainMenuScreen;
         Gdx.input.setInputProcessor(stage);
-        stage.addActor(new LoginUiForm());
+        // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
+        // recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
+        skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+
+        // Create a table that fills the screen. Everything else will go inside this table.
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+        table.setPosition(0,-75);
+        Label idLabel = new Label("ID:", skin);
+        final TextField idText = new TextField("", skin);
+        idText.setMaxLength(12);
+
+        Label passwordLabel = new Label("PASSWORD:", skin);
+        final TextField passwordText = new TextField("", skin);
+        passwordText.setPasswordMode(true);
+        passwordText.setPasswordCharacter('*');
+        passwordText.setMaxLength(15);
+
+        TextButton loginButton = new TextButton("LOGIN", skin);
+        TextButton signupButton = new TextButton("SIGN UP", skin);
+
+//        table.setDebug(true);
+
+        table.add(idLabel).right();
+        table.add(idText).width(150).pad(5);
+
+        table.row();
+        table.add(passwordLabel).right();
+        table.add(passwordText).width(150).pad(5);
+
+        table.row();
+        table.add(loginButton).width(200).height(50).pad(5).colspan(2);
+
+        table.row();
+        table.add(signupButton).width(200).height(50).pad(5).colspan(2);
+
+        loginButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("ID: " + idText.getText());
+                System.out.println("PASSWORD: " + passwordText.getText());
+                // 임시 로그인 기능용
+                if (mainMenuScreen.loginValidate(idText.getText(), passwordText.getText())) {
+                    mainMenuScreen.gameStart();
+                } else {
+                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
+                }
+            }
+        });
+
+        signupButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                mainMenuScreen.pushScreen(new SignupUi(mainMenuScreen));
+            }
+        });
+
     }
 
-    public void resize (int width, int height) {
-        if (width == 0 && height == 0) return; //see https://github.com/libgdx/libgdx/issues/3673#issuecomment-177606278
+    public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        PopupMenu.removeEveryMenu(stage);
     }
 
-    public void update () {
+    public void update() {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
 
-    public void dispose () {
-        VisUI.dispose();
+    public void dispose() {
         stage.dispose();
+        skin.dispose();
+        VisUI.dispose();
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 }
-
