@@ -17,6 +17,8 @@ import com.pokemon.world.World;
 import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
 
+import java.util.HashMap;
+
 public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;

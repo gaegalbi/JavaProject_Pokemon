@@ -14,14 +14,16 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.form.FormValidator;
 import com.kotcrab.vis.ui.util.form.SimpleFormValidator;
 import com.kotcrab.vis.ui.widget.*;
+import com.pokemon.game.Pokemon;
 import com.pokemon.screen.MainMenuScreen;
 
 public class SignupUi extends AbstractUi {
     private Stage stage;
     private MainMenuScreen mainMenuScreen;
-    public SignupUi(final MainMenuScreen mainMenuScreen) {
+    private Pokemon game;
+    public SignupUi(final MainMenuScreen mainMenuScreen, final Pokemon game) {
         this.mainMenuScreen = mainMenuScreen;
-
+        this.game = game;
         stage = new Stage(new ScreenViewport());
         final Table root = new Table();
         root.setFillParent(true);
@@ -104,7 +106,7 @@ public class SignupUi extends AbstractUi {
                     if(!passwordField.getText().equals(confirmPasswordField.getText())) {
                         Dialogs.showOKDialog(getStage(), "message", "Password is not match!");
                     } else {
-                        mainMenuScreen.createAccount(idField.getText(), passwordField.getText());
+                        game.createAccount(idField.getText(), passwordField.getText());
                         System.out.println("passwordField = " + passwordField.getText());
                         System.out.println("confirmPasswordField = " + confirmPasswordField.getText());
                         mainMenuScreen.popScreen();

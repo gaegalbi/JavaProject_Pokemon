@@ -13,10 +13,12 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.model.Player;
 import com.pokemon.screen.MainMenuScreen;
 
+import java.util.HashMap;
+
 public class Pokemon extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-
+	private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
 
 	@Override
 	public void create () {
@@ -34,5 +36,21 @@ public class Pokemon extends Game {
 	public void dispose () {
 		batch.dispose();
 		font.dispose();
+	}
+
+	// 임시 로그인 기능용
+	public void createAccount(String id,String password) {
+		accounts.put(id, password);
+	}
+
+	// 임시 로그인 기능용
+	public boolean loginValidate(String id,String password) {
+		try {
+			if (accounts.get(id).equals(password)) {
+				return true;
+			}
+		} catch (NullPointerException ignored) {}
+
+		return false;
 	}
 }

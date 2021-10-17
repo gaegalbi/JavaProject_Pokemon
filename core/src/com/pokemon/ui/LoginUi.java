@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.VisWindow;
+import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.MainMenuScreen;
 
@@ -23,13 +24,13 @@ public class LoginUi extends AbstractUi {
     Stage stage;
     SpriteBatch batch;
     MainMenuScreen mainMenuScreen;
+    Pokemon game;
 
-    public LoginUi(final MainMenuScreen mainMenuScreen) {
-        VisUI.load(VisUI.SkinScale.X1);
-
+    public LoginUi(final MainMenuScreen mainMenuScreen,final Pokemon game) {
         batch = new SpriteBatch();
         stage = new Stage();
         this.mainMenuScreen = mainMenuScreen;
+        this.game = game;
         Gdx.input.setInputProcessor(stage);
         // A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
         // recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
@@ -75,7 +76,7 @@ public class LoginUi extends AbstractUi {
                 System.out.println("ID: " + idText.getText());
                 System.out.println("PASSWORD: " + passwordText.getText());
                 // 임시 로그인 기능용
-                if (mainMenuScreen.loginValidate(idText.getText(), passwordText.getText())) {
+                if (game.loginValidate(idText.getText(), passwordText.getText())) {
                     mainMenuScreen.gameStart();
                 } else {
                     Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
@@ -86,7 +87,7 @@ public class LoginUi extends AbstractUi {
         signupButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                mainMenuScreen.pushScreen(new SignupUi(mainMenuScreen));
+                mainMenuScreen.pushScreen(new SignupUi(mainMenuScreen,game));
             }
         });
 
@@ -104,7 +105,6 @@ public class LoginUi extends AbstractUi {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        VisUI.dispose();
     }
 
     @Override

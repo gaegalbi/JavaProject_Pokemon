@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.pokemon.game.Pokemon;
 import com.pokemon.ui.AbstractUi;
@@ -14,25 +15,25 @@ import com.pokemon.ui.LoginUi;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class MainMenuScreen implements Screen {
+import java.util.HashMap;
 
+public class MainMenuScreen implements Screen {
     final Pokemon game;
     OrthographicCamera camera;
     private Texture logoImage;
     private Stack<AbstractUi> uiStack;
 
-    private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
-
     public MainMenuScreen(Pokemon game) {
+        VisUI.load(VisUI.SkinScale.X1);
         this.game = game;
         uiStack = new Stack<>();
         logoImage = new Texture(Gdx.files.internal("logo.png"));
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
 
-        uiStack.add(new LoginUi(this));
+        uiStack.add(new LoginUi(this,game));
     }
-    
+
     @Override
     public void show() {
     }
@@ -82,7 +83,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-//        testUi.dispose();
+        VisUI.dispose();
         for (AbstractUi abstractUi : uiStack) {
             abstractUi.dispose();
         }
@@ -98,20 +99,5 @@ public class MainMenuScreen implements Screen {
         popped.dispose();
         Gdx.input.setInputProcessor(uiStack.peek().getStage());
     }
-    
-    // 임시 로그인 기능용
-    public void createAccount(String id,String password) {
-        accounts.put(id, password);
-    }
 
-    // 임시 로그인 기능용
-    public boolean loginValidate(String id,String password) {
-        try {
-            if (accounts.get(id).equals(password)) {
-                return true;
-            }
-        } catch (NullPointerException ignored) {}
-
-        return false;
-    }
 }
