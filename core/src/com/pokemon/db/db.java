@@ -66,4 +66,28 @@ public class db{
         }
     }
 
+    public static boolean login(String sql,String password) {
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            String checkPas = null;
+            while (rs.next()) {
+                checkPas = rs.getString("USERPAS");
+            }
+            if (password.equals(checkPas)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("로그인SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return true;
+        }
+    }
 }
