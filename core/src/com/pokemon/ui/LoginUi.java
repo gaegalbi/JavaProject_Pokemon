@@ -18,6 +18,7 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.MainMenuScreen;
+import com.pokemon.db.db;
 
 public class LoginUi extends AbstractUi {
     Skin skin;
@@ -75,12 +76,18 @@ public class LoginUi extends AbstractUi {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("ID: " + idText.getText());
                 System.out.println("PASSWORD: " + passwordText.getText());
-                // 임시 로그인 기능용
+                //db 로그인
+                if(db.login("Select USERPAS from user where USERID = '"+idText.getText()+"';",passwordText.getText())==true){
+                    mainMenuScreen.gameStart();
+                }else{
+                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
+                }
+                /*// 임시 로그인 기능용
                 if (game.loginValidate(idText.getText(), passwordText.getText())) {
                     mainMenuScreen.gameStart();
                 } else {
                     Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
-                }
+                }*/
             }
         });
 

@@ -16,6 +16,7 @@ import com.kotcrab.vis.ui.util.form.SimpleFormValidator;
 import com.kotcrab.vis.ui.widget.*;
 import com.pokemon.game.Pokemon;
 import com.pokemon.screen.MainMenuScreen;
+import com.pokemon.db.db;
 
 public class SignupUi extends AbstractUi {
     private Stage stage;
@@ -103,12 +104,16 @@ public class SignupUi extends AbstractUi {
             acceptButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    boolean userCheck = db.signUp("Select COUNT(USERID) from user where USERID = '"+idField.getText()+"';");
                     if(!passwordField.getText().equals(confirmPasswordField.getText())) {
                         Dialogs.showOKDialog(getStage(), "message", "Password is not match!");
-                    } else {
-                        game.createAccount(idField.getText(), passwordField.getText());
-                        System.out.println("passwordField = " + passwordField.getText());
-                        System.out.println("confirmPasswordField = " + confirmPasswordField.getText());
+                    }else if(userCheck==false) {
+                        db.insert("INSERT INTO user VALUES('" + idField.getText() + "','" + passwordField.getText() + "');");
+                        Dialogs.showOKDialog(getStage(), "message", "This ID is created!");
+                    }else if(userCheck==true) {
+                        Dialogs.showOKDialog(getStage(), "message", "This ID is already being used!");
+                    }
+                    else{
                         mainMenuScreen.popScreen();
                     }
                 }
