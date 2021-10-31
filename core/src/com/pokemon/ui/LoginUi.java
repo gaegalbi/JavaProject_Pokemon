@@ -77,17 +77,11 @@ public class LoginUi extends AbstractUi {
                 System.out.println("ID: " + idText.getText());
                 System.out.println("PASSWORD: " + passwordText.getText());
                 //db 로그인
-                if(db.login("Select USERPAS from user where USERID = '"+idText.getText()+"';",passwordText.getText())==true){
+                if(db.login(idText.getText(),passwordText.getText())==true){
                     mainMenuScreen.gameStart();
                 }else{
                     Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
                 }
-                /*// 임시 로그인 기능용
-                if (game.loginValidate(idText.getText(), passwordText.getText())) {
-                    mainMenuScreen.gameStart();
-                } else {
-                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
-                }*/
             }
         });
 

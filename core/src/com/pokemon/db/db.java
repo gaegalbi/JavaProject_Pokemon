@@ -23,7 +23,10 @@ public class db{
             e.printStackTrace();
         }
     }
-    public static void insert(String sql){
+    public static void insert(String id, String pas){
+        //, int lv, int exp, int rank
+        //String sql = ("INSERT INTO user VALUES('" +id + "','" +pas + "','"+ lv + "','"+ exp + "','" +rank+"');");
+        String sql = ("INSERT INTO user(U_ID,U_PAS) VALUES('" +id + "','" +pas +"');");
         try {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(sql);
@@ -39,13 +42,14 @@ public class db{
             e.printStackTrace();
         }
     }
-    public static boolean signUp(String sql){
+    public static boolean signUp(String id){
+        String sql = "Select COUNT(U_ID) from user where U_ID = '"+id+"';";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             int count=0;
             while(rs.next()) {
-                count = rs.getInt("count(USERID)");
+                count = rs.getInt("count(U_ID)");
             }
             if(count>=1){
                 return true;
@@ -66,13 +70,14 @@ public class db{
         }
     }
 
-    public static boolean login(String sql,String password) {
+    public static boolean login(String id,String password) {
+        String sql = "Select U_PAS from user where U_ID = '"+id+"';";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             String checkPas = null;
             while (rs.next()) {
-                checkPas = rs.getString("USERPAS");
+                checkPas = rs.getString("U_PAS");
             }
             if (password.equals(checkPas)) {
                 return true;
