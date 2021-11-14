@@ -53,12 +53,12 @@ public class PlayerController extends InputAdapter {
             System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+ /*       if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             GameScreen.setWorld(new Mine(player));
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {
             GameScreen.setWorld(new MainWorld(player));
-        }
+        }*/
     }
 }

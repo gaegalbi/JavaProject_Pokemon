@@ -26,6 +26,7 @@ public class LoginUi extends AbstractUi {
     SpriteBatch batch;
     MainMenuScreen mainMenuScreen;
     Pokemon game;
+    public static String playerID;
 
     public LoginUi(final MainMenuScreen mainMenuScreen,final Pokemon game) {
         batch = new SpriteBatch();
@@ -78,6 +79,7 @@ public class LoginUi extends AbstractUi {
                 System.out.println("PASSWORD: " + passwordText.getText());
                 //db 로그인
                 if(db.login(idText.getText(),passwordText.getText())==true){
+                    playerID = idText.getText();
                     mainMenuScreen.gameStart();
                 }else{
                     Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");

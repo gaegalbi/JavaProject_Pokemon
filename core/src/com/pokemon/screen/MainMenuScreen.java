@@ -54,7 +54,8 @@ public class MainMenuScreen implements Screen {
     }
 
     public void gameStart() {
-        game.setScreen(new GameScreen(game));
+        //game.setScreen(new GameScreen(game));
+        game.setScreen(new BattleScreen(game));
         dispose();
     }
 
