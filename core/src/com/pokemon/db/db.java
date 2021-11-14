@@ -10,8 +10,8 @@ public class db{
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             con= DriverManager.getConnection(
-                    "jdbc:mysql://221.164.163.17:3306/mydb?serverTimezone=UTC",
-                    "myTeamProject", "tjrtjdtjdthswjsvks"); //석성성손홍
+                    DbCon.DBURL,
+                    DbCon.DBID, DbCon.DBPASS); //석성성손홍
             System.out.println("DB접속 Success");
         }
         catch(SQLException e){
@@ -51,11 +51,7 @@ public class db{
             while(rs.next()) {
                 count = rs.getInt("count(U_ID)");
             }
-            if(count>=1){
-                return true;
-            }else {
-                return false;
-            }
+            return count >= 1;
         }
         catch(SQLException e){
             System.out.println("회원가입 SQL문이 틀렸습니다.");
@@ -79,11 +75,7 @@ public class db{
             while (rs.next()) {
                 checkPas = rs.getString("U_PAS");
             }
-            if (password.equals(checkPas)) {
-                return true;
-            } else {
-                return false;
-            }
+            return password.equals(checkPas);
         } catch (SQLException e) {
             System.out.println("로그인SQL문이 틀렸습니다.");
             System.out.print("이유 : " + e);
