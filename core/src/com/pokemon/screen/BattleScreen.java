@@ -159,17 +159,16 @@ public class BattleScreen implements Screen {
     public void show() {
 
     }
-
+    float elapsed;
     @Override
     public void render(float delta) {
         gameViewport.apply();
-        ScreenUtils.clear(0,0,0,1);
         camera.position.x =  Gdx.graphics.getWidth()/2;
         camera.position.y = Gdx.graphics.getHeight()/2;
         game.batch.setProjectionMatrix(camera.combined);
-
+        elapsed += Gdx.graphics.getDeltaTime();
         game.batch.begin();
-        battleRenderer.render(game.batch);
+        battleRenderer.render(game.batch,elapsed);
         game.batch.end();
         camera.update();
         uiStage.draw();
