@@ -44,11 +44,13 @@ public class SkinGenerator {
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
 		
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
+		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
+		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumBarunGothic.ttf"));
+		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumSquareRoundEB.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/gulim.ttc"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 12;
-		parameter.color = new Color(96f/255f, 96f/255f, 96f/255f, 1f);
-		parameter.shadowColor = new Color(208f/255f, 208f/255f, 200f/255f, 1f);
+		parameter.size = 13;
+
 		parameter.shadowOffsetX = 1;
 		parameter.shadowOffsetY = 1;
 		parameter.characters = "!  \"  #  $  %  &  '  (  )  *  +  ,  -  .  /  0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z  [  \\  ]  ^  _  `  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z  {  |  }  ~  \u2190  \u2191  \u2192  \u2193  \u2640  \u2642";
@@ -58,9 +60,10 @@ public class SkinGenerator {
 		font.getData().setLineHeight(16f);
 		skin.add("font", font);
 		
-		BitmapFont smallFont = assetManager.get("font/small_letters_font.fnt", BitmapFont.class);
+		//BitmapFont smallFont = assetManager.get("font/small_letters_font.fnt", BitmapFont.class);
+		BitmapFont smallFont = assetManager.get("font/han/gul.fnt", BitmapFont.class);
 		skin.add("small_letters_font", smallFont);
-		
+
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("font");
 		skin.add("default", labelStyle);
@@ -68,7 +71,7 @@ public class SkinGenerator {
 		LabelStyle labelStyleSmall = new LabelStyle();
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
-		
+
 		return skin;
 	}
 

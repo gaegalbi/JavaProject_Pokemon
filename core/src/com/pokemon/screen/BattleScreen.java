@@ -66,7 +66,8 @@ public class BattleScreen implements Screen {
 
         assetManager= new AssetManager();
         assetManager.load("ui/uipack.atlas", TextureAtlas.class);
-        assetManager.load("font/small_letters_font.fnt", BitmapFont.class);
+        //assetManager.load("font/small_letters_font.fnt", BitmapFont.class);
+        assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
         skin = SkinGenerator.generateSkin(assetManager);
@@ -116,7 +117,8 @@ public class BattleScreen implements Screen {
         uiStage.addActor(statusBoxRoot);
 
         playerStatus = new DetailedStatusBox(skin);
-        playerStatus.setText(battle.getP_P().getName());
+       // playerStatus.setText(battle.getP_P().getName());
+        playerStatus.setText("피카츄");
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
