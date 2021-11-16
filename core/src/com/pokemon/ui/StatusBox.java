@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
-/**
+/*
  * Displays generel stats about a Pokemon during a {@link Battle}.
  * 
  * @author hydrozoa
@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Align;
 public class StatusBox extends Table {
 	
 	private Label text;
+	private Label lv;
 	private HPBar hpbar;
 	
 	protected Table uiContainer;
@@ -24,8 +25,11 @@ public class StatusBox extends Table {
 		this.add(uiContainer).pad(0f).expand().fill();
 		
 		text = new Label("namenull", skin, "smallLabel");
-		uiContainer.add(text).align(Align.left).padTop(0f).row();
-		
+		uiContainer.add(text).align(Align.left).padTop(0f);
+
+		lv = new Label("lvnull", skin, "smallLabel");
+		uiContainer.add(lv).align(Align.right).padTop(0f).row();
+
 		hpbar = new HPBar(skin);
 		uiContainer.add(hpbar).spaceTop(0f).expand().fill();
 	}
@@ -33,7 +37,8 @@ public class StatusBox extends Table {
 	public void setText(String newText) {
 		text.setText(newText);
 	}
-	
+	public void setLV(String newLV) {lv.setText(newLV);}
+
 	public HPBar getHPBar() {
 		return hpbar;
 	}

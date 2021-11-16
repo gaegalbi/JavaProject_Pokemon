@@ -119,6 +119,7 @@ public class BattleScreen implements Screen {
         playerStatus = new DetailedStatusBox(skin);
        // playerStatus.setText(battle.getP_P().getName());
         playerStatus.setText("피카츄");
+        playerStatus.setLV("LV"+5);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());

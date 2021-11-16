@@ -47,7 +47,7 @@ public class SkinGenerator {
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumBarunGothic.ttf"));
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumSquareRoundEB.ttf"));
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/gulim.ttc"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/gulim.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 13;
 

@@ -10,8 +10,8 @@ public class db{
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             con= DriverManager.getConnection(
-                    "jdbc:mysql://221.164.163.17:3306/mydb?serverTimezone=UTC",
-                    "myTeamProject", "tjrtjdtjdthswjsvks"); //석성성손홍
+                    DbCon.DBURL,
+                    DbCon.DBID, DbCon.DBPASS);
             System.out.println("DB접속 Success");
         }
         catch(SQLException e){
