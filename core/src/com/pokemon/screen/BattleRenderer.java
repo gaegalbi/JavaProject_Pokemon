@@ -47,26 +47,14 @@ public class BattleRenderer {
         this.camera = camera;
         this.battle = battle;
         assetManager = new AssetManager();
-
         assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
-        assetManager.load("pokemon/bulbasaur.png", Texture.class);
-        assetManager.load("pokemon/slowpoke.png", Texture.class);
-        assetManager.load("pokemon/"+battle.getP_P().getName() +".png", Texture.class);
-        assetManager.load("pokemon/"+battle.getO_P().getName() +".png", Texture.class);
         assetManager.finishLoading();
-/*
-        this.P_T = assetManager.get("pokemon/bulbasaur.png", Texture.class);
-        this.O_T = assetManager.get("pokemon/slowpoke.png", Texture.class);
-        String[] userKey = {playerID,String.valueOf(playerNum)};
 
-        PK Player = new PK(userKey,P_T);
-        PK Opponent = new PK(userKey,P_T);
+        String sql;
+        //배틀에서 이미지 가져옴
+        P_T = battle.getP_P().getImage();
+        O_T = battle.getO_P().getImage();
 
-        System.out.print(Player.getName());*/
-        //P_T= assetManager.get("pokemon/"+battle.getP_P().getName()+".png",Texture.class);
-        P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/pikachu.gif").read());
-        O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/pikachu1.gif").read());
-        //O_T= assetManager.get("pokemon/"+battle.getO_P().getName()+".png",Texture.class);
         TextureAtlas atlas = assetManager.get("battle/battlepack.atlas", TextureAtlas.class);
         background = atlas.findRegion("background");
         platform = atlas.findRegion("platform");
@@ -74,19 +62,18 @@ public class BattleRenderer {
 
     public void render(Batch batch,float elapsed) {
         this.elapsed = elapsed;
-        // recalc the player's square's middle
+        //플레이어 플랫폼위치
         playerSquareMiddleX = Gdx.graphics.getWidth()/2 - (squareSize + Gdx.graphics.getWidth()/15);
         playerSquareMiddleY = Gdx.graphics.getHeight()/2 + (25*Settings.SCALE);
 
-        // recalc the opponent's square's middle
+        //상대 플랫폼위치
         opponentSquareMiddleX = Gdx.graphics.getWidth()/2 + (squareSize + Gdx.graphics.getWidth()/15);
         opponentSquareMiddleY = Gdx.graphics.getHeight()/2 + (25*Settings.SCALE);
 
         float platformYOrigin = playerSquareMiddleY - platform.getRegionHeight()/2*Settings.SCALE;
 
-
         batch.draw(background, 0, 0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    //Gdx.graphics.getWidth()
+
         batch.draw(platform,
                 playerSquareMiddleX-platform.getRegionWidth()/2*Settings.SCALE,
                 platformYOrigin-(50*Settings.SCALE),
@@ -101,46 +88,16 @@ public class BattleRenderer {
         float playerY = 0f;
         if(P_T!=null){
             playerX = playerSquareMiddleX;
-            //playerX = opponentSquareMiddleX - O_T.getWidth()/2*Settings.SCALE;
             playerY = platformYOrigin-(50*Settings.SCALE);
-
-            batch.draw(P_T.getKeyFrame(elapsed), 200.0f, 180.0f);
-           /* batch.draw(
-                    P_T,
-                    playerX,
-                    playerY,
-                    P_T.getWidth()/2,
-                    //playerWidth*P_T.getWidth()*Settings.SCALE,
-                    P_T.getHeight()/2,
-                    //playerHeight*P_T.getHeight()*Settings.SCALE,
-                    0,
-                    0,
-                    P_T.getWidth(),
-                    P_T.getHeight(),
-                    false, // 좌우반전
-                    false);*/
+            batch.draw(P_T.getKeyFrame(elapsed), playerSquareMiddleX-(18*Settings.SCALE), platformYOrigin-(35*Settings.SCALE));
         }
         float opponentX = 0f;
         float opponentY = 0f;
         if (O_T != null) {
             opponentX = opponentSquareMiddleX;
-           // opponentX = opponentSquareMiddleX - O_T.getWidth()/2*Settings.SCALE;
             opponentY = platformYOrigin;
-            batch.draw(O_T.getKeyFrame(elapsed), 530.0f, 280.0f);
-            /*batch.draw(
-                    O_T,
-                    opponentX,
-                    opponentY,
-                    O_T.getWidth()/2,
-                    //opponentWidth*O_T.getWidth()*Settings.SCALE,
-                    O_T.getHeight()/2,
-                    //opponentHeight*O_T.getHeight()*Settings.SCALE,
-                    0,
-                    0,
-                    O_T.getWidth(),
-                    O_T.getHeight(),
-                    true, //좌우반전
-                    false);*/
+            batch.draw(O_T.getKeyFrame(elapsed), opponentSquareMiddleX-(15*Settings.SCALE), platformYOrigin+(15*Settings.SCALE));
+
         }
 
     }

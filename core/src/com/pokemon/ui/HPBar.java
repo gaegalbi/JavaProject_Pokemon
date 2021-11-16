@@ -93,10 +93,7 @@ public class HPBar extends Widget {
 		return hp_left.getMinWidth()+hp_bar.getMinWidth();
 	}
 	
-	/**
-	 * Makes the bar display a specific amount of HP left.
-	 * @param hp	float value between 0 and 1
-	 */
+
 	public void displayHPLeft(float hp) {
 		this.hpAmount = hp;
 		hpAmount = MathUtils.clamp(hpAmount, 0f, 1f);

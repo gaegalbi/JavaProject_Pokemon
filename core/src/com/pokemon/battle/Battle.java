@@ -1,9 +1,13 @@
 package com.pokemon.battle;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.model.PK;
+import com.pokemon.util.GifDecoder;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,8 +32,14 @@ public class Battle {
     private PK player;
     private PK opponent;
 
-    private Texture P_T;
-    private Texture O_T;
+    private Trainer pTrainer;
+    private Trainer oTrainer;
+
+   //private Texture P_T;
+   //private Texture O_T;
+
+    private Animation<TextureRegion> P_T;
+    private Animation<TextureRegion> O_T;
 
     private AssetManager assetManager;
 
@@ -38,16 +48,25 @@ public class Battle {
     private String[] oppoKey;
     private String wildKey;
 
+   // private BattleMechanics mechanics;
+/*    public Battle(Trainer player, Trainer oTrainer) {
+        this.pTrainer = player;
+        this.oTrainer = oTrainer;
 
-    public Battle(boolean multi) {
+        this.player = player.getPokemon(0);
+        this.opponent = oTrainer.getPokemon(0);
+        mechanics = new BattleMechanics();
+        this.state = STATE.READY_TO_PROGRESS;
+    }*/
+   public Battle(boolean multi) {
         assetManager = new AssetManager();
         assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
         assetManager.load("pokemon/bulbasaur.png", Texture.class);
         assetManager.load("pokemon/slowpoke.png", Texture.class);
         assetManager.finishLoading();
 
-        this.P_T = assetManager.get("pokemon/bulbasaur.png", Texture.class);
-        this.O_T = assetManager.get("pokemon/slowpoke.png", Texture.class);
+       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/꼬부기.gif").read());
+       O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/꼬부기.gif").read());
 
         String[] userKey = {playerID, String.valueOf(playerNum)};
         this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
@@ -74,7 +93,6 @@ public class Battle {
     public PK getP_P() {
         return player;
     }
-
 
     public PK getO_P() {
         return opponent;

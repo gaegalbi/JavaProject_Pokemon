@@ -14,8 +14,10 @@ public class StatusBox extends Table {
 	
 	private Label text;
 	private Label lv;
+	private Label hpText;
 	private HPBar hpbar;
-	
+
+
 	protected Table uiContainer;
 	
 	public StatusBox(Skin skin) {
@@ -32,6 +34,10 @@ public class StatusBox extends Table {
 
 		hpbar = new HPBar(skin);
 		uiContainer.add(hpbar).spaceTop(0f).expand().fill();
+
+		hpText = new Label("NaN/NaN", skin, "smallLabel");
+		uiContainer.row();
+		uiContainer.add(hpText).expand().right();
 	}
 	
 	public void setText(String newText) {

@@ -1,6 +1,8 @@
 package com.pokemon.model;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.ui.LoginUi;
 
 import java.sql.SQLException;
@@ -15,14 +17,14 @@ import static com.pokemon.ui.LoginUi.playerID;
 public class PK {
     private String name;
     private int LV;
-    private int[] stat = new int[3]; //공, 방, 체
+    private int[] stat = new int[4]; //공, 방, 체, 스피드
     private String[] skill = new String[4]; // PM_SK_S_01, PM_SK_S_02, PM_SK_S_03, PM_SK_S_04
-    private Texture image;
+    private Animation<TextureRegion> image;
     private int currentHP;
     private int battleNum;
-
-    public PK(String key,Texture image){
-        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM_INFO WHERE PM_ID ='"+key+"';";
+    //야생 포켓몬
+    public PK(String key, Animation<TextureRegion> image){
+        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM_INFO WHERE PM_ID ='"+key+"';";
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -33,6 +35,7 @@ public class PK {
                 this.stat[0] = rs.getInt("PM_ATT");
                 this.stat[1] = rs.getInt("PM_DEF");
                 this.stat[2] = rs.getInt("PM_HP");
+                this.stat[3] = rs.getInt("PM_SPEED");
 
                 this.skill[0] = rs.getString("PM_SK_S_01");
                 this.skill[1] = rs.getString("PM_SK_S_02");
@@ -52,12 +55,12 @@ public class PK {
     }
 
     //유저 포켓몬
-    public PK(String[] key,Texture image) {
+    public PK(String[] key,Animation<TextureRegion> image) {
         //key[0] = playerID;
         //key[1] = PM_ID
         //key[2] = PM_NUM (int)
         //String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_LV,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_ID='"+key[1]+"' and PM_NUM='"+Integer.parseInt(key[2]) +"';";
-        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_LV,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
+        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_LV,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -69,6 +72,7 @@ public class PK {
                this.stat[0] = rs.getInt("PM_ATT");
                this.stat[1] = rs.getInt("PM_DEF");
                this.stat[2] = rs.getInt("PM_HP");
+               this.stat[3] = rs.getInt("PM_SPEED");
 
                this.skill[0] = rs.getString("PM_SK_S_01");
                this.skill[1] = rs.getString("PM_SK_S_02");
@@ -98,8 +102,16 @@ public class PK {
         }catch(SQLException e){}
         return conName;
     }
-
     public int getLV(){ return LV;}
     public int[] getStat(){ return stat;}
     public String[] getSkill(){ return skill;}
+
+    public Animation<TextureRegion> getImage(){ return image;}
+
+    public void applyDamage(int amount) {
+        currentHP -= amount;
+        if (currentHP < 0) {
+            currentHP = 0;
+        }
+    }
 }

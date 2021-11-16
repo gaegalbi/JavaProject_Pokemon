@@ -54,7 +54,8 @@ public class BattleScreen implements Screen {
     private MoveSelectBox moveSelectBox;
 
     private Table statusBoxRoot;
-    private DetailedStatusBox playerStatus;
+    //private DetailedStatusBox playerStatus;
+    private StatusBox playerStatus;
     private StatusBox opponentStatus;
 
     public BattleScreen(Pokemon game) {
@@ -66,43 +67,16 @@ public class BattleScreen implements Screen {
 
         assetManager= new AssetManager();
         assetManager.load("ui/uipack.atlas", TextureAtlas.class);
-        //assetManager.load("font/small_letters_font.fnt", BitmapFont.class);
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-
         battleRenderer = new BattleRenderer(game,battle,camera);
         initUI();
-
-
-/*        assetManager = new AssetManager();
-        assetManager.load("pokemon/bulbasaur.png", Texture.class);
-        assetManager.load("pokemon/slowpoke.png", Texture.class);
-        assetManager.finishLoading();
-
-
-
-
-        Texture P_T = assetManager.get("pokemon/bulbasaur.png", Texture.class);
-        Texture O_T = assetManager.get("pokemon/slowpoke.png", Texture.class);
-        String[] userKey = {playerID,String.valueOf(playerNum)};
-
-        PK Player = new PK(userKey,P_T);
-        PK Opponent = new PK(userKey,P_T);
-
-        battleRenderer = new BattleRenderer(game,camera,Player,Opponent);
-
-        System.out.print(Player.getName());*/
     }
 
     private void initUI() {
- /*       assetManager= new AssetManager();
-        assetManager.load("ui/uipack.atlas", TextureAtlas.class);
-        assetManager.load("res/font/small_letters_font.fnt", BitmapFont.class);
-        assetManager.finishLoading();*/
-
         /* ROOT UI STAGE */
         uiStage = new Stage(new ScreenViewport());
         uiStage.getViewport().update(
@@ -116,13 +90,14 @@ public class BattleScreen implements Screen {
         statusBoxRoot.setFillParent(true);
         uiStage.addActor(statusBoxRoot);
 
-        playerStatus = new DetailedStatusBox(skin);
-       // playerStatus.setText(battle.getP_P().getName());
-        playerStatus.setText("피카츄");
+        //playerStatus = new DetailedStatusBox(skin);
+        playerStatus = new StatusBox(skin);
+        playerStatus.setText(battle.getP_P().getName());
         playerStatus.setLV("LV"+5);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
+        opponentStatus.setLV("LV"+5);
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);
         statusBoxRoot.add(opponentStatus).expand().align(Align.right);
