@@ -95,4 +95,25 @@ public class db{
             return true;
         }
     }
+    public static String sP(String id,int num) {
+        String sql = "SELECT PM_NAME from PM_INFO WHERE PM_ID = (SELECT PM_ID FROM PM where U_ID = '"+id+"' AND PM_BATTLE ='" + num +"');";
+        String PM_NAME = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_NAME = rs.getString("PM_NAME");
+            }
+            return PM_NAME;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_NAME;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_NAME;
+        }
+    }
 }

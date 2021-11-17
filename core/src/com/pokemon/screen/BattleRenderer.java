@@ -50,7 +50,6 @@ public class BattleRenderer {
         assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
         assetManager.finishLoading();
 
-        String sql;
         //배틀에서 이미지 가져옴
         P_T = battle.getP_P().getImage();
         O_T = battle.getO_P().getImage();
@@ -87,17 +86,16 @@ public class BattleRenderer {
         float playerX = 0f;
         float playerY = 0f;
         if(P_T!=null){
-            playerX = playerSquareMiddleX;
-            playerY = platformYOrigin-(50*Settings.SCALE);
-            batch.draw(P_T.getKeyFrame(elapsed), playerSquareMiddleX-(18*Settings.SCALE), platformYOrigin-(35*Settings.SCALE));
+            playerX = playerSquareMiddleX-P_T.getKeyFrame(elapsed).getRegionWidth()/2;
+            playerY = platformYOrigin-P_T.getKeyFrame(elapsed).getRegionHeight();
+            batch.draw(P_T.getKeyFrame(elapsed), playerX , playerY );
         }
         float opponentX = 0f;
         float opponentY = 0f;
         if (O_T != null) {
-            opponentX = opponentSquareMiddleX;
-            opponentY = platformYOrigin;
-            batch.draw(O_T.getKeyFrame(elapsed), opponentSquareMiddleX-(15*Settings.SCALE), platformYOrigin+(15*Settings.SCALE));
-
+            opponentX = opponentSquareMiddleX - O_T.getKeyFrame(elapsed).getRegionWidth()/2;
+            opponentY = platformYOrigin+O_T.getKeyFrame(elapsed).getRegionHeight()/3;
+            batch.draw(O_T.getKeyFrame(elapsed),  opponentX, opponentY);
         }
 
     }
