@@ -44,6 +44,7 @@ public class StatusBox extends Table {
 		text.setText(newText);
 	}
 	public void setLV(String newLV) {lv.setText(newLV);}
+	public void setHpText(String newHP) {hpText.setText(newHP);}
 
 	public HPBar getHPBar() {
 		return hpbar;

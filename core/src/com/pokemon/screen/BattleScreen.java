@@ -93,11 +93,13 @@ public class BattleScreen implements Screen {
         //playerStatus = new DetailedStatusBox(skin);
         playerStatus = new StatusBox(skin);
         playerStatus.setText(battle.getP_P().getName());
-        playerStatus.setLV("LV"+5);
+        playerStatus.setLV("LV"+battle.getP_P().getLV());
+        playerStatus.setHpText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getStat()[2]);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
-        opponentStatus.setLV("LV"+5);
+        opponentStatus.setLV("LV"+battle.getO_P().getLV());
+        opponentStatus.setHpText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getStat()[2]);
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);
         statusBoxRoot.add(opponentStatus).expand().align(Align.right);

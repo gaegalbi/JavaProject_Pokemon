@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.pokemon.db.db;
 import com.pokemon.model.PK;
 import com.pokemon.util.GifDecoder;
 
@@ -48,6 +49,8 @@ public class Battle {
     private String[] oppoKey;
     private String wildKey;
 
+    private String pName;
+    private String oName;
    // private BattleMechanics mechanics;
 /*    public Battle(Trainer player, Trainer oTrainer) {
         this.pTrainer = player;
@@ -59,14 +62,10 @@ public class Battle {
         this.state = STATE.READY_TO_PROGRESS;
     }*/
    public Battle(boolean multi) {
-        assetManager = new AssetManager();
-        assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
-        assetManager.load("pokemon/bulbasaur.png", Texture.class);
-        assetManager.load("pokemon/slowpoke.png", Texture.class);
-        assetManager.finishLoading();
+       pName = db.sP(playerID,playerNum);
 
-       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/꼬부기.gif").read());
-       O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/꼬부기.gif").read());
+       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName+".gif").read());
+       O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pName+".gif").read());
 
         String[] userKey = {playerID, String.valueOf(playerNum)};
         this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
