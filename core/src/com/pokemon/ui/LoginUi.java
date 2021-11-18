@@ -78,7 +78,7 @@ public class LoginUi extends AbstractUi {
                 System.out.println("ID: " + idText.getText());
                 System.out.println("PASSWORD: " + passwordText.getText());
                 //db 로그인
-                if(db.login(idText.getText(),passwordText.getText())==true){
+                if(db.login(idText.getText(), passwordText.getText())){
                     playerID = idText.getText();
                     mainMenuScreen.gameStart();
                 }else{
