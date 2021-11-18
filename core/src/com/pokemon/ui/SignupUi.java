@@ -104,11 +104,11 @@ public class SignupUi extends AbstractUi {
             acceptButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    boolean userCheck = db.signUp("Select COUNT(USERID) from user where USERID = '"+idField.getText()+"';");
+                    boolean userCheck = db.signUp(idField.getText());
                     if(!passwordField.getText().equals(confirmPasswordField.getText())) {
                         Dialogs.showOKDialog(getStage(), "message", "Password is not match!");
                     }else if(userCheck==false) {
-                        db.insert("INSERT INTO user VALUES('" + idField.getText() + "','" + passwordField.getText() + "');");
+                        db.insert(idField.getText(), passwordField.getText());
                         Dialogs.showOKDialog(getStage(), "message", "This ID is created!");
                     }else if(userCheck==true) {
                         Dialogs.showOKDialog(getStage(), "message", "This ID is already being used!");

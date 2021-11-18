@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.model.Player;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.MainMenuScreen;
 
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class Pokemon extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		this.setScreen(new MainMenuScreen(this));
+		//this.setScreen(new BattleScreen(this));
+
 	}
 
 	@Override

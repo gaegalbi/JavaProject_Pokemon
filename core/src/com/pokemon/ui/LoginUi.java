@@ -26,6 +26,7 @@ public class LoginUi extends AbstractUi {
     SpriteBatch batch;
     MainMenuScreen mainMenuScreen;
     Pokemon game;
+    public static String playerID;
 
     public LoginUi(final MainMenuScreen mainMenuScreen,final Pokemon game) {
         batch = new SpriteBatch();
@@ -77,17 +78,12 @@ public class LoginUi extends AbstractUi {
                 System.out.println("ID: " + idText.getText());
                 System.out.println("PASSWORD: " + passwordText.getText());
                 //db 로그인
-                if(db.login("Select USERPAS from user where USERID = '"+idText.getText()+"';",passwordText.getText())==true){
+                if(db.login(idText.getText(),passwordText.getText())==true){
+                    playerID = idText.getText();
                     mainMenuScreen.gameStart();
                 }else{
                     Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
                 }
-                /*// 임시 로그인 기능용
-                if (game.loginValidate(idText.getText(), passwordText.getText())) {
-                    mainMenuScreen.gameStart();
-                } else {
-                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
-                }*/
             }
         });
 
