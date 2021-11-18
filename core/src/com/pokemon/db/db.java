@@ -116,4 +116,112 @@ public class db{
             return PM_NAME;
         }
     }
+    public static String sP(String id) {
+        String sql = "SELECT PM_NAME from PM_INFO WHERE PM_ID = (SELECT PM_ID FROM PM_INFO where PM_ID = '"+id+"');";
+        String PM_NAME = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_NAME = rs.getString("PM_NAME");
+            }
+            return PM_NAME;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_NAME;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_NAME;
+        }
+    }
+
+    public static String GET_PM_SK_NAME(String id) {
+        String sql = "SELECT PM_SK_NAME from PM_SK_INFO WHERE PM_SK_ID = '"+id+"';";
+        String PM_SK_NAME = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_SK_NAME = rs.getString("PM_SK_NAME");
+            }
+            return PM_SK_NAME;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_SK_NAME;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_SK_NAME;
+        }
+    }
+
+    public static int GET_PM_SK_CNT(String id) {
+        String sql = "SELECT PM_SK_CNT from PM_SK_INFO WHERE PM_SK_ID = '"+id+"';";
+        int PM_SK_CNT = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_SK_CNT = rs.getInt("PM_SK_CNT");
+            }
+            return PM_SK_CNT;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_SK_CNT;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_SK_CNT;
+        }
+    }
+
+    public static double GET_PM_DA(String id) {
+        String sql = "SELECT PM_SK_DA from PM_SK_INFO WHERE PM_SK_ID = '"+id+"';";
+        double PM_DA= 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_DA = rs.getDouble("PM_SK_DA");
+            }
+            return PM_DA;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_DA;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_DA;
+        }
+    }
+    public static String GET_PMType(String id) {
+        String sql = "SELECT PM_TYPE from PM_INFO WHERE PM_ID = '"+id+"';";
+        String PM_TYPE = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                PM_TYPE = rs.getString("PM_TYPE");
+            }
+            return PM_TYPE;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return PM_TYPE;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return PM_TYPE;
+        }
+    }
 }

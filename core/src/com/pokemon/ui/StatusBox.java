@@ -50,4 +50,5 @@ public class StatusBox extends Table {
 		return hpbar;
 	}
 
+	public void setHPText(int hpProgress, int hpTotal) {hpText.setText(hpProgress + "/" + hpTotal);}
 }

@@ -1,6 +1,8 @@
 package com.pokemon.screen;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,9 +17,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
+import com.pokemon.battle.event.BattleEvent;
+import com.pokemon.battle.event.BattleEventPlayer;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
+import com.pokemon.controller.BattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.PK;
@@ -25,9 +31,12 @@ import com.pokemon.model.Player;
 import com.pokemon.ui.*;
 import com.pokemon.util.SkinGenerator;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import static com.pokemon.ui.LoginUi.playerID;
 
-public class BattleScreen implements Screen {
+public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
     private AssetManager assetManager;
     private OrthographicCamera camera;
@@ -37,6 +46,9 @@ public class BattleScreen implements Screen {
     private GameController gameController;
     public static int playerNum=1;
 
+    /* Controller */
+    private BattleScreenController controller;
+
     /* View */
     private Viewport gameViewport;
 
@@ -44,6 +56,7 @@ public class BattleScreen implements Screen {
     private Battle battle;
 
     /* UI */
+    float elapsed;
     private Skin skin;
     private Stage uiStage;
     private Table dialogueRoot;
@@ -58,22 +71,37 @@ public class BattleScreen implements Screen {
     private StatusBox playerStatus;
     private StatusBox opponentStatus;
 
+    /* 이벤트 시스템 */
+    private BattleEvent currentEvent;
+    private EventQueueRenderer eventRenderer;
+    private Queue<BattleEvent> queue = new ArrayDeque<>();
+
     public BattleScreen(Pokemon game) {
         this.game = game;
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
-        this.battle = new Battle(false);
 
+        //폰트 및 UI 불러오기
         assetManager= new AssetManager();
         assetManager.load("ui/uipack.atlas", TextureAtlas.class);
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
+        //배틀 생성 및 이벤트 할당
+        this.battle = new Battle(false);
+        battle.setEventPlayer(this);
+
         skin = SkinGenerator.generateSkin(assetManager);
 
         battleRenderer = new BattleRenderer(game,battle,camera);
+        eventRenderer = new EventQueueRenderer(skin, queue);
+
         initUI();
+
+        controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
+
+        battle.beginBattle();
     }
 
     private void initUI() {
@@ -136,20 +164,59 @@ public class BattleScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(controller);
     }
-    float elapsed;
+
+    public void update(float delta) {
+        while (currentEvent == null || currentEvent.finished()) { // no active event
+            if (queue.peek() == null) { // no event queued up
+                currentEvent = null;
+
+                if (battle.getState() == Battle.STATE.SELECT_NEW_POKEMON) {
+                    if (controller.getState() != BattleScreenController.STATE.USE_NEXT_POKEMON) {
+                        controller.displayNextDialogue();
+                    }
+                } else if (battle.getState() == Battle.STATE.READY_TO_PROGRESS) {
+                    controller.restartTurn();
+                } else if (battle.getState() == Battle.STATE.WIN) {
+                    game.setScreen(new GameScreen(game));
+                } else if (battle.getState() == Battle.STATE.LOSE) {
+                    game.setScreen(new GameScreen(game));
+                } else if (battle.getState() == Battle.STATE.RAN) {
+                    game.setScreen(new GameScreen(game));
+                }
+                break;
+            } else {					// event queued up
+                currentEvent = queue.poll();
+                currentEvent.begin(this);
+            }
+        }
+
+        if (currentEvent != null) {
+            currentEvent.update(delta);
+        }
+
+        controller.update(delta);
+        uiStage.act(); // update ui
+    }
+
     @Override
     public void render(float delta) {
         gameViewport.apply();
         camera.position.x =  Gdx.graphics.getWidth()/2;
         camera.position.y = Gdx.graphics.getHeight()/2;
+        camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         elapsed += Gdx.graphics.getDeltaTime();
+
         game.batch.begin();
+        this.update(delta);
         battleRenderer.render(game.batch,elapsed);
+        if (currentEvent != null) {
+            eventRenderer.render(game.batch, currentEvent);
+        }
         game.batch.end();
-        camera.update();
+
         uiStage.draw();
     }
 
@@ -182,5 +249,36 @@ public class BattleScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public void setPokemonSprite(Texture region, BATTLE_PARTY party) {
+
+    }
+
+    @Override
+    public DialogueBox getDialogueBox() {
+        return dialogueBox;
+    }
+
+    @Override
+    public StatusBox getStatusBox(BATTLE_PARTY party) {
+        if (party == BATTLE_PARTY.PLAYER) {
+            return playerStatus;
+        } else if (party == BATTLE_PARTY.OPPONENT) {
+            return opponentStatus;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public TweenManager getTweenManager() {
+        return null;
+    }
+
+    @Override
+    public void queueEvent(BattleEvent event) {
+        queue.add(event);
     }
 }

@@ -1,18 +1,14 @@
-/*package com.pokemon.controller;
+package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.pokemon.battle.Battle;
+import com.pokemon.db.db;
 import com.pokemon.ui.DialogueBox;
 import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.ui.OptionBox;
-
-/*
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
-import com.pokemon.battle.moves.MoveSpecification;
-
-
 import java.util.Queue;
 
 
@@ -27,7 +23,7 @@ public class BattleScreenController extends InputAdapter {
 	
 	private STATE state = STATE.DEACTIVATED;
 	
-	//private Queue<BattleEvent> queue;
+	private Queue<BattleEvent> queue;
 	
 	private Battle battle;
 	
@@ -35,10 +31,9 @@ public class BattleScreenController extends InputAdapter {
 	private OptionBox optionBox;
 	private MoveSelectBox moveSelect;
 	
-	public BattleScreenController(Battle battle, /*Queue<BattleEvent> queue,*//*
- DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox) {
+	public BattleScreenController(Battle battle, Queue<BattleEvent> queue,DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox) {
 		this.battle = battle;
-		//this.queue = queue;
+		this.queue = queue;
 		this.dialogue = dialogue;
 		this.moveSelect = options;
 		this.optionBox = optionBox;
@@ -56,16 +51,9 @@ public class BattleScreenController extends InputAdapter {
 				optionBox.moveDown();
 			} else if (keycode == Keys.X) {
 				if (optionBox.getIndex() == 0) { // YES selected
-					
-					
-					*/
-/*
-					 * WRONG
-					 *//*
-
-					for (int i = 0; i < battle.getPlayerTrainer().getTeamSize(); i++) {
-						if (!battle.getPlayerTrainer().getPokemon(i).isFainted()) {
-							battle.chooseNewPokemon(battle.getPlayerTrainer().getPokemon(i));
+					for (int i = 0; i < battle.getPTrainer().getTeamSize(); i++) {
+						if (!battle.getPTrainer().getPokemon(i).isFainted()) {
+							battle.chooseNewPokemon(battle.getPTrainer().getPokemon(i));
 							optionBox.setVisible(false);
 							this.state = STATE.DEACTIVATED;
 							break;
@@ -81,7 +69,8 @@ public class BattleScreenController extends InputAdapter {
 		if (moveSelect.isVisible()) {
 			if (keycode == Keys.X) {
 				int selection = moveSelect.getSelection();
-				if (battle.getPlayerPokemon().getMove(selection) == null) {
+				/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
+				if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
 					queue.add(new TextEvent("No such move...", 0.5f));
 				} else {
 					battle.progress(moveSelect.getSelection());
@@ -117,29 +106,31 @@ public class BattleScreenController extends InputAdapter {
 		}
 	}
 	
-	*/
-/**
+
+/*
 	 * Displays the UI for a new turn
-	 *//*
+	*/
 
 	public void restartTurn() {
 		this.state = STATE.SELECT_ACTION;
 		dialogue.setVisible(false);
+
 		for (int i = 0; i <= 3; i++) {
 			String label = "------";
-			MoveSpecification spec = battle.getPlayerPokemon().getMoveSpecification(i);
-			if (spec != null) {
-				label = spec.getName();
+			String skill = db.GET_PM_SK_NAME(battle.getP_P().getSkill()[i]);
+			int max = battle.getP_P().getSK_CNT()[i];
+			int cur = battle.getP_P().getCurrent_SK_CNT()[i];
+			if (skill != null) {
+				label = skill + " "+ cur+"/"+max;
 			}
-			moveSelect.setLabel(i, label.toUpperCase());
+			moveSelect.setLabel(i, label);
 		}
 		moveSelect.setVisible(true);
 	}
-	
-	*/
-/**
+
+/*
 	 * Displays UI for selecting a new Pokemon
-	 *//*
+	 */
 
 	public void displayNextDialogue() {
 		this.state = STATE.USE_NEXT_POKEMON;
@@ -156,4 +147,4 @@ public class BattleScreenController extends InputAdapter {
 		this.state = STATE.DEACTIVATED;
 	}
 }
-*/
+

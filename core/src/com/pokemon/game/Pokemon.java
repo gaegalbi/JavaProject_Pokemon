@@ -28,6 +28,7 @@ public class Pokemon extends Game {
 		font = new BitmapFont();
 		this.setScreen(new MainMenuScreen(this));
 		//this.setScreen(new BattleScreen(this));
+
 	}
 
 	@Override
