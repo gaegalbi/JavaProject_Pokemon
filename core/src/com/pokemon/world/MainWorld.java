@@ -41,10 +41,10 @@ public class MainWorld implements World {
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
-        if (player.x > 576 && player.y < 32) {
+        /*if (player.x > 576 && player.y < 32) {
             player.setX(0);
             player.setY(0);
             GameScreen.setWorld(new Mine(player));
-        }
+        }*/
     }
 }

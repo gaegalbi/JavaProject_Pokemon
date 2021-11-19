@@ -21,7 +21,15 @@ public class Pokemon extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
 	private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
+	private String str;
 
+	public String getStr() {
+		return str;
+	}
+
+	public void setStr(String str) {
+		this.str = str;
+	}
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

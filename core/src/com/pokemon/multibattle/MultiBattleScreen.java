@@ -1,50 +1,61 @@
-package com.pokemon.screen;
+package com.pokemon.multibattle;
 
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.BattleEventPlayer;
-import com.pokemon.controller.GameController;
-import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.BattleScreenController;
-import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
-import com.pokemon.model.PK;
-import com.pokemon.model.Player;
-import com.pokemon.ui.*;
+import com.pokemon.screen.BattleRenderer;
+import com.pokemon.screen.EventQueueRenderer;
+import com.pokemon.ui.DialogueBox;
+import com.pokemon.ui.MoveSelectBox;
+import com.pokemon.ui.OptionBox;
+import com.pokemon.ui.StatusBox;
+import com.pokemon.util.GifDecoder;
+import com.pokemon.game.Pokemon;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import static com.pokemon.ui.LoginUi.playerID;
-
-public class BattleScreen implements Screen, BattleEventPlayer {
+public class MultiBattleScreen implements Screen, BattleEventPlayer {
+    int i=0;
     final Pokemon game;
-    private AssetManager assetManager;
-    private OrthographicCamera camera;
-
-    private PlayerController playerController;
-    private BattleRenderer battleRenderer;
-    private GameController gameController;
-    public static int playerNum=1;
+    GameScreen gameScreen;
+    SpriteBatch batch;
+    Animation<TextureRegion> animation;
+    Animation<TextureRegion> animation2;
+    Timer timer = new Timer();
+    private Texture fieldimage1;
+    private Texture fieldimage2;
+    private Texture background;
+    float elapsed;
+    private Texture buttonTexture;
+    private TextureRegion buttonTextureRegion;
+    private TextureRegionDrawable buttonTextureRegionDrawable;
+    private ImageButton button;
+    private SelectButton selectButton;
+    /*private String pokemonSelectedList = selectButton.pokemonList.list;*/
+    private String[] selectedPokemon = new String[2];
+    private PokemonSelectScreen pokemonSelectScreen;
 
     /* Controller */
     private BattleScreenController controller;
@@ -56,7 +67,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Battle battle;
 
     /* UI */
-    float elapsed;
     private Skin skin;
     private Stage uiStage;
     private Table dialogueRoot;
@@ -75,12 +85,23 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private BattleEvent currentEvent;
     private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
+    private AssetManager assetManager;
 
-    public BattleScreen(Pokemon game) {
+    public MultiBattleScreen(Pokemon game) {
         this.game = game;
-        gameViewport = new ScreenViewport();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false,800,480);
+        batch = new SpriteBatch();
+        /*selectedPokemon =  pokemonSelectedList.split(" ");*/
+        selectedPokemon =  game.getStr().split(" ");
+        background = new Texture(Gdx.files.internal("C:\\battlebgField.png"));
+        fieldimage1 = new Texture(Gdx.files.internal("C:\\enemybaseFieldGrass.png"));
+        fieldimage2 = new Texture(Gdx.files.internal("C:\\enemybaseFieldGrass.png"));
+        animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\"+selectedPokemon[0]+".gif").read());
+        animation2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\"+selectedPokemon[1]+".gif").read());
+
+        buttonTexture = new Texture(Gdx.files.internal("badlogic.jpg"));
+        buttonTextureRegion = new TextureRegion(buttonTexture);
+        buttonTextureRegionDrawable = new TextureRegionDrawable(buttonTextureRegion);
+        button = new ImageButton(buttonTextureRegionDrawable); //Set the button up
 
         //폰트 및 UI 불러오기
         assetManager= new AssetManager();
@@ -88,13 +109,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
-        //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(game,false);
+        this.battle = new Battle(game,true);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-        battleRenderer = new BattleRenderer(game,battle,camera);
         eventRenderer = new EventQueueRenderer(skin, queue);
 
         initUI();
@@ -102,14 +121,72 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
 
         battle.beginBattle();
+
+    }
+    @Override
+    public void show() {
+
     }
 
+    @Override
+    public void render(float delta) {
+        elapsed += Gdx.graphics.getDeltaTime();
+        ScreenUtils.clear(0, 0, 0, 1);
+        batch.begin();
+        batch.draw(background,0,0,800,600);
+        batch.draw(fieldimage1, 80, 140);
+        batch.draw(fieldimage2, 450, 140);
+        batch.draw(animation.getKeyFrame(elapsed), 510.0f, 200.0f);
+        batch.end();
+        this.update(delta);
+        if (currentEvent != null) {
+            eventRenderer.render(game.batch, currentEvent);
+        }
+        uiStage.draw();
+        Timer.schedule(new Timer.Task(){
+            @Override
+            public void run(){
+
+            }
+        },3);
+        if(i==1){
+            gameScreenStart();
+        }
+    }
+    public void gameScreenStart(){
+        game.setScreen(new GameScreen(game));
+        dispose();
+    }
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+    }
     private void initUI() {
         /* ROOT UI STAGE */
         uiStage = new Stage(new ScreenViewport());
         uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
+                (int)(Gdx.graphics.getWidth()),
+                (int)(Gdx.graphics.getHeight()),
                 true);
         uiStage.setDebugAll(false);
 
@@ -163,10 +240,29 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     }
 
     @Override
-    public void show() {
-        Gdx.input.setInputProcessor(controller);
+    public void setPokemonSprite(Texture region, BATTLE_PARTY party) {
+
     }
 
+    @Override
+    public DialogueBox getDialogueBox() {
+        return null;
+    }
+
+    @Override
+    public StatusBox getStatusBox(BATTLE_PARTY party) {
+        return null;
+    }
+
+    @Override
+    public TweenManager getTweenManager() {
+        return null;
+    }
+
+    @Override
+    public void queueEvent(BattleEvent event) {
+
+    }
     public void update(float delta) {
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
@@ -198,87 +294,5 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
         controller.update(delta);
         uiStage.act(); // update ui
-    }
-
-    @Override
-    public void render(float delta) {
-        gameViewport.apply();
-        camera.position.x =  Gdx.graphics.getWidth()/2;
-        camera.position.y = Gdx.graphics.getHeight()/2;
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-        elapsed += Gdx.graphics.getDeltaTime();
-
-        game.batch.begin();
-        this.update(delta);
-        battleRenderer.render(game.batch,elapsed);
-        if (currentEvent != null) {
-            eventRenderer.render(game.batch, currentEvent);
-        }
-        game.batch.end();
-
-        uiStage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-        game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-        uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
-                true);
-        gameViewport.update(width, height);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
-
-    @Override
-    public void setPokemonSprite(Texture region, BATTLE_PARTY party) {
-
-    }
-
-    @Override
-    public DialogueBox getDialogueBox() {
-        return dialogueBox;
-    }
-
-    @Override
-    public StatusBox getStatusBox(BATTLE_PARTY party) {
-        if (party == BATTLE_PARTY.PLAYER) {
-            return playerStatus;
-        } else if (party == BATTLE_PARTY.OPPONENT) {
-            return opponentStatus;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public TweenManager getTweenManager() {
-        return null;
-    }
-
-    @Override
-    public void queueEvent(BattleEvent event) {
-        queue.add(event);
     }
 }

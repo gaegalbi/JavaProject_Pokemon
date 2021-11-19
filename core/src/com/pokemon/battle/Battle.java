@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.battle.event.*;
+import com.pokemon.game.Pokemon;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
 import com.pokemon.util.GifDecoder;
@@ -47,21 +48,22 @@ public class Battle implements BattleEventQueuer {
     public static String OppoID;
     private String[] oppoKey;
     private String wildKey;
-
-   public Battle(boolean multi) {
+    Pokemon game;
+   public Battle(Pokemon game, boolean multi) {
+       this.game = game;
        assetManager = new AssetManager();
        assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
        assetManager.load("font/han/gul.fnt", BitmapFont.class);
        assetManager.finishLoading();
 
        pName = db.sP(playerID,playerNum+1);
-
        P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
 
        String[] userKey = {playerID, String.valueOf(playerNum+1)};
        this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
        if(!multi) {
+
            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
            String PM_ID = null;
            try {
@@ -79,9 +81,16 @@ public class Battle implements BattleEventQueuer {
            //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
            this.opponent = new PK("PM_02", O_T); //야생 포켓몬
         }
+       /*멀티 일때 실행*/
         else {
-            oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
-            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬
+            //game에서 선택된 포켓몬 불러오기
+           //P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+
+           //String[] userKey = {playerID, String.valueOf(playerNum+1)};
+           this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
+
+           oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
+           this.opponent = new PK(oppoKey, O_T); //상대 포켓몬
          }
 
        mechanics = new BattleMechanics();
