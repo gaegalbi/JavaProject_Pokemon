@@ -1,6 +1,7 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
@@ -24,7 +25,7 @@ public class Mine implements World {
             }
         }
         objects = new ArrayList<>();
-        objects.add(new WorldObject(5, 5, 100, 100, "badlogic.jpg"));
+        objects.add(new WorldObject(2 * Settings.TILE_SIZE, 2 * Settings.TILE_SIZE, 100, 100, "badlogic.jpg"));
     }
 
     @Override

@@ -27,6 +27,8 @@ public class Player extends Rectangle {
     private float animTimer;
 
     public Player(int x, int y, AnimationSet<TextureRegion> animations) {
+        this.width = 32;
+        this.height = 24;
         this.x = x;
         this.y = y;
         this.animations = animations;
@@ -57,7 +59,7 @@ public class Player extends Rectangle {
 
     public void finishMove() {
         state = PLAYER_STATE.STANDING;
-    };
+    }
 
     public void setFacing(DIRECTION facing) {
         this.facing = facing;
