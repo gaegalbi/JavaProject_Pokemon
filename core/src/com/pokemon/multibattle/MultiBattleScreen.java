@@ -31,6 +31,7 @@ import com.pokemon.ui.StatusBox;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.util.MultiSkinGenerator;
 import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
@@ -112,7 +113,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         this.battle = new Battle(game,true);
         battle.setEventPlayer(this);
 
-        skin = SkinGenerator.generateSkin(assetManager);
+        skin = MultiSkinGenerator.generateSkin(assetManager);
 
         eventRenderer = new EventQueueRenderer(skin, queue);
 

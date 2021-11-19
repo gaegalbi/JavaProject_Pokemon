@@ -57,12 +57,11 @@ public class Battle implements BattleEventQueuer {
        assetManager.finishLoading();
 
        pName = db.sP(playerID,playerNum+1);
-       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
-
-       String[] userKey = {playerID, String.valueOf(playerNum+1)};
-       this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
-
        if(!multi) {
+           P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+
+           String[] userKey = {playerID, String.valueOf(playerNum+1)};
+           this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
            String PM_ID = null;
@@ -86,7 +85,7 @@ public class Battle implements BattleEventQueuer {
             //game에서 선택된 포켓몬 불러오기
            //P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
 
-           //String[] userKey = {playerID, String.valueOf(playerNum+1)};
+           String[] userKey = {playerID, String.valueOf(playerNum+1)};
            this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
            oppoKey = new String[]{OppoID, String.valueOf(playerNum)};

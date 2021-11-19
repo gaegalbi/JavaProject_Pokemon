@@ -30,21 +30,16 @@ public class SkinGenerator {
 		skin.add("dialoguebox", buttonSquareBlue);
 		
 		NinePatch optionbox = new NinePatch(uiAtlas.findRegion("optionbox"),6, 6, 6, 6);
-		optionbox.setMiddleHeight(100);
-		optionbox.setMiddleWidth(500);
 		skin.add("optionbox", optionbox);
 		
 		NinePatch battleinfobox = new NinePatch(uiAtlas.findRegion("battleinfobox"),14, 14, 5, 8);
 		battleinfobox.setPadLeft((int)battleinfobox.getTopHeight());
-		battleinfobox.setMiddleHeight(100);
-		battleinfobox.setMiddleWidth(200);
 		skin.add("battleinfobox", battleinfobox);
 
-		NinePatch hpbar_bar = new NinePatch(uiAtlas.findRegion("hpbar_bar"));
-		hpbar_bar.setMiddleWidth(200);
+
 		skin.add("arrow", uiAtlas.findRegion("arrow"), TextureRegion.class);
 		skin.add("hpbar_side", uiAtlas.findRegion("hpbar_side"), TextureRegion.class);
-		skin.add("hpbar_bar",hpbar_bar);
+		skin.add("hpbar_bar",uiAtlas.findRegion("hpbar_bar"), TextureRegion.class);
 		skin.add("green", uiAtlas.findRegion("green"), TextureRegion.class);
 		skin.add("yellow", uiAtlas.findRegion("yellow"), TextureRegion.class);
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
