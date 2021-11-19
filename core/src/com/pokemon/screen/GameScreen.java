@@ -53,7 +53,7 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, 800, 480);
         player = new Player(0, 0, animations);
         world = new MainWorld(player);
-        worldRenderer = new WorldRenderer();
+        worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
     }
@@ -72,7 +72,6 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         worldRenderer.render(game.batch);
-        game.batch.draw(player.getSprites(), player.x, player.y, player.getPlayerSizeX(), player.getPlayerSizeY());
         game.batch.end();
         playerController.update();
         player.update(delta);

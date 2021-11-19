@@ -4,13 +4,17 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
+import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
+
+import java.util.ArrayList;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
 public class Mine implements World {
     private final TileMap map = new TileMap(10, 10);
     private Player player;
+    private ArrayList<WorldObject> objects;
 
     public Mine(Player player) {
         this.player = player;
@@ -19,11 +23,18 @@ public class Mine implements World {
                 map.tiles[x][y] = new Tile(x, y, "stone");
             }
         }
+        objects = new ArrayList<>();
+        objects.add(new WorldObject(5, 5, 100, 100, "badlogic.jpg"));
     }
 
     @Override
     public TileMap getMap() {
         return map;
+    }
+
+    @Override
+    public ArrayList<WorldObject> getObjects() {
+        return objects;
     }
 
     @Override

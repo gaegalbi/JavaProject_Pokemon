@@ -1,10 +1,14 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
+import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
+
+import java.util.ArrayList;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
@@ -12,6 +16,7 @@ public class MainWorld implements World {
 
     private final TileMap map = new TileMap(20, 20);
     private Player player;
+    private ArrayList<WorldObject> objects;
 
     public MainWorld(Player player) {
         this.player = player;
@@ -20,11 +25,18 @@ public class MainWorld implements World {
                 map.tiles[x][y] = new Tile(x, y, "grass");
             }
         }
+        objects = new ArrayList<>();
+        objects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 100, 100, "badlogic.jpg"));
     }
 
     @Override
     public TileMap getMap() {
         return map;
+    }
+
+    @Override
+    public ArrayList<WorldObject> getObjects() {
+        return objects;
     }
 
     @Override

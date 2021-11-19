@@ -8,11 +8,18 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
+import com.pokemon.model.WorldObject;
 import com.pokemon.world.World;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
 public class WorldRenderer {
+    private Player player;
+
+    public WorldRenderer(Player player) {
+        this.player = player;
+    }
+
     public void render(Batch batch) {
         for (int x = 0; x < GameScreen.getWorld().getMap().getWidth(); x++) {
             for (int y = 0; y < GameScreen.getWorld().getMap().getHeight(); y++) {
@@ -24,5 +31,9 @@ public class WorldRenderer {
                 );
             }
         }
+        for (WorldObject object : GameScreen.getWorld().getObjects()) {
+            batch.draw(object.getTexture(), object.x,object.y,object.width,object.height);
+        }
+        batch.draw(player.getSprites(), player.x, player.y, player.getPlayerSizeX(), player.getPlayerSizeY());
     }
 }
