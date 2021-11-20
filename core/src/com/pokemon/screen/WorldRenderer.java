@@ -35,5 +35,8 @@ public class WorldRenderer {
             batch.draw(object.getTexture(), object.x,object.y,object.width,object.height);
         }
         batch.draw(player.getSprites(), player.x, player.y, player.getPlayerSizeX(), player.getPlayerSizeY());
+        for (WorldObject object : GameScreen.getWorld().getObjects()) {
+            batch.draw(object.getTexture(), object.x,object.y,object.width,object.height);
+        }
     }
 }

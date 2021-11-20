@@ -16,6 +16,7 @@ public class Mine implements World {
     private final TileMap map = new TileMap(10, 10);
     private Player player;
     private ArrayList<WorldObject> objects;
+    private ArrayList<WorldObject> fakeObjects;
 
     public Mine(Player player) {
         this.player = player;
@@ -25,6 +26,7 @@ public class Mine implements World {
             }
         }
         objects = new ArrayList<>();
+
         objects.add(new WorldObject(2 * Settings.TILE_SIZE, 2 * Settings.TILE_SIZE, 100, 100, "badlogic.jpg"));
     }
 
@@ -36,6 +38,11 @@ public class Mine implements World {
     @Override
     public ArrayList<WorldObject> getObjects() {
         return objects;
+    }
+
+    @Override
+    public ArrayList<WorldObject> getFakeObjects() {
+        return fakeObjects;
     }
 
     @Override

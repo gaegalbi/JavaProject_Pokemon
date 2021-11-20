@@ -17,6 +17,7 @@ public class MainWorld implements World {
     private final TileMap map = new TileMap(20, 20);
     private Player player;
     private ArrayList<WorldObject> objects;
+    private ArrayList<WorldObject> fakeObjects;
 
     public MainWorld(Player player) {
         this.player = player;
@@ -37,6 +38,11 @@ public class MainWorld implements World {
     @Override
     public ArrayList<WorldObject> getObjects() {
         return objects;
+    }
+
+    @Override
+    public ArrayList<WorldObject> getFakeObjects() {
+        return fakeObjects;
     }
 
     @Override

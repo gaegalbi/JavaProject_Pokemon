@@ -13,5 +13,7 @@ public interface World {
 
     ArrayList<WorldObject> getObjects();
 
+    ArrayList<WorldObject> getFakeObjects();
+
     void update();
 }
