@@ -8,18 +8,18 @@ import com.pokemon.util.AnimationSet;
 import static com.pokemon.game.Settings.SCALE;
 import static com.pokemon.game.Settings.TILE_SIZE;
 
-public class Player extends Rectangle {
+public class Player extends Rectangle implements RenderHelper, Comparable<RenderHelper> {
     private AnimationSet<TextureRegion> animations;
     private DIRECTION facing;
     private PLAYER_STATE state;
     private final float playerSizeX = TILE_SIZE;
     private final float playerSizeY = TILE_SIZE*1.5f;
 
-    public float getPlayerSizeX() {
+    public float getSizeX() {
         return playerSizeX * SCALE;
     }
 
-    public float getPlayerSizeY() {
+    public float getSizeY() {
         return playerSizeY * SCALE;
     }
 
@@ -43,6 +43,11 @@ public class Player extends Rectangle {
                 animTimer = 0f;
             }
         }
+    }
+
+    @Override
+    public int compareTo(RenderHelper o) {
+        return (int) (y-o.getY());
     }
 
     public enum PLAYER_STATE {

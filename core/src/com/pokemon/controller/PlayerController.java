@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
+import com.pokemon.model.RenderHelper;
 import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.world.MainWorld;

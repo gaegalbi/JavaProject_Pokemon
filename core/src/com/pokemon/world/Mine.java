@@ -1,6 +1,7 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
@@ -26,8 +27,15 @@ public class Mine implements World {
             }
         }
         objects = new ArrayList<>();
+        fakeObjects = new ArrayList<>();
 
-        objects.add(new WorldObject(2 * Settings.TILE_SIZE, 2 * Settings.TILE_SIZE, 100, 100, "badlogic.jpg"));
+        objects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
+        fakeObjects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
+
+        renderQueue.clear();
+
+        renderQueue.add(player);
+        renderQueue.addAll(fakeObjects);
     }
 
     @Override
@@ -44,6 +52,7 @@ public class Mine implements World {
     public ArrayList<WorldObject> getFakeObjects() {
         return fakeObjects;
     }
+
 
     @Override
     public void update() {

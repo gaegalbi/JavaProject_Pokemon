@@ -82,7 +82,7 @@ public class LoginUi extends AbstractUi {
                     playerID = idText.getText();
                     mainMenuScreen.gameStart();
                 }else{
-                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not matchㅋㅋ");
+                    Dialogs.showOKDialog(getStage(), "message", "Account not exits or Password is not match");
                 }
             }
         });

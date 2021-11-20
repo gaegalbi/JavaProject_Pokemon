@@ -1,6 +1,7 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
@@ -27,7 +28,18 @@ public class MainWorld implements World {
             }
         }
         objects = new ArrayList<>();
-        objects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 100, 100, "badlogic.jpg"));
+        fakeObjects = new ArrayList<>();
+
+        objects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
+        fakeObjects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
+
+        objects.add(new WorldObject(8 * Settings.TILE_SIZE, 8 * Settings.TILE_SIZE, 7*SCALED_TILE_SIZE, 4*SCALED_TILE_SIZE,atlas.findRegion("null")));
+        fakeObjects.add(new WorldObject(8 * Settings.TILE_SIZE, 8 * Settings.TILE_SIZE, 7*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE,atlas.findRegion("house1")));
+
+        renderQueue.clear();
+
+        renderQueue.add(player);
+        renderQueue.addAll(fakeObjects);
     }
 
     @Override
