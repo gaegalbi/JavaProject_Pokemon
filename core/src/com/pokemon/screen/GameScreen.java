@@ -10,19 +10,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
-import com.pokemon.transition.FadeInTransition;
-import com.pokemon.transition.FadeOutTransition;
+import com.pokemon.transition.*;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.World;
 import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
+
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
 
 import java.util.HashMap;
 
@@ -30,7 +33,9 @@ public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;
 
+    private TweenManager tweenManager;
     private AssetManager assetManager;
+    private ShaderProgram transitionShader;
     private OrthographicCamera camera;
     private Player player;
     private PlayerController playerController;
@@ -43,7 +48,20 @@ public class GameScreen implements Screen {
         assetManager = new AssetManager();
         assetManager.load("players/players.atlas", TextureAtlas.class);
         assetManager.load("transitions/white.png", Texture.class);
+        for (int i = 0; i < 13; i++) {
+            assetManager.load("transitions/transition_"+i+".png", Texture.class);
+        }
         assetManager.finishLoading();
+
+        tweenManager = new TweenManager();
+        Tween.registerAccessor(BattleBlinkTransition.class, new BattleBlinkTransitionAccessor());
+
+        transitionShader = new ShaderProgram(
+                Gdx.files.internal("transitions/vertexshader.txt"),
+                Gdx.files.internal("transitions/fragmentshader.txt"));
+        if (!transitionShader.isCompiled()) {
+            System.out.println(transitionShader.getLog());
+        }
 
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
 
@@ -88,16 +106,32 @@ public class GameScreen implements Screen {
         world.update();
         gameController.update();
 
+        // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
                     this,
                     this,
-                    new FadeOutTransition(0.8f, Color.BLACK, getAssetManager()),
-                    new FadeInTransition(0.8f,  Color.BLACK, getAssetManager()),
+                    new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
+                    new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
                     new Action() {
                         @Override
                         public void action() {
                             System.out.println("FadeOut");
+                        }
+                    });
+        }
+        
+        // 전투 페이드 아웃
+        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
+            transitionScreen.startTransition(
+                    this,
+                    this,
+                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
+                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager()),
+                    new Action() {
+                        @Override
+                        public void action() {
+                           // game.setScreen(new BattleScreen(game));
                         }
                     });
         }
@@ -138,5 +172,12 @@ public class GameScreen implements Screen {
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public TweenManager getTweenManager() {
+        return tweenManager;
+    }
+    public ShaderProgram getTransitionShader() {
+        return transitionShader;
     }
 }

@@ -16,10 +16,11 @@ public abstract class Transition {
 	
 	private TweenManager tweenManager;
 	private AssetManager assetManager;
-	
-	public Transition(float duration, AssetManager assetManager) {
+
+	public Transition(float duration, TweenManager tweenManager, AssetManager assetManager) {
 		this.duration = duration;
 		this.timer = 0f;
+		this.tweenManager = tweenManager;
 		this.assetManager = assetManager;
 	}
 	

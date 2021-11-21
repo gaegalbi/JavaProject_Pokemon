@@ -1,5 +1,6 @@
 package com.pokemon.transition;
 
+import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -14,8 +15,8 @@ public class FadeInTransition extends Transition {
 	private Color color;
 	private Texture white;
 
-	public FadeInTransition(float duration, Color color, AssetManager assetManager) {
-		super(duration, assetManager);
+	public FadeInTransition(float duration, Color color, TweenManager tweenManager, AssetManager assetManager) {
+		super(duration, tweenManager, assetManager);
 		this.color = color;
 		white = assetManager.get("transitions/white.png", Texture.class);
 	}
