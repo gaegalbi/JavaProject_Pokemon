@@ -1,27 +1,40 @@
 package com.pokemon.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
+import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.SignupUi;
+import com.pokemon.ui.inventory.InventoryRenderer;
+import com.pokemon.ui.inventory.InventoryUI;
+import com.pokemon.ui.inventory.window;
 import com.pokemon.util.AnimationSet;
+import com.pokemon.util.SkinGenerator;
 import com.pokemon.world.World;
 import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;
+    private Skin skin;
 
     private AssetManager assetManager;
     private OrthographicCamera camera;
@@ -29,14 +42,23 @@ public class GameScreen implements Screen {
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
+    private InventoryRenderer inventoryRenderer;
+    private Stack<AbstractUi> uiStack;
+    Stage stage;
+    private boolean check=false;
 
     public GameScreen(Pokemon game) {
         this.game = game;
         assetManager = new AssetManager();
         assetManager.load("players/players.atlas", TextureAtlas.class);
+        assetManager.load("texture/texture.atlas", TextureAtlas.class);
         assetManager.finishLoading();
 
+
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
+        //TextureAtlas Texture = assetManager.get("texture/texture.atlas", TextureAtlas.class);
+
+        skin = SkinGenerator.generateSkin_O(assetManager);
 
         AnimationSet<TextureRegion> animations = new AnimationSet<>(
                 new Animation<TextureRegion>(0.3f / 2f, playerTexture.findRegions("dawn_walk_north"), Animation.PlayMode.LOOP_PINGPONG),
@@ -56,6 +78,7 @@ public class GameScreen implements Screen {
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
+        uiStack = new Stack<>();
     }
 
     @Override
@@ -71,12 +94,19 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
+
         worldRenderer.render(game.batch);
         game.batch.end();
         playerController.update();
         player.update(delta);
         world.update();
         gameController.update();
+        this.update(delta);
+
+        for (AbstractUi abstractUi : uiStack) {
+            abstractUi.update();
+        }
+
     }
 
     @Override
@@ -87,6 +117,20 @@ public class GameScreen implements Screen {
     @Override
     public void pause() {
 
+    }
+
+    public void update(float delta){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
+            System.out.println("동작");
+            check = (!check);
+            if(check) {
+                this.pushScreen(new window(this, game,player));
+            }else {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+            }
+           // stage.addActor(new window(game,player));
+        }
     }
 
     @Override
@@ -110,5 +154,15 @@ public class GameScreen implements Screen {
 
     public static void setWorld(World world) {
         GameScreen.world = world;
+    }
+
+    public void pushScreen(AbstractUi ui) {
+        uiStack.add(ui);
+    }
+
+    public void popScreen() {
+        AbstractUi popped = uiStack.pop();
+        popped.dispose();
+        Gdx.input.setInputProcessor(uiStack.peek().getStage());
     }
 }

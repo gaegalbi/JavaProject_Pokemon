@@ -3,6 +3,7 @@ package com.pokemon.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.JsonReader;
 
 /**
  * Generates a Skin to slam on the UI. 
@@ -19,13 +21,21 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author hydrozoa
  */
 public class SkinGenerator {
+
+	private static Skin dialogSkin;
 	private AssetManager assetManager;
 
 	public static Skin generateSkin(AssetManager assetManager) {
 		Skin skin = new Skin();
 
 		TextureAtlas uiAtlas = assetManager.get("ui/uipack.atlas");
-		
+
+		/*//불러온거
+		TextureAtlas atlas = assetManager.get("texture/textures.atlas");
+		TextureAtlas dialog = assetManager.get("texture/dialog.atlas");*/
+
+
+
 		NinePatch buttonSquareBlue = new NinePatch(uiAtlas.findRegion("dialoguebox"), 10, 10, 5, 5);
 		skin.add("dialoguebox", buttonSquareBlue);
 		
@@ -43,7 +53,14 @@ public class SkinGenerator {
 		skin.add("yellow", uiAtlas.findRegion("yellow"), TextureRegion.class);
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
-		
+		//인벤토리
+		skin.add("inven", "inven/inven.jpg", TextureRegion.class);
+		skin.add("exit_up", "inven/exit.jpg", TextureRegion.class);
+		skin.add("exit_down", "inven/exit1.jpg", TextureRegion.class);
+
+
+		//dialog
+
 		/*
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumBarunGothic.ttf"));
@@ -76,7 +93,58 @@ public class SkinGenerator {
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
 
+
+
 		return skin;
+	}
+
+	public static Skin generateSkin_O(AssetManager assetManager) {
+		Skin skin = new Skin();
+
+		/*
+		atlas = assetManager.get("texture/texture.atlas", TextureAtlas.class);
+		Skin skin = new Skin(atlas);
+		skin.add("grass", atlas.findRegion("grass"), TextureRegion.class);
+		skin.add("stone", atlas.findRegion("stone"), TextureRegion.class);
+		*/
+		assetManager.load("texture/textures.atlas",TextureAtlas.class);
+		assetManager.load("texture/texture.atlas",TextureAtlas.class);
+		assetManager.load("texture/dialog.atlas",TextureAtlas.class);
+
+		//assetManager.load("inven/inven.jpg", TextureRegion.class);
+		assetManager.finishLoading();
+		TextureAtlas atlas = assetManager.get("texture/textures.atlas");
+
+		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		skin.add("font", font);
+
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = skin.getFont("font");
+		skin.add("default", labelStyle);
+
+
+		skin.add("inv_ui", atlas.findRegion("inv_ui"), TextureRegion.class);
+		skin.add("selected_slot", atlas.findRegion("selected_slot"), TextureRegion.class);
+
+
+		skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(46, 14));
+		//skin.add("grass", atlas.findRegion("grass"), TextureRegion.class);
+		//skin.add("stone", atlas.findRegion("stone"), TextureRegion.class);
+		return skin;
+	}
+
+	public static Skin generateSkin_O2(AssetManager assetManager) {
+
+		JsonReader jsonReader = new JsonReader();
+
+		assetManager.load("texture/dialog.atlas", TextureAtlas.class);
+		assetManager.finishLoading();
+
+		dialogSkin = new Skin(assetManager.get("texture/dialog.atlas", TextureAtlas.class));
+		//dialogSkin.add("default-font", pixel10);
+		//dialogSkin.load(Gdx.files.internal("texture/dialog.json"));
+
+		return dialogSkin;
 	}
 
 }

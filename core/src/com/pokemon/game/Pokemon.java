@@ -5,18 +5,22 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.pokemon.screen.MainMenuScreen;
+import com.pokemon.ui.inventory.InventoryUI;
+import com.pokemon.ui.inventory.window;
 
 import java.util.HashMap;
 
 public class Pokemon extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-	private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
+    public InventoryUI inventoryUI;
+    private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
+		//this.setScreen(new window(this));
 		this.setScreen(new MainMenuScreen(this));
 		//this.setScreen(new BattleScreen(this));
 

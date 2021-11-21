@@ -224,4 +224,148 @@ public class db{
             return PM_TYPE;
         }
     }
+
+    public static String[] GET_SK(String id) {
+        String[] skill = new String[6];
+        int i=1;
+       while(i!=7) {
+           String sql = "SELECT SK_ID from ( SELECT @ROWNUM := @ROWNUM + 1 AS RN,SK_ID FROM SK WHERE (@ROWNUM:=0) = 0 AND U_ID ='" + id + "') as b where b.rn=" + i + ";";
+           try {
+               stmt = con.createStatement();
+               rs = stmt.executeQuery(sql);
+               while (rs.next()) {
+                   skill[i - 1] = rs.getString("SK_ID");
+               }
+               i++;
+           } catch (SQLException e) {
+               System.out.println("불러오는 SQL문이 틀렸습니다.");
+               System.out.print("이유 : " + e);
+               e.printStackTrace();
+               return skill;
+           } catch (Exception e) {
+               System.out.println("Exception:" + e);
+               e.printStackTrace();
+               return skill;
+           }
+       }
+       return skill;
+    }
+
+    public static int[] GET_SK_LV(String id) {
+        int[] skill = new int[6];
+        int i=1;
+        while(i!=7) {
+            String sql = "SELECT SK_LV from ( SELECT @ROWNUM := @ROWNUM + 1 AS RN,SK_LV FROM SK WHERE (@ROWNUM:=0) = 0 AND U_ID ='" + id + "') as b where b.rn=" + i + ";";
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    skill[i - 1] = rs.getInt("SK_LV");
+                }
+                i++;
+            } catch (SQLException e) {
+                System.out.println("불러오는 SQL문이 틀렸습니다.");
+                System.out.print("이유 : " + e);
+                e.printStackTrace();
+                return skill;
+            } catch (Exception e) {
+                System.out.println("Exception:" + e);
+                e.printStackTrace();
+                return skill;
+            }
+        }
+        return skill;
+    }
+
+    public static int[] GET_SK_EXP(String id) {
+        int[] skill = new int[6];
+        int i=1;
+        while(i!=7) {
+            String sql = "SELECT SK_EXP from ( SELECT @ROWNUM := @ROWNUM + 1 AS RN,SK_EXP FROM SK WHERE (@ROWNUM:=0) = 0 AND U_ID ='" + id + "') as b where b.rn=" + i + ";";
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    skill[i - 1] = rs.getInt("SK_EXP");
+                }
+                i++;
+            } catch (SQLException e) {
+                System.out.println("불러오는 SQL문이 틀렸습니다.");
+                System.out.print("이유 : " + e);
+                e.printStackTrace();
+                return skill;
+            } catch (Exception e) {
+                System.out.println("Exception:" + e);
+                e.printStackTrace();
+                return skill;
+            }
+        }
+        return skill;
+    }
+
+    public static int GET_E_V(String id) {
+        int value = 0;
+        String sql = "SELECT ITEM_E_V from ITEM_INFO WHERE ITEM_PROPERTY ='" + id + "';";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                value = rs.getInt("ITEM_E_V");
+            }
+            return value;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return value;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return value;
+        }
+    }
+
+    public static int GET_MAX_EXP(int id) {
+        int value = 0;
+        String sql = "SELECT NEED_EXP from U_LV_INFO WHERE U_LV ='" + id + "';";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                value = rs.getInt("NEED_EXP");
+            }
+            return value;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return value;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return value;
+        }
+    }
+
+    public static int GET_MAX_INVEN(String id) {
+        int value = 0;
+        String sql = " SELECT MAX(b.RN) FROM (SELECT @ROWNUM := @ROWNUM + 1 AS RN,ITEM_ID,ITEM_CNT FROM INVEN WHERE (@ROWNUM:=0) = 0 AND U_ID ='"+id+"') as b;";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                value = rs.getInt("MAX(b.RN)");
+            }
+            return value;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return value;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return value;
+        }
+    }
 }
