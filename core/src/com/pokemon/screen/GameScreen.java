@@ -33,8 +33,8 @@ public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;
 
-    private TweenManager tweenManager;
-    private AssetManager assetManager;
+    private static TweenManager tweenManager;
+    private static AssetManager assetManager;
     private ShaderProgram transitionShader;
     private OrthographicCamera camera;
     private Player player;
@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
         player = new Player(0, 0, animations);
-        world = new MainWorld(player);
+        world = new MainWorld(player,game,this);
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
@@ -170,11 +170,11 @@ public class GameScreen implements Screen {
         GameScreen.world = world;
     }
 
-    public AssetManager getAssetManager() {
+    public static AssetManager getAssetManager() {
         return assetManager;
     }
 
-    public TweenManager getTweenManager() {
+    public static TweenManager getTweenManager() {
         return tweenManager;
     }
     public ShaderProgram getTransitionShader() {

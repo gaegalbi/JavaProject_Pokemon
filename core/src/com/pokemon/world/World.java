@@ -16,9 +16,9 @@ public interface World {
 
     TileMap getMap();
 
-    ArrayList<WorldObject> getObjects();
-
     ArrayList<WorldObject> getFakeObjects();
+
+    ArrayList<WorldObject> getObjects();
 
     void update();
 }
