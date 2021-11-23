@@ -113,6 +113,7 @@ public class Item {
     public int getType(){
         return type;
     }
+    public String getName(){return name;}
     public int getIndex(){
         return index;
     }

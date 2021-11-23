@@ -92,6 +92,7 @@ public class Inventory {
         if (i != -1) {
             items[i] = item;
             item.setIndex(i);
+
             return true;
         }
         return false;
@@ -109,6 +110,7 @@ public class Inventory {
         if (isFreeSlot(index)) {
             items[index] = item;
             item.setIndex(index);
+
             return true;
         }
         return false;
