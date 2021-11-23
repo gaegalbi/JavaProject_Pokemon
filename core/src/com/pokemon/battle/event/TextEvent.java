@@ -15,7 +15,7 @@ public class TextEvent extends BattleEvent {
 	private float delay;
 	private boolean awaitInput = false;
 	private String text;
-	
+
 	private DialogueBox dialogue;
 	
 	public TextEvent(String text) {
@@ -33,7 +33,7 @@ public class TextEvent extends BattleEvent {
 		this.delay = 0f;
 		this.awaitInput = awaitInput;
 	}
-	
+
 	@Override
 	public void begin(BattleEventPlayer player) {
 		super.begin(player);

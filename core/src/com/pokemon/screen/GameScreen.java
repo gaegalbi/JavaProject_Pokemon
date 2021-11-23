@@ -1,5 +1,6 @@
 package com.pokemon.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,12 +13,16 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
+import com.pokemon.multibattle.BattleLoadingScreen;
+import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.ChatButton;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.World;
 import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 public class GameScreen implements Screen {
     final Pokemon game;
@@ -29,13 +34,14 @@ public class GameScreen implements Screen {
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
-
+    private Stack<AbstractUi> uiStack1;
     public GameScreen(Pokemon game) {
         this.game = game;
+        uiStack1 = new Stack<>();
         assetManager = new AssetManager();
         assetManager.load("players/players.atlas", TextureAtlas.class);
         assetManager.finishLoading();
-
+        uiStack1.add(new ChatButton(this,game));
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
 
         AnimationSet<TextureRegion> animations = new AnimationSet<>(
@@ -78,8 +84,26 @@ public class GameScreen implements Screen {
         player.update(delta);
         world.update();
         gameController.update();
+        for (AbstractUi abstractUi : uiStack1) {
+            abstractUi.update();
+        }
+        if (player.x > 576 && player.y < 32){
+            loadingStart();
+        }
+    }
+    public void pushScreen(AbstractUi ui) {
+        uiStack1.add(ui);
     }
 
+    public void popScreen() {
+        AbstractUi popped = uiStack1.pop();
+        popped.dispose();
+        Gdx.input.setInputProcessor(uiStack1.peek().getStage());
+    }
+    public void loadingStart(){
+        game.setScreen(new BattleLoadingScreen(game));
+        dispose();
+    }
     @Override
     public void resize(int width, int height) {
 

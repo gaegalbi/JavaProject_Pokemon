@@ -14,9 +14,9 @@ public class BattleMechanics {
 		switch (user.getType()){
 			case "물":
 				if(tType.equals("물"))
-					return 0.8;
+					return 10;
 				else if(tType.equals("불"))
-					return 2;
+					return 10;
 				else if(tType.equals("전기"))
 					return 1;
 				else if(tType.equals("풀"))
@@ -25,13 +25,13 @@ public class BattleMechanics {
 					return 1;
 			case "불":
 				if(tType.equals("불"))
-					return 0.8;
+					return 10;
 				else if(tType.equals("풀"))
 					return 2;
 				else if(tType.equals("전기"))
 					return 1;
 				else if(tType.equals("물"))
-					return 0.8;
+					return 10;
 				else
 					return 1;
 			case "풀":

@@ -89,7 +89,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(false);
+        this.battle = new Battle(game,false);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
@@ -99,7 +99,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
         initUI();
 
-        controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
+        controller = new BattleScreenController(game,battle,false, queue, dialogueBox, moveSelectBox, optionBox);
 
         battle.beginBattle();
     }
