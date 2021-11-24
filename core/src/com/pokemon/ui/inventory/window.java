@@ -70,6 +70,7 @@ public class window extends AbstractUi {
     private boolean dragging = false;
     //드래그 관련 좌표
     private int prevX, prevY;
+    private int ax, ay;
     private boolean itemSelected = false;
     private Item currentItem;
 
@@ -98,9 +99,9 @@ public class window extends AbstractUi {
         skin = SkinGenerator.generateSkin_O(assetManager);
 
         TextureAtlas atlas = assetManager.get("texture/textures.atlas");
-        TextureRegion[][] invbuttons92x28 = atlas.findRegion("inv_buttons").split(46, 14);
+        TextureRegion[][] invbuttons92x28 = atlas.findRegion("inv_buttons").split(36, 14);
 
-        skin1 = SkinGenerator.generateSkin_O2(assetManager);
+        //skin1 = SkinGenerator.generateSkin_O2(assetManager);
 
         //인벤 윈도우
         invenWindow = new InvenWindow();
@@ -119,7 +120,7 @@ public class window extends AbstractUi {
 
         //툴팁
         tooltip = new ItemTooltip(skin);
-        tooltip.setPosition(90, 15);
+
 
         // Fonts and Colors
         Label.LabelStyle[] labelColors = new Label.LabelStyle[]{
@@ -152,12 +153,16 @@ public class window extends AbstractUi {
         invButtons = new ImageButton[2];
         invButtonLabels = new Label[2];
         //판매 버튼
-        String texts = "판매";
+        String texts = " 판매";
         invButtons[0] = new ImageButton(disabled);
-        //invButtons[0].setTouchable(Touchable.disabled);
+        invButtons[0].setSize(90,100);
+        invButtons[0].getImage().setFillParent(true);
+        invButtons[0].setTouchable(Touchable.disabled);
 
         invButtonLabels[0] = new Label(texts, skin);
-        //invButtonLabels[0].setTouchable(Touchable.disabled);
+        invButtonLabels[0].setSize(46, 14);
+
+        invButtonLabels[0].setTouchable(Touchable.disabled);
         invButtonLabels[0].setAlignment(Align.center);
 
         //ui 및 슬롯, 버튼들 추가(init)
@@ -235,19 +240,20 @@ public class window extends AbstractUi {
 
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                    //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
-                    dragging = true;
-                    tooltip.hide();
-                    unselectItem();
+                //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
+                dragging = true;
+                tooltip.hide();
+                unselectItem();
 
-                    // original positions
-                    prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                    prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                // original positions
+                prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                    item.actor.toFront();
-                    selectedSlot.setVisible(false);
-                    if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
-                    else player.equips.removeEquip(item.getType() - 2);
+                item.actor.toFront();
+                selectedSlot.setVisible(false);
+
+                if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
+                else player.equips.removeEquip(item.getType() - 2);
             }
 
             @Override
@@ -258,17 +264,18 @@ public class window extends AbstractUi {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 dragging = false;
-
                 selectedSlot.setVisible(false);
+
                 // origin positions
-                int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                System.out.println(ax + "   " + ay);
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                 if (item.getEquipped()) {
                     int hi = getHoveredIndex(ax, ay);
-                    if (hi == -1) {
+                    if (hi == -1)
                         player.equips.addEquip(item);
-                    } else {
+                    else {
                         if (player.inventory.isFreeSlot(hi)) {
                             player.inventory.addItemAtIndex(item, hi);
                             item.setEquipped(false);
@@ -276,8 +283,8 @@ public class window extends AbstractUi {
                             updateText();
                         } else {
                             //장비를 빈 인덱스에 넣음
-                            hi=0;
-                            while(!player.inventory.isFreeSlot(hi)) hi++;
+                            hi = 0;
+                            while (!player.inventory.isFreeSlot(hi)) hi++;
                             player.inventory.addItemAtIndex(item, hi);
                             item.setEquipped(false);
                             player.unequip(item);
@@ -300,9 +307,8 @@ public class window extends AbstractUi {
                                 player.inventory.addItemAtIndex(swap, item.getIndex());
                                 updateText();
                             }
-                        } else {
+                        } else
                             player.inventory.addItemAtIndex(item, item.getIndex());
-                        }
                     }
                     // 인벤토리 내에서 아이템끼리 이동
                     else {
@@ -320,25 +326,25 @@ public class window extends AbstractUi {
                 }
                 //if (inMenu) game.save.save();
             }
-
         });
         //터치
-       item.actor.addListener(new InputListener() {
-
+        item.actor.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // original positions
+                //원래 위치
                 prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-
-                return true;
+                if (prevX != ax || prevY != ay){
+                    unselectItem();
+                }
+                    return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                // new positions
-                int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                //새 위치
+                ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
                 // a true click and not a drag
                 if (prevX == ax && prevY == ay) {
@@ -350,14 +356,14 @@ public class window extends AbstractUi {
                         itemSelected = true;
                         currentItem = item;
                         showSelectedSlot(item);
-                        if (inMenu) toggleInventoryButtons(true);
+                        toggleInventoryButtons(true); //판매 활성화
                         tooltip.toFront();
                         Vector2 tpos = getCoords(item);
                         //툴팁 위치
-                        if (tpos.y <= 31)
-                            tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
+                        if(currentItem.getEquipped())
+                            tooltip.show(item, ax + 16, ay-tooltip.getHeight());
                         else
-                            tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
+                            tooltip.show(item, ax+16, ay - tooltip.getHeight()*2);
                     }
                 }
             }
@@ -366,10 +372,8 @@ public class window extends AbstractUi {
 
         //더블클릭
         item.actor.addListener(new ClickListener() {
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
                 if (getTapCount() == 2) {
                     tooltip.setVisible(false);
                     // consuming potions
@@ -379,8 +383,8 @@ public class window extends AbstractUi {
                         //consume();
                     }
                     // equip items with double click
-                    else if (item.getType() >= 2 && item.getType() <= 6 ) {
-                    //else if (item.getType() >= 2 && item.getType() <= 6 && inMenu) {
+                    else if (item.getType() >= 2 && item.getType() <= 6) {
+                        //else if (item.getType() >= 2 && item.getType() <= 6 && inMenu) {
                         unselectItem();
                         selectedSlot.setVisible(false);
                         if (!item.getEquipped()) {
@@ -416,8 +420,9 @@ public class window extends AbstractUi {
             }
 
         });
-
     }
+
+
     private void handleStageEvents() {
         ui.addListener(new InputListener() {
             @Override
@@ -430,43 +435,44 @@ public class window extends AbstractUi {
         });
     }
     private void handleInvButtonEvents() {
-
-        // sell
+        // 판매
         invButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
-                if (currentItem != null) {
-                    new Dialog("Sell", skin1) {
-                        {
-                            Label l = new Label("Are you sure you want\nto sell " + currentItem.labelName + "?", skin1);
-                            l.setFontScale(0.5f);
-                            l.setAlignment(Align.center);
-                            text(l);
-                            getButtonTable().defaults().width(40);
-                            getButtonTable().defaults().height(15);
-                            button("Yes", "yes");
-                            button("No", "no");
-                        }
-
-                        @Override
-                        protected void result(Object object) {
-                            //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
-                            if (object.equals("yes")) {
-                                player.addGold(currentItem.getSell());
-                                player.inventory.items[currentItem.getIndex()].actor.remove();
-                                player.inventory.removeItem(currentItem.getIndex());
-                                unselectItem();
-                                updateText();
-                                //game.save.save();
+                    // if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
+                    if (currentItem != null) {
+                        new Dialog("", skin) {
+                            {
+                                Label l = new Label("정말로 판매하시겠습니까?", skin);
+                                pad(20, 20, 20, 20);
+                                l.setAlignment(Align.center);
+                                text(l);
+                                getButtonTable().defaults().width(40);
+                                getButtonTable().defaults().height(15);
+                                button("Yes", "yes");
+                                button("No", "no");
                             }
-                        }
 
-                    }.show(stage).getTitleLabel().setAlignment(Align.center);
-                }
+                            @Override
+                            protected void result(Object object) {
+                                //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
+                                if (object.equals("yes")) {
+                                    player.addGold(currentItem.getSell());
+                                    player.inventory.items[currentItem.getIndex()].actor.remove();
+                                    player.inventory.removeItem(currentItem.getIndex());
+                                    unselectItem();
+                                    updateText();
+                                    //game.save.save();
+                                }
+                            }
+
+                        }.show(stage).getTitleLabel().setAlignment(Align.center);
+                    }
             }
+
         });
     }
+
 
     /* 포션
      * Handles consuming potions
@@ -547,24 +553,21 @@ public class window extends AbstractUi {
         if (toggle) {
             if (!currentItem.getEquipped()) {
                 invButtons[0].setTouchable(Touchable.enabled);
-                if (currentItem.getType() < 2) {
-                    invButtons[0].setTouchable(Touchable.disabled);
-                    invButtons[0].setStyle(disabled);
-                }
                 invButtons[0].setStyle(enabled);
                 // add enchant cost of item to button
-                if (currentItem.getType() >= 2 && currentItem.getType() <= 6)
-                   // invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
-                // add sell value of item to button
-                invButtonLabels[1].setText("SELL FOR\n" + currentItem.getSell() + " g");
+              //  if ((ax >= 28 && ax <= 116) && (ay >= 76 && ay <= 110)) {
+                        invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
+               // }
+               // else invButtons[0].setTouchable(Touchable.disabled);
             }
         } else {
             invButtons[0].setTouchable(Touchable.disabled);
             invButtons[0].setStyle(disabled);
-            //invButtonLabels[0].setText("ENCHANT");
-            invButtonLabels[0].setText("판매");
+            invButtonLabels[0].setText(" 판매");
+
         }
     }
+
     //선택 박스 위치
     private void showSelectedSlot(Item item) {
         Vector2 pos = getCoords(item);
@@ -601,6 +604,7 @@ public class window extends AbstractUi {
             // exitButton.setPosition(ui.getX() + 181, ui.getY() + 101);
 
          */
+        //라벨 위치
             headers[0].setPosition(ui.getX() + 14, ui.getY() + 188);
             headers[1].setPosition(ui.getX() + 14, ui.getY() + 108);
             headers[2].setPosition(ui.getX() + 165, ui.getY() + 188);
@@ -608,12 +612,10 @@ public class window extends AbstractUi {
             stats[1].setPosition(ui.getX() + 14, ui.getY() + 160);
             stats[2].setPosition(ui.getX() + 14, ui.getY() + 145);
 
-            invButtons[0].setPosition(ui.getX() + 238 , ui.getY() + 150);
-            invButtonLabels[0].setPosition(invButtons[0].getX() +13, ui.getY() + 151);
-
+            invButtons[0].setPosition(ui.getX() + 190 , ui.getY()+80);
+            invButtonLabels[0].setPosition(invButtons[0].getX() +45, ui.getY() + 165);
 
             if (!dragging) {
-                // update inventory positions
                 for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
                     Item item = player.inventory.getItem(i);
                     int x = i % NUM_COLS;
@@ -624,7 +626,6 @@ public class window extends AbstractUi {
                         item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
                     }
                 }
-                // update equips positions
                 for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
                     float x = player.equips.positions[i].x;
                     float y = player.equips.positions[i].y;

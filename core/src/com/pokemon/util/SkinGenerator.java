@@ -4,14 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 
@@ -71,6 +74,8 @@ public class SkinGenerator {
 		assetManager.load("texture/textures.atlas",TextureAtlas.class);
 		assetManager.load("texture/texture.atlas",TextureAtlas.class);
 		assetManager.load("texture/dialog.atlas",TextureAtlas.class);
+		//assetManager.load("inven/.png",Texture.class);
+
 		assetManager.finishLoading();
 
 		TextureAtlas atlas = assetManager.get("texture/textures.atlas");
@@ -82,20 +87,24 @@ public class SkinGenerator {
 		labelStyle.font = skin.getFont("font");
 		skin.add("default", labelStyle);
 
-
+		//인벤창
 		skin.add("inv_ui", atlas.findRegion("inv_ui"), TextureRegion.class);
 		skin.add("selected_slot", atlas.findRegion("selected_slot"), TextureRegion.class);
+		skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(36, 14));
 
-		skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(46, 14));
+		//판매창
+		Texture backgroundT = new Texture(Gdx.files.internal("inven/background.png"));
+
+		Window.WindowStyle windowStyle = new Window.WindowStyle();
+		windowStyle.titleFont = skin.getFont("font");
+		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundT));
+		skin.add("default",windowStyle);
+
+		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+		textButtonStyle.font = skin.getFont("font");
+		skin.add("default",textButtonStyle);
+
 		return skin;
-	}
-
-	public static Skin generateSkin_O2(AssetManager assetManager) {
-		assetManager.load("texture/dialog.atlas", TextureAtlas.class);
-		assetManager.finishLoading();
-
-		dialogSkin = new Skin(assetManager.get("texture/dialog.atlas", TextureAtlas.class));
-		return dialogSkin;
 	}
 
 }

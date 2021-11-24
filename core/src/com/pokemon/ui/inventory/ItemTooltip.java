@@ -24,7 +24,6 @@ import com.pokemon.util.SkinGenerator;
 public class ItemTooltip extends Window {
 
     private Label desc;
-
     private static final WindowStyle windowStyle;
 
 
@@ -32,26 +31,22 @@ public class ItemTooltip extends Window {
         AssetManager assetManager = new AssetManager();
         //투명한 186 * 70
         assetManager.load("texture/default.png", Texture.class);
+        assetManager.load("texture/back.png", Texture.class);
         assetManager.finishLoading();
-        Texture back = assetManager.get("texture/default.png");
-        //Skin skin = SkinGenerator.generateSkin(assetManager);
+       // Texture back = assetManager.get("texture/default.png");
+        Texture back = assetManager.get("texture/back.png");
 
-        windowStyle = new WindowStyle(new BitmapFont(), Color.YELLOW, new TextureRegionDrawable(back));
+        windowStyle = new WindowStyle(new BitmapFont(), Color.BLACK, new TextureRegionDrawable(back));
        // windowStyle = new WindowStyle(skin.getFont("font"), Color.BLACK, new TextureRegionDrawable(back));
     }
 
     public ItemTooltip(Skin skin) {
         super("",windowStyle);
         desc = new Label("", skin);
-        desc.setColor(Color.YELLOW);
-        //desc.setFontScale(0.5f);
-        //this.getTitleLabel().setFontScale(0.5f);
 
         left();
         // fix padding because of scaling
-        this.padTop(12);
-        this.padLeft(2);
-        this.padBottom(4);
+        pad(10,10,10,10);
         add(desc);
         pack();
         this.setTouchable(Touchable.disabled);
@@ -60,17 +55,6 @@ public class ItemTooltip extends Window {
         this.setOrigin(Align.bottomLeft);
     }
 
-    /**
-     * Sets the title color to the item's rarity and sets the descriptions
-     * common - white
-     * rare - green
-     * epic - blue
-     * legendary - purple
-     *
-     * @param item
-     * @param x
-     * @param y
-     */
     public void show(Item item, float x, float y) {
         this.setPosition(x, y);
         this.setVisible(true);
@@ -80,7 +64,8 @@ public class ItemTooltip extends Window {
     public void updateText(Item item) {
         this.getTitleLabel().setText(item.labelName);
         desc.setText(item.getInfo());
-        desc.setColor(Color.YELLOW);
+        desc.setAlignment(center().getAlign());
+        desc.setColor(Color.GREEN);
         pack();
     }
 
