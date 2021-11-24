@@ -150,6 +150,6 @@ public class PK {
         return type;
     }
     public boolean isFainted() {
-        return currentHP <= 0;
+        return currentHP == 0;
     }
 }

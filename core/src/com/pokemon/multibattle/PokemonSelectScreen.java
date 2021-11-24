@@ -123,6 +123,12 @@ public class PokemonSelectScreen implements Screen {
                } else {
                    pp[4] = selectButton.getX();
                    pp[5] = selectButton.getY();
+                   if(stackList.size()>2 && stackList.size()%2==1) {
+                       temp = stackList.pop();
+                       temp2 = stackList.pop();
+                       stackList.add(temp);
+                       stackList.add(temp2);
+                   }
                }
            }else{
                pp[4] = selectButton.getX();

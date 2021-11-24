@@ -37,7 +37,7 @@ public class ChatButton extends AbstractUi{
         table.setPosition(-350, -210);
 
         TextButton chatButton = new TextButton("CHAT", skin);
-        chatButton.setColor(Color.CLEAR);
+        chatButton.setColor(Color.RED);
 
         table.row();
         table.add(chatButton).width(100).height(50).pad(5).colspan(2);
