@@ -99,6 +99,12 @@ public class Item {
             System.out.println("SQLException" + e);
             e.printStackTrace();
         }
+        if(name.equals("나무괭이")){
+            this.type = 3;
+        }
+        if(name.equals("나무곡괭이")){
+            this.type = 5;
+        }
     }
 
     public String getEffect(){

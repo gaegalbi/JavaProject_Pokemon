@@ -52,11 +52,11 @@ public class Equipment {
                 System.out.println("SQLException" + e);
                 e.printStackTrace();
             }*/
-        positions[0] = new Vector2(42, 42);
-        positions[1] = new Vector2(42, 26);
-        positions[2] = new Vector2(26, 26);
-        positions[3] = new Vector2(58, 26);
-        positions[4] = new Vector2(42, 10);
+        positions[0] = new Vector2(81, 81); //머리
+        positions[1] = new Vector2(18, 81); //장신구
+        positions[2] = new Vector2(81, 50); // 몸
+        positions[3] = new Vector2(81, 18); //신발
+        positions[4] = new Vector2(50, 50); //무기
     }
 
     /**

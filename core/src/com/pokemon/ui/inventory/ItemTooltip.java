@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.pokemon.inventory.Item;
+import com.pokemon.util.SkinGenerator;
 
 /**
  * Window UI that acts as a tooltip for an item displaying its stats
@@ -23,27 +24,29 @@ import com.pokemon.inventory.Item;
 public class ItemTooltip extends Window {
 
     private Label desc;
+
     private static final WindowStyle windowStyle;
+
+
     static{
         AssetManager assetManager = new AssetManager();
         //투명한 186 * 70
         assetManager.load("texture/default.png", Texture.class);
         assetManager.finishLoading();
         Texture back = assetManager.get("texture/default.png");
-        windowStyle = new WindowStyle(new BitmapFont(), Color.BLACK, new TextureRegionDrawable(back));
+        //Skin skin = SkinGenerator.generateSkin(assetManager);
+
+        windowStyle = new WindowStyle(new BitmapFont(), Color.YELLOW, new TextureRegionDrawable(back));
+       // windowStyle = new WindowStyle(skin.getFont("font"), Color.BLACK, new TextureRegionDrawable(back));
     }
 
     public ItemTooltip(Skin skin) {
         super("",windowStyle);
         desc = new Label("", skin);
-        desc.setFontScale(0.5f);
-        this.getTitleLabel().setFontScale(0.5f);
+        desc.setColor(Color.YELLOW);
+        //desc.setFontScale(0.5f);
+        //this.getTitleLabel().setFontScale(0.5f);
 
-        /*common = new Label.LabelStyle(skin.getFont("default-font"), new Color(1, 1, 1, 1));
-        rare = new Label.LabelStyle(skin.getFont("default-font"), new Color(0, 200 / 255.f, 0, 1));
-        epic = new Label.LabelStyle(skin.getFont("default-font"), new Color(0, 180 / 255.f, 1, 1));
-        legendary = new Label.LabelStyle(skin.getFont("default-font"), new Color(164 / 255.f, 80 / 255.f, 1, 1));
-*/
         left();
         // fix padding because of scaling
         this.padTop(12);
@@ -75,23 +78,9 @@ public class ItemTooltip extends Window {
     }
 
     public void updateText(Item item) {
-      /*  switch (item.rarity) {
-            case 0:
-                this.getTitleLabel().setStyle(common);
-                break;
-            case 1:
-                this.getTitleLabel().setStyle(rare);
-                break;
-            case 2:
-                this.getTitleLabel().setStyle(epic);
-                break;
-            case 3:
-                this.getTitleLabel().setStyle(legendary);
-                break;
-        }
         this.getTitleLabel().setText(item.labelName);
-        desc.setText(item.getFullDesc());*/
         desc.setText(item.getInfo());
+        desc.setColor(Color.YELLOW);
         pack();
     }
 

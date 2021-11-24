@@ -1,3 +1,4 @@
+/*
 package com.pokemon.ui.inventory;
 
 import com.badlogic.gdx.Gdx;
@@ -30,21 +31,14 @@ public class InventoryRenderer extends Window {
         //closeButtonStyle.imageUp = new TextureRegionDrawable(close);
     }
 
-    /**
+    */
+/**
      * Default constructor.
-     */
+     *//*
+
     public InventoryRenderer() {
         super("", windowStyle);
 
-     /*   final Button closeButton = new ImageButton(closeButtonStyle);
-        closeButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                setVisible(false);
-            }
-        });
-        getTitleTable().add(closeButton).size(38, 38).padRight(10).padTop(0);
-*/
        addListener(new DragListener() {
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 // example code below for origin and position
@@ -58,4 +52,4 @@ public class InventoryRenderer extends Window {
         setTransform(true);
     }
 
-}
+}*/

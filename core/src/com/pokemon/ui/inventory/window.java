@@ -34,7 +34,7 @@ import static com.pokemon.ui.LoginUi.playerID;
 
 public class window extends AbstractUi {
     private Stage stage;
-    private InventoryRenderer inventoryRenderer;
+    private InvenWindow invenWindow;
     private Pokemon game;
     private GameScreen gameScreen;
     private MovingImageUI ui;
@@ -57,33 +57,36 @@ public class window extends AbstractUi {
     private Label[] stats;
     private Player player;
     public boolean inMenu;
-    // dimensions to render the inventory at
+    //인벤토리 칸
     private static final int NUM_COLS = 6;
 
-    // constants
+    //슬롯 사이즈
     private static final int SLOT_WIDTH = 30;
     private static final int SLOT_HEIGHT = 30;
 
-  /*  private static final Rectangle EQUIPS_AREA = new Rectangle(240, 165, 110, 75);
-    private static final Rectangle INVENTORY_AREA = new Rectangle(396, 165, 160, 100);*/
-  private static final Rectangle EQUIPS_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2, 130, 150, 100);
-    private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+120, 240, 180, 120);
-    // event handling
+   private static final Rectangle EQUIPS_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2, 130, 160, 120);
+   private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+120, 240, 180, 120);
+    //이벤트 핸들링(드래그)
     private boolean dragging = false;
-    // to differentiate between dragging and clicking
+    //드래그 관련 좌표
     private int prevX, prevY;
     private boolean itemSelected = false;
     private Item currentItem;
 
     private boolean ended = false;
 
-    public window(GameScreen gameScreen, Pokemon game, Player player) {
+    static class InvenWindow extends Window{
+        static WindowStyle windowStyle = new Window.WindowStyle(new BitmapFont(),Color.BLACK, new TextureRegionDrawable());
+        public InvenWindow() {
+                super("", windowStyle);
+        }
+    }
 
+    public window(GameScreen gameScreen, Pokemon game, Player player) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.player = player;
         stage = new Stage(new ScreenViewport());
-
 
         assetManager = new AssetManager();
         assetManager.load("texture/textures.atlas", TextureAtlas.class);
@@ -99,26 +102,19 @@ public class window extends AbstractUi {
 
         skin1 = SkinGenerator.generateSkin_O2(assetManager);
 
-
-        inventoryRenderer = new InventoryRenderer();
-        inventoryRenderer.setSize(400, 300);
-        inventoryRenderer.setModal(true);
-        inventoryRenderer.setVisible(true);
-
-        //inventoryRenderer.setMovable(true);
-        inventoryRenderer.setPosition(Gdx.graphics.getWidth() / 2 - inventoryRenderer.getWidth() / 2, Gdx.graphics.getHeight() / 2 - inventoryRenderer.getHeight() / 2);
-
-
-        //stage.addActor(inventoryRenderer);
+        //인벤 윈도우
+        invenWindow = new InvenWindow();
+        invenWindow.setSize(400, 300);
+        invenWindow.setModal(true);
+        invenWindow.setVisible(true);
+        invenWindow.setPosition(Gdx.graphics.getWidth() / 2 - invenWindow .getWidth() / 2, Gdx.graphics.getHeight() / 2 - invenWindow .getHeight() / 2);
 
         //인벤토리
         ui = new MovingImageUI(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), new Vector2(100, 100), 225.f, 372, 212);
 
-        //선택된 슬롯
+        //선택 슬롯
         selectedSlot = new Image(skin.getRegion("selected_slot"));
-
         selectedSlot.setVisible(false);
-        //선택 박스 크기
         selectedSlot.setSize(30,30);
 
         //툴팁
@@ -131,30 +127,23 @@ public class window extends AbstractUi {
                 new Label.LabelStyle(game.font, new Color(0, 1, 60 / 255.f, 1)), // green
                 new Label.LabelStyle(game.font, new Color(1, 212 / 255.f, 0, 1)), // yellow
         };
-
         // create stats
         stats = new Label[3];
         for (int i = 0; i < stats.length; i++) {
             stats[i] = new Label("", labelColors[0]);
             stats[i].setTouchable(Touchable.disabled);
             stats[i].setAlignment(Align.left);
+            stats[i].setStyle(labelColors[i]);
         }
-        stats[0].setStyle(labelColors[0]);
-        stats[1].setStyle(labelColors[1]);
-        stats[2].setStyle(labelColors[2]);
-
-
 
 
         headers = new Label[3];
         for (int i = 0; i < headers.length; i++) {
             headers[i] = new Label(headerStrs[i],skin);
-           // headers[i].setSize(62, 4);
-           // headers[i].setFontScale(0.5f);
             headers[i].setTouchable(Touchable.disabled);
             headers[i].setAlignment(Align.left);
         }
-
+        //버튼 이미지
         enabled = new ImageButton.ImageButtonStyle();
         enabled.imageUp = new TextureRegionDrawable(invbuttons92x28[0][0]);
         enabled.imageDown = new TextureRegionDrawable(invbuttons92x28[1][0]);
@@ -165,64 +154,32 @@ public class window extends AbstractUi {
         //판매 버튼
         String texts = "판매";
         invButtons[0] = new ImageButton(disabled);
-        invButtons[0].setTouchable(Touchable.disabled);
+        //invButtons[0].setTouchable(Touchable.disabled);
 
         invButtonLabels[0] = new Label(texts, skin);
-        //invButtonLabels[i] = new Label(texts[i],[0]]);
-        //invButtonLabels[0].setFontScale(0.8f);
-        invButtonLabels[0].setTouchable(Touchable.disabled);
-        //invButtonLabels[i].setSize(46, 14);
+        //invButtonLabels[0].setTouchable(Touchable.disabled);
         invButtonLabels[0].setAlignment(Align.center);
-        //invButtonLabels[i].setAlignment(AdialogSkinlign.center);
 
+        //ui 및 슬롯, 버튼들 추가(init)
+        stage.addActor(ui);
+        for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
+        for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
+        stage.addActor(selectedSlot);
+        stage.addActor(tooltip);
+        stage.addActor(invButtons[0]);
+        stage.addActor(invButtonLabels[0]);
+
+        Gdx.input.setInputProcessor(this.stage);
+        //아이템 추가
+        addInventory();
+        addEquips();
+
+        //이벤트 추가
         handleStageEvents();
         handleInvButtonEvents();
         handleInventoryEvents();
         updateText();
-
-
-        stage.addActor(ui);
-        for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
-        for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
-        stage.addActor(selectedSlot);
-        stage.addActor(tooltip);
-
-        stage.addActor(invButtons[0]);
-        stage.addActor(invButtonLabels[0]);
-
-        //if (!inMenu) {
-            // reset the stage position after actions
-            stage.addAction(Actions.moveTo(0, 0));
-            Gdx.input.setInputProcessor(this.stage);
-            //renderHealthBars = true;
-       // }
-        addInventory();
-        addEquips();
     }
-
-    /*public void init(boolean inMenu, Stage s) {
-        this.inMenu = inMenu;
-        this.gameScreen = gameScreen;
-        if (inMenu) this.stage = s;
-
-        stage.addActor(ui);
-       // stage.addActor(exitButton);
-        for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
-        for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
-        stage.addActor(selectedSlot);
-        stage.addActor(tooltip);
-
-            stage.addActor(invButtons[i]);
-            stage.addActor(invButtonLabels[i]);
-
-
-        if (!inMenu) {
-            // reset the stage position after actions
-            stage.addAction(Actions.moveTo(0, 0));
-            Gdx.input.setInputProcessor(this.stage);
-            //renderHealthBars = true;
-        }
-    }*/
 
     private void addInventory() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
@@ -278,10 +235,6 @@ public class window extends AbstractUi {
 
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-
-                // can't allow dragging equips off while in game
-                if (!item.getEquipped()) {
-                //if (inMenu || !item.getEquipped()) {
                     //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     dragging = true;
                     tooltip.hide();
@@ -291,15 +244,10 @@ public class window extends AbstractUi {
                     prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                     prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                    //아이템 위치
-                    System.out.println(item.getName() + "의 위치"+item.getIndex());
-                    //System.out.println(prevX + " " +prevY);
-
                     item.actor.toFront();
                     selectedSlot.setVisible(false);
                     if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
                     else player.equips.removeEquip(item.getType() - 2);
-                }
             }
 
             @Override
@@ -315,39 +263,36 @@ public class window extends AbstractUi {
                 // origin positions
                 int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-                System.out.println(ax + " " +ay);
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
-
                 if (item.getEquipped()) {
-                    if (INVENTORY_AREA.contains(ax, ay)) {
-                        int hi = getHoveredIndex(ax, ay);
-                        if (hi == -1)
-                            player.equips.addEquip(item);
-                        else {
-                            if (player.inventory.isFreeSlot(hi)) {
-                                player.inventory.addItemAtIndex(item, hi);
-                                item.setEquipped(false);
-                                player.unequip(item);
-                                updateText();
-                            } else {
-                                player.equips.addEquip(item);
-                            }
-                        }
-                    } else {
+                    int hi = getHoveredIndex(ax, ay);
+                    if (hi == -1) {
                         player.equips.addEquip(item);
+                    } else {
+                        if (player.inventory.isFreeSlot(hi)) {
+                            player.inventory.addItemAtIndex(item, hi);
+                            item.setEquipped(false);
+                            player.unequip(item);
+                            updateText();
+                        } else {
+                            //장비를 빈 인덱스에 넣음
+                            hi=0;
+                            while(!player.inventory.isFreeSlot(hi)) hi++;
+                            player.inventory.addItemAtIndex(item, hi);
+                            item.setEquipped(false);
+                            player.unequip(item);
+                            updateText();
+                        }
                     }
                 } else {
-                    // dropping into equips slots
+                    // 장비칸으로 이동시
                     if (EQUIPS_AREA.contains(ax, ay)) {
-                        System.out.println("장비 영역");
                         if (item.getType() >= 2 && item.getType() <= 6) {
                             item.setEquipped(true);
-                            // item.equipped = true;
-                            System.out.println(item.getName() + "장착완료");
                             player.equip(item);
                             updateText();
                             if (!player.equips.addEquip(item)) {
-                                // replace the equip with the item of same type
+                                // 같은 종류 아이템 스왚
                                 Item swap = player.equips.removeEquip(item.getType() - 2);
                                 swap.setEquipped(false);
                                 player.unequip(swap);
@@ -362,7 +307,6 @@ public class window extends AbstractUi {
                     // 인벤토리 내에서 아이템끼리 이동
                     else {
                         int hi = getHoveredIndex(ax, ay);
-                        System.out.println("인벤토리 영역");
                         if (hi == -1)
                             player.inventory.addItemAtIndex(item, item.getIndex());
                         else {
@@ -399,10 +343,8 @@ public class window extends AbstractUi {
                 // a true click and not a drag
                 if (prevX == ax && prevY == ay) {
                     // item selected
-                    System.out.println(selectedSlot.isVisible());
-                    if (selectedSlot.isVisible()) {
+                    if (selectedSlot.isVisible())
                         unselectItem();
-                    }
                     else {
                         //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                         itemSelected = true;
@@ -411,7 +353,7 @@ public class window extends AbstractUi {
                         if (inMenu) toggleInventoryButtons(true);
                         tooltip.toFront();
                         Vector2 tpos = getCoords(item);
-                        // make sure items at the bottom don't get covered by the tooltip
+                        //툴팁 위치
                         if (tpos.y <= 31)
                             tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
                         else

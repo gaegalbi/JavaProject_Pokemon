@@ -1,3 +1,4 @@
+/*
 package com.pokemon.ui.inventory;
 
 import com.badlogic.gdx.Gdx;
@@ -34,12 +35,14 @@ import com.pokemon.ui.inventory.MovingImageUI;
 import com.pokemon.util.SkinGenerator;
 
 
+*/
 /**
  * InventoryUI UI that allows for management of items and equips
  * Also shows player stats
  *
  * @author Ming Li
- */
+ *//*
+
 public class InventoryUI extends AbstractUi {
 
     public boolean inMenu;
@@ -123,15 +126,21 @@ public class InventoryUI extends AbstractUi {
 
 
 
-        ui = new MovingImageUI(skin.getRegion("arrow"), new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
+       */
+/* ui = new MovingImageUI(skin.getRegion("arrow"), new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
         ui.setTouchable(Touchable.enabled);
+*//*
 
         // create exit button
         ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
-        exitStyle.imageUp = new TextureRegionDrawable(skin.getRegion("arrow"));
-        exitStyle.imageDown = new TextureRegionDrawable(skin.getRegion("arrow"));
-        exitButton = new ImageButton(exitStyle);
-        exitButton.setSize(9, 9);
+ */
+/*       exitStyle.imageUp = new TextureRegionDrawable(skin.getRegion("arrow"));
+        exitStyle.imageDown = new TextureRegionDrawable(skin.getRegion("arrow"));*//*
+
+*/
+/*        exitButton = new ImageButton(exitStyle);
+        exitButton.setSize(9, 9);*//*
+
 
         // Fonts and Colors
         Label.LabelStyle[] labelColors = new Label.LabelStyle[] {
@@ -167,16 +176,22 @@ public class InventoryUI extends AbstractUi {
         stats[3].setStyle(labelColors[2]);
         stats[4].setStyle(labelColors[2]);
 
-        selectedSlot = new Image(skin.getDrawable("green"));
+     */
+/*   selectedSlot = new Image(skin.getDrawable("green"));*//*
+
         selectedSlot.setVisible(false);
-        tooltip = new ItemTooltip(skin_o);
+      */
+/*  tooltip = new ItemTooltip(skin_o);*//*
+
         tooltip.setPosition(90, 15);
 
-        enabled = new ImageButton.ImageButtonStyle();
+*/
+/*        enabled = new ImageButton.ImageButtonStyle();
         enabled.imageUp = new TextureRegionDrawable(skin.getRegion("green"));
         enabled.imageDown = new TextureRegionDrawable(skin.getRegion("green"));
         disabled = new ImageButton.ImageButtonStyle();
-        disabled.imageUp = new TextureRegionDrawable(skin.getRegion("green"));
+        disabled.imageUp = new TextureRegionDrawable(skin.getRegion("green"));*//*
+
         invButtons = new ImageButton[2];
         invButtonLabels = new Label[2];
         String texts = "SELL";
@@ -191,7 +206,8 @@ public class InventoryUI extends AbstractUi {
         //invButtonLabels[0].setAlignment(AdialogSkinlign.center);
 
 
-        exitButton.addListener(new ClickListener() {
+  */
+/*      exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 end();
@@ -206,13 +222,15 @@ public class InventoryUI extends AbstractUi {
                     //Gdx.input.setInputProcessor(gameScreen.multiplexer);
                 }
             }
-        });
+        });*//*
+
 
         handleStageEvents();
         handleInvButtonEvents();
     }
 
-
+*/
+/*
     public void init() {
         this.inMenu = inMenu;
         //this.gameScreen = game.gameScreen;
@@ -235,11 +253,14 @@ public class InventoryUI extends AbstractUi {
             Gdx.input.setInputProcessor(this.stage);
             renderHealthBars = true;
         }
-    }
+    }*//*
 
-    /**
+
+    */
+/**
      * Adds inventory items to the stage
-     */
+     *//*
+
     private void addInventory() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             Item item = Inventory.getItem(i);
@@ -249,9 +270,11 @@ public class InventoryUI extends AbstractUi {
         }
     }
 
-    /**
+    */
+/**
      * Adds equips to the stage
-     */
+     *//*
+
     private void addEquips() {
         for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
             Item item = player.equips.getEquipAt(i);
@@ -261,9 +284,11 @@ public class InventoryUI extends AbstractUi {
         }
     }
 
-    /**
+    */
+/**
      * Resets the item actors
-     */
+     *//*
+
     private void removeInventoryActors() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             Item item = player.inventory.getItem(i);
@@ -279,13 +304,15 @@ public class InventoryUI extends AbstractUi {
         }
     }
 
-    /**
+    */
+/**
      * Handles drag and drop events for items
      *
      * Dragging allows changing of item positions and equipping
      * Clicking once on an item brings up its tooltip that displays its stats
      *
-     */
+     *//*
+
     private void handleInventoryEvents() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             final Item item = player.inventory.getItem(i);
@@ -301,10 +328,12 @@ public class InventoryUI extends AbstractUi {
         }
     }
 
-    /**
+    */
+/**
      * Adds inventory events to a given item
      * @param item
-     */
+     *//*
+
     private void addInventoryEvent(final Item item) {
         item.actor.clearListeners();
         item.actor.addListener(new DragListener() {
@@ -396,10 +425,12 @@ public class InventoryUI extends AbstractUi {
                             // if dropped into an occupied slot, swap item positions
                             if (!player.inventory.addItemAtIndex(item, hi)) {
                                 Item eq = player.inventory.getItem(hi);
-                               /* // dragging an enchant scroll onto an equip
+                               */
+/* // dragging an enchant scroll onto an equip
                                 if (item.type == 10 && eq.type >= 2 && eq.type <= 9) {
                                     applyEnchantBonus(eq, item);
-                                }*/
+                                }*//*
+
 
                                     Item swap = player.inventory.takeItem(hi);
                                     player.inventory.addItemAtIndex(swap, item.getIndex());
@@ -507,10 +538,12 @@ public class InventoryUI extends AbstractUi {
         });
     }
 
-    /**
+    */
+/**
      * If the ui is touched while an item is selected, it removes the tooltip
      * and unselects the item
-     */
+     *//*
+
     private void handleStageEvents() {
         ui.addListener(new InputListener() {
             @Override
@@ -523,11 +556,14 @@ public class InventoryUI extends AbstractUi {
         });
     }
 
-    /**
+    */
+/**
      * Handles enchanting and selling
-     */
+     *//*
+
     private void handleInvButtonEvents() {
-      /*  // enchanting
+      */
+/*  // enchanting
         invButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -560,7 +596,8 @@ public class InventoryUI extends AbstractUi {
                     }.show(stage).getTitleLabel().setAlignment(Align.center);
                 }
             }
-        });*/
+        });*//*
+
 
         // sell
         invButtons[0].addListener(new ClickListener() {
@@ -601,7 +638,9 @@ public class InventoryUI extends AbstractUi {
         });
     }
 
-    /*//인챈트
+    */
+/*//*
+/인챈트
     private void applyEnchantBonus(final Item item, final Item scroll) {
         new Dialog("Enchant scroll", rm.dialogSkin) {
             {
@@ -630,9 +669,13 @@ public class InventoryUI extends AbstractUi {
         }.show(stage).getTitleLabel().setAlignment(Align.center);
     }
 
-    *//**
+    *//*
+*/
+/**
      * Handles enchanting events
      *//*
+*/
+/*
     private void enchant() {
         if (player.getGold() < currentItem.enchantCost) {
             new Dialog("Cannot enchant", rm.dialogSkin) {
@@ -734,14 +777,18 @@ public class InventoryUI extends AbstractUi {
             }
         }
     }
-*/
-    /**
+*//*
+
+    */
+/**
      * Handles consuming potions
-     */
+     *//*
+
     private void consume() {
         new Dialog("Consume", skin) {
         //new Dialog("Consume", rm.dialogSkin) {
-          /*  {
+          */
+/*  {
                 Label l = new Label("Heal for " +
                         (currentItem.hp < 0 ? (int) ((-currentItem.hp / 100f) * player.getMaxHp()) : currentItem.hp)
                         + " HP\nusing this potion?", skin);
@@ -756,18 +803,21 @@ public class InventoryUI extends AbstractUi {
                 getButtonTable().defaults().height(15);
                 button("Yes", "yes");
                 button("No", "no");
-            }*/
+            }*//*
+
 
             @Override
             protected void result(Object object) {
                // if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 if (object.equals("yes")) {
                     //포션
-                   /*
+                   */
+/*
                    if (currentItem.hp < 0) player.percentagePotion(-currentItem.hp);
                     else if (currentItem.exp > 0) player.addExp((int) ((currentItem.exp / 100f) * player.getMaxEXP()));
                     else player.potion(currentItem.hp);
-                    */
+                    *//*
+
                     player.inventory.items[currentItem.getIndex()].actor.remove();
                     player.inventory.removeItem(currentItem.getIndex());
                     unselectItem();
@@ -787,24 +837,28 @@ public class InventoryUI extends AbstractUi {
         tooltip.hide();
     }
 
-    /**
+    */
+/**
      * Shows the golden highlight around the slot clicked
      *
      * @param item
-     */
+     *//*
+
     private void showSelectedSlot(Item item) {
         Vector2 pos = getCoords(item);
         selectedSlot.setPosition(pos.x, pos.y);
         selectedSlot.setVisible(true);
     }
 
-    /**
+    */
+/**
      * Returns a Vector2 containing the x y coordinates of the slot at a
      * given index of an item in the inventory or equips.
      *
      * @param item
      * @return
-     */
+     *//*
+
     private Vector2 getCoords(Item item) {
         Vector2 ret = new Vector2();
         if (item.getEquipped()) {
@@ -820,7 +874,8 @@ public class InventoryUI extends AbstractUi {
         return ret;
     }
 
-    /**
+    */
+/**
      * Returns the calculated inventory index the mouse or finger is currently
      * hovering when dragging an item so it can be dropped in the correct location
      * Returns -1 if outside of inventory range
@@ -828,7 +883,8 @@ public class InventoryUI extends AbstractUi {
      * @param x
      * @param y
      * @return
-     */
+     *//*
+
     private int getHoveredIndex(int x, int y) {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             int xx = i % NUM_COLS;
@@ -843,14 +899,18 @@ public class InventoryUI extends AbstractUi {
         return -1;
     }
 
-    /**
+    */
+/**
      * Initializes the inventoryUI screen
-     */
+     *//*
+
     public void start() {
         if (!inMenu) {
+*/
 /*            game.fps.setPosition(2, 2);
             stage.addActor(game.fps);
-          */
+          *//*
+
 
             // ui slides left to right
             ui.setPosition(200, 7);
@@ -869,10 +929,12 @@ public class InventoryUI extends AbstractUi {
         handleInventoryEvents();
     }
 
-    /**
+    */
+/**
      * Resets all animation variables
      * Activated by the exit button
-     */
+     *//*
+
     public void end() {
         unselectItem();
 
@@ -886,21 +948,27 @@ public class InventoryUI extends AbstractUi {
         }
     }
 
-    /**
+    */
+/**
      * Switches back to the next state
-     */
+     *//*
+
     public void next() {
         removeInventoryActors();
         renderHealthBars = false;
 
-     /*   gameScreen.setCurrentEvent(EventState.MOVING);
-        gameScreen.hud.toggle(true);*/
+     */
+/*   gameScreen.setCurrentEvent(EventState.MOVING);
+        gameScreen.hud.toggle(true);*//*
+
         ended = false;
     }
 
-    /**
+    */
+/**
      * Updates the player's stats and gold
-     */
+     *//*
+
     private void updateText() {
         // update all text
         headers[0].setText("LV. " + player.getLV() + " PLAYER");
@@ -911,9 +979,11 @@ public class InventoryUI extends AbstractUi {
         stats[4].setText("GOLD: " + player.getGold());
     }
 
-    /**
+    */
+/**
      * Toggles inventory buttons if in battle and an item is selected or unselected
-     */
+     *//*
+
     private void toggleInventoryButtons(boolean toggle) {
         if (toggle) {
             if (!currentItem.getEquipped()) {
@@ -925,8 +995,10 @@ public class InventoryUI extends AbstractUi {
                     }
                     invButtons[i].setStyle(enabled);
                     // add enchant cost of item to button
-                    /*if (currentItem.type >= 2 && currentItem.type <= 9)
-                        invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");*/
+                    */
+/*if (currentItem.type >= 2 && currentItem.type <= 9)
+                        invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");*//*
+
                     // add sell value of item to button
                     invButtonLabels[1].setText("SELL FOR\n" + currentItem.getSell() + " g");
                 }
@@ -995,7 +1067,8 @@ public class InventoryUI extends AbstractUi {
             stage.draw();
         }
 
-    /*    if (renderHealthBars) {
+    */
+/*    if (renderHealthBars) {
             // draw bars
             shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -1014,7 +1087,9 @@ public class InventoryUI extends AbstractUi {
             shapeRenderer.setColor(200 / 255.f, 170 / 255.f, 0, 1);
             shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, expBarWidth, 1);
             shapeRenderer.end();
-        }*/
+        }*//*
+
     }
 
 }
+*/
