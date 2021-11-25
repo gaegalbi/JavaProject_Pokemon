@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.pokemon.util.SkinGenerator;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -63,43 +64,11 @@ public class Item {
     private int cnt;
     //장착 유무
     private boolean equipped = false;
-    //
-    private InvenCNT invenCNT;
 
    //이미지
     public Image actor;
+    public Label count;
 
-    public static class InvenCNT extends Window {
-        private Label desc;
-
-        static WindowStyle windowStyle = new Window.WindowStyle(new BitmapFont(), Color.BLACK, new TextureRegionDrawable());
-        public InvenCNT(Skin skin) {
-            super("", windowStyle);
-            desc = new Label("", skin);
-            add(desc);
-            pack();
-            this.setTouchable(Touchable.disabled);
-            this.setVisible(false);
-            this.setMovable(false);
-            this.setOrigin(Align.bottomLeft);
-        }
-        public void show(Item item, float x, float y) {
-            this.setPosition(x, y);
-            this.setVisible(true);
-            updateText(item);
-        }
-        public void hide() {
-            this.setVisible(false);
-        }
-
-        public void updateText(Item item) {
-            this.getTitleLabel().setText(item.labelName);
-            desc.setText(item.getCNT());
-            desc.setAlignment(center().getAlign());
-            desc.setColor(Color.GREEN);
-            pack();
-        }
-    }
 
     public Item(String key) {
         AssetManager assetManager = new AssetManager();
@@ -111,6 +80,8 @@ public class Item {
         assetManager.load("texture/나무곡괭이.png",Texture.class);
         assetManager.load("texture/나무괭이.png",Texture.class);
         assetManager.finishLoading();
+
+        Skin skin = SkinGenerator.generateSkin_O(assetManager);
 
         String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE,SELL FROM ITEM WHERE ITEM_ID ='"+key+"';";
         this.key = key;//ITEM_ID
@@ -125,6 +96,7 @@ public class Item {
                 this.type = rs.getInt("ITEM_TYPE"); //아이템 종류 ex) 장비, 재료, 포켓몬볼
                 this.sell = rs.getInt("SELL");
                 actor = new Image(assetManager.get("texture/"+name+".png", Texture.class));
+                count = new Label("",skin);
                 //this.actor = new Image(new Texture("pokemon/Raichu.png"));
             }
         }catch(SQLException e){
@@ -164,11 +136,9 @@ public class Item {
     }
 
     public void setCNT(int cnt){this.cnt = cnt;}
+    public void setCurrentCNT(){this.count.setText(getCNT());}
+    public int getCurrentCNT(){ return this.count.getText().length;}
     public int getCNT(){return cnt;}
-    public void setInvenCNT(InvenCNT cnt){
-        this.invenCNT = cnt;
-    }
-    public InvenCNT getInvenCNT(){return invenCNT;}
 
 
     /*

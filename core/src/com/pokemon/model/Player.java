@@ -126,6 +126,7 @@ public class Player extends Rectangle {
     public int getLV(){
         return LV;
     }
+    public int getRANK(){return RANK;}
     public int getEXP(){
         return EXP;
     }

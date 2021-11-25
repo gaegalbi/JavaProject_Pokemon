@@ -43,7 +43,7 @@ public class window extends AbstractUi {
     private MovingImageUI ui;
     private AssetManager assetManager;
     private Skin skin;
-    private Skin skin1;
+    //private Skin skin1;
     private Image selectedSlot;
     //툴팁
     private ItemTooltip tooltip;
@@ -128,9 +128,9 @@ public class window extends AbstractUi {
 
         // Fonts and Colors
         Label.LabelStyle[] labelColors = new Label.LabelStyle[]{
-                new Label.LabelStyle(game.font, new Color(1, 1, 1, 1)), // white
-                new Label.LabelStyle(game.font, new Color(0, 1, 60 / 255.f, 1)), // green
-                new Label.LabelStyle(game.font, new Color(1, 212 / 255.f, 0, 1)), // yellow
+                new Label.LabelStyle(skin.getFont("font"), new Color(1, 212 / 255.f, 0, 1)), // yellow
+                new Label.LabelStyle(skin.getFont("font"), new Color(0, 0, 255, 1)), // white
+                new Label.LabelStyle(skin.getFont("font"), new Color(0, 1, 60 / 255.f, 1)), // green
         };
         // create stats
         stats = new Label[3];
@@ -157,7 +157,8 @@ public class window extends AbstractUi {
         invButtons = new ImageButton[2];
         invButtonLabels = new Label[2];
         //판매 버튼
-        String texts = " 판매";
+        String texts = " 버리기";
+        //String texts = " 판매";
         invButtons[0] = new ImageButton(disabled);
         invButtons[0].setSize(90,100);
         invButtons[0].getImage().setFillParent(true);
@@ -194,8 +195,11 @@ public class window extends AbstractUi {
             Item item = player.inventory.getItem(i);
             if (item != null) {
                 stage.addActor(item.actor);
-                item.getInvenCNT().toFront();
-                item.getInvenCNT().show(item,item.actor.getX()+10,item.actor.getY()+10);
+                //장비가 아닐때만 라벨 추가
+                if(!(item.getType()>=2 && item.getType()<=6)) {
+                    stage.addActor(item.count);
+                    item.setCurrentCNT();
+                }
                 item.setIndex(i); //아이템 인덱스값 설정
             }
         }
@@ -205,6 +209,7 @@ public class window extends AbstractUi {
             Item item = player.equips.getEquipAt(i);
             if (item != null) {
                 stage.addActor(item.actor);
+                item.setEquipped(true);
             }
         }
     }
@@ -254,17 +259,16 @@ public class window extends AbstractUi {
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
                 item.actor.toFront();
+                item.count.toFront();
                 selectedSlot.setVisible(false);
-
                 if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
                 else player.equips.removeEquip(item.getType() - 2);
             }
-
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
                 item.actor.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
+                item.count.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
             }
-
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 dragging = false;
@@ -312,9 +316,9 @@ public class window extends AbstractUi {
                                 player.inventory.addItemAtIndex(swap, item.getIndex());
                                 updateText();
                             }
+                            db.UPDATE_EQ(TYPE[item.getType()-2],item.getKey());
                         } else
                             player.inventory.addItemAtIndex(item, item.getIndex());
-                        db.UPDATE_EQ(TYPE[item.getType()-2],item.getKey());
                     }
                     // 인벤토리 내에서 아이템끼리 이동
                     else {
@@ -342,7 +346,6 @@ public class window extends AbstractUi {
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
                 return true;
             }
-
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 //새 위치
@@ -367,18 +370,15 @@ public class window extends AbstractUi {
                     }
                 }
             }
-
         });
     }
-
 
     private void handleStageEvents() {
         ui.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (itemSelected) {
+                if (itemSelected)
                     unselectItem();
-                }
                 return true;
             }
         });
@@ -392,7 +392,8 @@ public class window extends AbstractUi {
                     if (currentItem != null) {
                         new Dialog("", skin) {
                             {
-                                Label l = new Label("정말로 판매하시겠습니까?", skin);
+                                //Label l = new Label("정말로 판매하시겠습니까?", skin);
+                                Label l = new Label("정말로 버리시겠습니까?", skin);
                                 pad(20, 20, 20, 20);
                                 l.setAlignment(Align.center);
                                 text(l);
@@ -407,18 +408,32 @@ public class window extends AbstractUi {
                                 //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                                 if (object.equals("yes")) {
                                     player.addGold(currentItem.getSell());
-                                    if(currentItem.getEquipped() && currentItem.getType() >=2 || currentItem.getType()<=6){
-                                        player.equips.getEquipAt(currentItem.getType()-2).actor.remove();
-                                        player.equips.removeEquip(currentItem.getType()-2);
-                                        db.UPDATE_EQ(TYPE[currentItem.getType()-2],null);
-                                    }else {
-                                        player.inventory.items[currentItem.getIndex()].actor.remove();
-                                        player.inventory.removeItem(currentItem.getIndex());
+                                    if (currentItem.getEquipped()) {
+                                        player.equips.getEquipAt(currentItem.getType() - 2).actor.remove();
+                                        player.equips.removeEquip(currentItem.getType() - 2);
+                                        db.UPDATE_EQ(TYPE[currentItem.getType() - 2], null);
+                                    } else {
+                                        int current = player.inventory.items[currentItem.getIndex()].getCNT() - 1;
+                                        if (current > 0) {
+                                            player.inventory.items[currentItem.getIndex()].setCNT(current);
+                                            player.inventory.items[currentItem.getIndex()].setCurrentCNT();
+                                        } else {
+                                            player.inventory.items[currentItem.getIndex()].actor.remove();
+                                            player.inventory.items[currentItem.getIndex()].count.remove();
+                                            player.inventory.removeItem(currentItem.getIndex());
+                                        }
                                     }
-                                    db.UPDATE("GOLD",currentItem.getSell());
+                                    db.UPDATE("GOLD", currentItem.getSell());
+                                    if(db.COMPARE_CNT(currentItem.getKey(), 1))
+                                        db.UPDATE_CNT(currentItem.getKey(), 1);
+                                    else
+                                        System.out.println("버리려는 아이템 갯수가 너무 많습니다.");
+
                                     unselectItem();
                                     updateText();
                                 }
+
+
                             }
 
                         }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -495,19 +510,22 @@ public class window extends AbstractUi {
     }
     private void updateText() {
         stats[0].setText("LV. " + player.getLV() +"  "+ playerID);
-        stats[1].setText("EXP: " + player.getEXP() + " / " + player.getMaxEXP());
-        stats[2].setText("GOLD: " + player.getGold() + " G");
+        stats[1].setText("RANK: " + player.getRANK());
+        stats[2].setText("EXP: " + player.getEXP() + " / " + player.getMaxEXP());
     }
+
 
     private void toggleInventoryButtons(boolean toggle) {
         if (toggle) {
             invButtons[0].setTouchable(Touchable.enabled);
             invButtons[0].setStyle(enabled);
-            invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
+            //invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
+            invButtonLabels[0].setText(" 버리기");
         } else {
             invButtons[0].setTouchable(Touchable.disabled);
             invButtons[0].setStyle(disabled);
-            invButtonLabels[0].setText(" 판매");
+            //invButtonLabels[0].setText(" 판매");
+            invButtonLabels[0].setText(" 버리기");
 
         }
     }
@@ -558,8 +576,8 @@ public class window extends AbstractUi {
                     //아이템 위치
                     item.actor.setSize(26,26);
                     item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
-                    item.getInvenCNT().toFront();
-                    item.getInvenCNT().show(item,item.actor.getX()+10,item.actor.getY()+10);
+                    item.count.setPosition(item.actor.getX()+23-item.getCurrentCNT(),item.actor.getY()+2);
+
                 }
             }
             for (int i = 0; i < Equipment.NUM_SLOTS; i++) {

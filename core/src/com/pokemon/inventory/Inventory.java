@@ -37,13 +37,11 @@ public class Inventory {
 
     //public Inventory() {items = new Item[NUM_SLOTS];}
    public Inventory(String key) {
-       AssetManager assetManager = new AssetManager();
-       Skin skin = SkinGenerator.generateSkin_O(assetManager);
-
        items = new Item[NUM_SLOTS];
         int i = 1;
         while(i!=GET_MAX_INVEN(playerID)+1) {
             String sql = "SELECT ITEM_ID,ITEM_CNT from ( SELECT @ROWNUM := @ROWNUM + 1 AS RN,ITEM_ID,ITEM_CNT FROM INVEN WHERE (@ROWNUM:=0) = 0 AND U_ID ='" + key + "') as b where b.rn=" + i + ";";
+            cnt=0;
             try {
                 Statement stmt = con.createStatement();
                 rs = stmt.executeQuery(sql);
@@ -51,9 +49,11 @@ public class Inventory {
                     this.name = rs.getString("ITEM_ID");
                     this.cnt = rs.getInt("ITEM_CNT");
                 }
-                items[i - 1] = new Item(name);
-                items[i-1].setCNT(cnt);
-                items[i-1].setInvenCNT(new Item.InvenCNT(skin));
+                if(cnt>0){
+                    items[i - 1] = new Item(name);
+                    if(items[i-1].getType()>=2 && items[i-1].getType()<=6) items[i-1].setCNT(1);
+                    else items[i-1].setCNT(cnt);
+                }
             } catch (SQLException e) {
                 System.out.println("SQLException" + e);
                 e.printStackTrace();

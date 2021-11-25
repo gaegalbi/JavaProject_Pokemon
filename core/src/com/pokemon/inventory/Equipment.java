@@ -43,11 +43,14 @@ public class Equipment {
                     this.name[3] = rs.getString("U_SHOES");
                     this.name[4] = rs.getString("U_WEAPON");
                 }
-                if(name[0]!=null)equips[0]=new Item(name[0]);
-                if(name[1]!=null)equips[1]=new Item(name[1]);
-                if(name[2]!=null) equips[2]=new Item(name[2]);
-                if(name[3]!=null) equips[3]=new Item(name[3]);
-                if(name[4]!=null) equips[4]=new Item(name[4]);
+                for(int i=0;i<5;i++){
+                    if(name[i]!=null){
+                        equips[i]=new Item(name[i]);
+                        equips[i].setCNT(1);
+                    }
+                }
+
+
             } catch (SQLException e) {
                 System.out.println("SQLException" + e);
                 e.printStackTrace();
