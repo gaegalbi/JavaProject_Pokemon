@@ -1,0 +1,13 @@
+
+background.png
+size: 512, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+MainWorld
+  rotate: false
+  xy: 2, 2
+  size: 464, 352
+  orig: 464, 352
+  offset: 0, 0
+  index: -1
