@@ -21,10 +21,10 @@ import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class MainWorld implements World {
 
-    private final TileMap map = new TileMap(20, 20);
+    private final TileMap map = new TileMap(29, 22);
     private Player player;
     private Pokemon game;
-    private ArrayList<WorldObject> fakeObjects;
+    private ArrayList<WorldObject> collisionObjects;
     private ArrayList<WorldObject> objects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
@@ -39,22 +39,16 @@ public class MainWorld implements World {
                 map.tiles[x][y] = new Tile(x, y, "grass");
             }
         }
-        fakeObjects = new ArrayList<>();
+        collisionObjects = new ArrayList<>();
         objects = new ArrayList<>();
 
-        fakeObjects.add(new WorldObject(4 * Settings.SCALED_TILE_SIZE, 7 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
-        objects.add(new WorldObject(4 * Settings.SCALED_TILE_SIZE, 7 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
+        collisionObjects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
+        objects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE,atlas.findRegion("tree")));
 
-        fakeObjects.add(new WorldObject(11 * Settings.SCALED_TILE_SIZE, 7 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
-        objects.add(new WorldObject(11 * Settings.SCALED_TILE_SIZE, 7 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
+        renderList.clear();
 
-        fakeObjects.add(new WorldObject(5 * Settings.SCALED_TILE_SIZE, 8 * Settings.SCALED_TILE_SIZE, 7*SCALED_TILE_SIZE, 4*SCALED_TILE_SIZE,atlas.findRegion("null")));
-        objects.add(new WorldObject(5 * Settings.SCALED_TILE_SIZE, 8 * Settings.SCALED_TILE_SIZE, 7*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE,atlas.findRegion("house1")));
-
-        renderQueue.clear();
-
-        renderQueue.add(player);
-        renderQueue.addAll(objects);
+        renderList.add(player);
+        renderList.addAll(objects);
     }
 
     @Override
@@ -63,8 +57,8 @@ public class MainWorld implements World {
     }
 
     @Override
-    public ArrayList<WorldObject> getFakeObjects() {
-        return fakeObjects;
+    public ArrayList<WorldObject> getCollisionObjects() {
+        return collisionObjects;
     }
 
     @Override

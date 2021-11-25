@@ -1,8 +1,6 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
@@ -46,10 +44,10 @@ public class Mine implements World {
         objects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
         fakeObjects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
 
-        renderQueue.clear();
+        renderList.clear();
 
-        renderQueue.add(player);
-        renderQueue.addAll(fakeObjects);
+        renderList.add(player);
+        renderList.addAll(fakeObjects);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class Mine implements World {
     }
 
     @Override
-    public ArrayList<WorldObject> getFakeObjects() {
+    public ArrayList<WorldObject> getCollisionObjects() {
         return objects;
     }
 

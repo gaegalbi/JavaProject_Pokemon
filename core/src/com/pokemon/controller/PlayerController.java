@@ -26,7 +26,7 @@ public class PlayerController extends InputAdapter {
             player.setState(Player.PLAYER_STATE.WALKING);
             tempX = player.x;
             player.x -= PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
-            for (WorldObject object : GameScreen.getWorld().getFakeObjects()) {
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
                 if (object.overlaps(player)) {
                     player.x = tempX;
                 }
@@ -38,7 +38,7 @@ public class PlayerController extends InputAdapter {
             player.setState(Player.PLAYER_STATE.WALKING);
             tempX = player.x;
             player.x += PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
-            for (WorldObject object : GameScreen.getWorld().getFakeObjects()) {
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
                 if (object.overlaps(player)) {
                     player.x = tempX;
                 }
@@ -49,7 +49,7 @@ public class PlayerController extends InputAdapter {
             player.setState(Player.PLAYER_STATE.WALKING);
             tempY = player.y;
             player.y += PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
-            for (WorldObject object : GameScreen.getWorld().getFakeObjects()) {
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
                 if (object.overlaps(player)) {
                     player.y = tempY;
                 }
@@ -60,7 +60,7 @@ public class PlayerController extends InputAdapter {
             player.setState(Player.PLAYER_STATE.WALKING);
             tempY = player.y;
             player.y -= PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
-            for (WorldObject object : GameScreen.getWorld().getFakeObjects()) {
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
                 if (object.overlaps(player)) {
                     player.y = tempY;
                 }

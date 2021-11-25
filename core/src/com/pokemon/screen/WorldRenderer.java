@@ -8,7 +8,8 @@ import com.pokemon.model.WorldObject;
 
 import java.util.Collections;
 
-import static com.pokemon.world.World.renderQueue;
+import static com.pokemon.world.World.fakeRenderList;
+import static com.pokemon.world.World.renderList;
 
 public class WorldRenderer {
     private Player player;
@@ -29,12 +30,15 @@ public class WorldRenderer {
                 );
             }
         }
-        for (WorldObject object : GameScreen.getWorld().getFakeObjects()) {
+        for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
             batch.draw(object.getSprites(), object.x,object.y,object.width,object.height);
         }
-        Collections.sort(renderQueue,new WorldObjectYComparator());
-        for (RenderHelper renderHelper : renderQueue) {
+        Collections.sort(renderList,new WorldObjectYComparator());
+        for (RenderHelper renderHelper : renderList) {
             batch.draw(renderHelper.getSprites(), renderHelper.getX(), renderHelper.getY(), renderHelper.getSizeX(), renderHelper.getSizeY());
+        }
+        for (WorldObject worldObject : fakeRenderList) {
+            batch.draw(worldObject.getSprites(), worldObject.getX(), worldObject.getY(), worldObject.getSizeX(), worldObject.getSizeY());
         }
         //batch.draw(player.getSprites(), player.x, player.y, player.getSizeX(), player.getSizeY());
     }
