@@ -2,10 +2,18 @@ package com.pokemon.inventory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,29 +51,55 @@ public class Item {
      * 6 - 무기
      * 7 - 소비
      */
-
+    public final static String[] TYPE= {"U_HEAD", "U_ACC","U_CLOTHES","U_SHOES", "U_WEAPON"};
     private int type;
     private String key;
 
-/*    // item stats
-    // if hp is negative then its absolute value is the percentage hp that the item gives
-    // used to separate percentage hp from regular hp potions
-    public int hp = 0;
-    public int mhp = 0;
-    public int dmg = 0;
-    public int acc = 0;
-    public int sell = 0;
-    // potions can give exp (percentage)
-    public int exp = 0;*/
 
-   /* // an item's index in the inventory*/
+
+    //인벤토리 인덱스
     private int index;
-    // whether or not this item is equipped
+    //아이템 갯수
+    private int cnt;
+    //장착 유무
     private boolean equipped = false;
+    //
+    private InvenCNT invenCNT;
 
-   // rendering
+   //이미지
     public Image actor;
 
+    public static class InvenCNT extends Window {
+        private Label desc;
+
+        static WindowStyle windowStyle = new Window.WindowStyle(new BitmapFont(), Color.BLACK, new TextureRegionDrawable());
+        public InvenCNT(Skin skin) {
+            super("", windowStyle);
+            desc = new Label("", skin);
+            add(desc);
+            pack();
+            this.setTouchable(Touchable.disabled);
+            this.setVisible(false);
+            this.setMovable(false);
+            this.setOrigin(Align.bottomLeft);
+        }
+        public void show(Item item, float x, float y) {
+            this.setPosition(x, y);
+            this.setVisible(true);
+            updateText(item);
+        }
+        public void hide() {
+            this.setVisible(false);
+        }
+
+        public void updateText(Item item) {
+            this.getTitleLabel().setText(item.labelName);
+            desc.setText(item.getCNT());
+            desc.setAlignment(center().getAlign());
+            desc.setColor(Color.GREEN);
+            pack();
+        }
+    }
 
     public Item(String key) {
         AssetManager assetManager = new AssetManager();
@@ -91,25 +125,18 @@ public class Item {
                 this.type = rs.getInt("ITEM_TYPE"); //아이템 종류 ex) 장비, 재료, 포켓몬볼
                 this.sell = rs.getInt("SELL");
                 actor = new Image(assetManager.get("texture/"+name+".png", Texture.class));
-
-
                 //this.actor = new Image(new Texture("pokemon/Raichu.png"));
             }
         }catch(SQLException e){
             System.out.println("SQLException" + e);
             e.printStackTrace();
         }
-        if(name.equals("나무괭이")){
-            this.type = 3;
-        }
-        if(name.equals("나무곡괭이")){
-            this.type = 5;
-        }
     }
 
     public String getEffect(){
         return effect;
     }
+    public String getKey(){return key;}
     public String getProperty(){
         return property;
     }
@@ -135,6 +162,13 @@ public class Item {
     public void setEquipped(boolean equipped){
         this.equipped = equipped;
     }
+
+    public void setCNT(int cnt){this.cnt = cnt;}
+    public int getCNT(){return cnt;}
+    public void setInvenCNT(InvenCNT cnt){
+        this.invenCNT = cnt;
+    }
+    public InvenCNT getInvenCNT(){return invenCNT;}
 
 
     /*

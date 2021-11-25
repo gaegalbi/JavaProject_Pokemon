@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Equipment;
 import com.pokemon.inventory.Inventory;
@@ -30,11 +31,13 @@ import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
 
+import static com.pokemon.inventory.Item.TYPE;
 import static com.pokemon.ui.LoginUi.playerID;
 
 public class window extends AbstractUi {
     private Stage stage;
     private InvenWindow invenWindow;
+
     private Pokemon game;
     private GameScreen gameScreen;
     private MovingImageUI ui;
@@ -110,6 +113,8 @@ public class window extends AbstractUi {
         invenWindow.setVisible(true);
         invenWindow.setPosition(Gdx.graphics.getWidth() / 2 - invenWindow .getWidth() / 2, Gdx.graphics.getHeight() / 2 - invenWindow .getHeight() / 2);
 
+        //인벤토리 아이템 갯수
+
         //인벤토리
         ui = new MovingImageUI(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), new Vector2(100, 100), 225.f, 372, 212);
 
@@ -120,7 +125,6 @@ public class window extends AbstractUi {
 
         //툴팁
         tooltip = new ItemTooltip(skin);
-
 
         // Fonts and Colors
         Label.LabelStyle[] labelColors = new Label.LabelStyle[]{
@@ -161,7 +165,6 @@ public class window extends AbstractUi {
 
         invButtonLabels[0] = new Label(texts, skin);
         invButtonLabels[0].setSize(46, 14);
-
         invButtonLabels[0].setTouchable(Touchable.disabled);
         invButtonLabels[0].setAlignment(Align.center);
 
@@ -191,6 +194,8 @@ public class window extends AbstractUi {
             Item item = player.inventory.getItem(i);
             if (item != null) {
                 stage.addActor(item.actor);
+                item.getInvenCNT().toFront();
+                item.getInvenCNT().show(item,item.actor.getX()+10,item.actor.getY()+10);
                 item.setIndex(i); //아이템 인덱스값 설정
             }
         }
@@ -200,7 +205,6 @@ public class window extends AbstractUi {
             Item item = player.equips.getEquipAt(i);
             if (item != null) {
                 stage.addActor(item.actor);
-                item.setIndex(i); //아이템 인덱스값 설정
             }
         }
     }
@@ -290,6 +294,7 @@ public class window extends AbstractUi {
                             player.unequip(item);
                             updateText();
                         }
+                        db.UPDATE_EQ(TYPE[item.getType()-2],null);
                     }
                 } else {
                     // 장비칸으로 이동시
@@ -309,6 +314,7 @@ public class window extends AbstractUi {
                             }
                         } else
                             player.inventory.addItemAtIndex(item, item.getIndex());
+                        db.UPDATE_EQ(TYPE[item.getType()-2],item.getKey());
                     }
                     // 인벤토리 내에서 아이템끼리 이동
                     else {
@@ -324,7 +330,7 @@ public class window extends AbstractUi {
                         }
                     }
                 }
-                //if (inMenu) game.save.save();
+
             }
         });
         //터치
@@ -334,10 +340,7 @@ public class window extends AbstractUi {
                 //원래 위치
                 prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-                if (prevX != ax || prevY != ay){
-                    unselectItem();
-                }
-                    return true;
+                return true;
             }
 
             @Override
@@ -346,9 +349,7 @@ public class window extends AbstractUi {
                 ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                // a true click and not a drag
                 if (prevX == ax && prevY == ay) {
-                    // item selected
                     if (selectedSlot.isVisible())
                         unselectItem();
                     else {
@@ -358,63 +359,11 @@ public class window extends AbstractUi {
                         showSelectedSlot(item);
                         toggleInventoryButtons(true); //판매 활성화
                         tooltip.toFront();
-                        Vector2 tpos = getCoords(item);
                         //툴팁 위치
-                        if(currentItem.getEquipped())
-                            tooltip.show(item, ax + 16, ay-tooltip.getHeight());
+                        if (currentItem.getEquipped())
+                            tooltip.show(item, ax + 16, ay - tooltip.getHeight());
                         else
-                            tooltip.show(item, ax+16, ay - tooltip.getHeight()*2);
-                    }
-                }
-            }
-
-        });
-
-        //더블클릭
-        item.actor.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (getTapCount() == 2) {
-                    tooltip.setVisible(false);
-                    // consuming potions
-                    if (item.getType() == 0) {
-                        itemSelected = true;
-                        currentItem = item;
-                        //consume();
-                    }
-                    // equip items with double click
-                    else if (item.getType() >= 2 && item.getType() <= 6) {
-                        //else if (item.getType() >= 2 && item.getType() <= 6 && inMenu) {
-                        unselectItem();
-                        selectedSlot.setVisible(false);
-                        if (!item.getEquipped()) {
-                            item.setEquipped(true);
-                            player.equip(item);
-                            player.inventory.removeItem(item.getIndex());
-                            updateText();
-                            if (!player.equips.addEquip(item)) {
-                                // replace the equip with the item of same type
-                                Item swap = player.equips.removeEquip(item.getType() - 2);
-                                swap.setEquipped(false);
-                                player.unequip(swap);
-                                player.equips.addEquip(item);
-                                player.inventory.addItemAtIndex(swap, item.getIndex());
-                                updateText();
-                            }
-                        }
-                        // double clicking an equipped item unequips it and places it
-                        // in the first open slot if it exists
-                        else {
-                            player.equips.removeEquip(item.getType() - 2);
-                            if (!player.inventory.addItem(item)) {
-                                player.equips.addEquip(item);
-                            } else {
-                                item.setEquipped(false);
-                                player.unequip(item);
-                            }
-                            updateText();
-                        }
-                        //if (inMenu) game.save.save();
+                            tooltip.show(item, ax + 16, ay - tooltip.getHeight() * 2);
                     }
                 }
             }
@@ -458,11 +407,17 @@ public class window extends AbstractUi {
                                 //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                                 if (object.equals("yes")) {
                                     player.addGold(currentItem.getSell());
-                                    player.inventory.items[currentItem.getIndex()].actor.remove();
-                                    player.inventory.removeItem(currentItem.getIndex());
+                                    if(currentItem.getEquipped() && currentItem.getType() >=2 || currentItem.getType()<=6){
+                                        player.equips.getEquipAt(currentItem.getType()-2).actor.remove();
+                                        player.equips.removeEquip(currentItem.getType()-2);
+                                        db.UPDATE_EQ(TYPE[currentItem.getType()-2],null);
+                                    }else {
+                                        player.inventory.items[currentItem.getIndex()].actor.remove();
+                                        player.inventory.removeItem(currentItem.getIndex());
+                                    }
+                                    db.UPDATE("GOLD",currentItem.getSell());
                                     unselectItem();
                                     updateText();
-                                    //game.save.save();
                                 }
                             }
 
@@ -539,27 +494,16 @@ public class window extends AbstractUi {
         return -1;
     }
     private void updateText() {
-        // update all text
-
         stats[0].setText("LV. " + player.getLV() +"  "+ playerID);
-        //stats[0].setText("HP: " + player.getHp() + "/" + player.getMaxHp());
-        //stats[1].setText("DAMAGE: " + player.getMinDamage() + "-" + player.getMaxDamage());
-        //stats[2].setText("ACCURACY: " + player.getAccuracy() + "%");
         stats[1].setText("EXP: " + player.getEXP() + " / " + player.getMaxEXP());
         stats[2].setText("GOLD: " + player.getGold() + " G");
     }
 
     private void toggleInventoryButtons(boolean toggle) {
         if (toggle) {
-            if (!currentItem.getEquipped()) {
-                invButtons[0].setTouchable(Touchable.enabled);
-                invButtons[0].setStyle(enabled);
-                // add enchant cost of item to button
-              //  if ((ax >= 28 && ax <= 116) && (ay >= 76 && ay <= 110)) {
-                        invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
-               // }
-               // else invButtons[0].setTouchable(Touchable.disabled);
-            }
+            invButtons[0].setTouchable(Touchable.enabled);
+            invButtons[0].setStyle(enabled);
+            invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
         } else {
             invButtons[0].setTouchable(Touchable.disabled);
             invButtons[0].setStyle(disabled);
@@ -575,6 +519,7 @@ public class window extends AbstractUi {
         selectedSlot.toFront();
         selectedSlot.setVisible(true);
     }
+
     //아이템클릭 효과 위치
     private Vector2 getCoords(Item item) {
         Vector2 ret = new Vector2();
@@ -593,50 +538,41 @@ public class window extends AbstractUi {
 
 
     public void update() {
-
-
-        /*
-        //if (!inMenu) ui.update(delta);
-        if (ended && ui.getX() == 200) {
-            // next();
-        } else {
-            // update all positions
-            // exitButton.setPosition(ui.getX() + 181, ui.getY() + 101);
-
-         */
         //라벨 위치
-            headers[0].setPosition(ui.getX() + 14, ui.getY() + 188);
-            headers[1].setPosition(ui.getX() + 14, ui.getY() + 108);
-            headers[2].setPosition(ui.getX() + 165, ui.getY() + 188);
-            stats[0].setPosition(ui.getX() + 14, ui.getY() + 175);
-            stats[1].setPosition(ui.getX() + 14, ui.getY() + 160);
-            stats[2].setPosition(ui.getX() + 14, ui.getY() + 145);
+        headers[0].setPosition(ui.getX() + 14, ui.getY() + 188);
+        headers[1].setPosition(ui.getX() + 14, ui.getY() + 108);
+        headers[2].setPosition(ui.getX() + 165, ui.getY() + 188);
+        stats[0].setPosition(ui.getX() + 14, ui.getY() + 175);
+        stats[1].setPosition(ui.getX() + 14, ui.getY() + 160);
+        stats[2].setPosition(ui.getX() + 14, ui.getY() + 145);
 
-            invButtons[0].setPosition(ui.getX() + 190 , ui.getY()+80);
-            invButtonLabels[0].setPosition(invButtons[0].getX() +45, ui.getY() + 165);
+        invButtons[0].setPosition(ui.getX() + 190 , ui.getY()+80);
+        invButtonLabels[0].setPosition(invButtons[0].getX() +45, ui.getY() + 165);
 
-            if (!dragging) {
-                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-                    Item item = player.inventory.getItem(i);
-                    int x = i % NUM_COLS;
-                    int y = i / NUM_COLS;
-                    if (item != null) {
-                        //아이템 위치
-                        item.actor.setSize(26,26);
-                        item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
-                    }
-                }
-                for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
-                    float x = player.equips.positions[i].x;
-                    float y = player.equips.positions[i].y;
-                    if (player.equips.getEquipAt(i) != null) {
-                        player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
-                    }
+        if (!dragging) {
+            for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                Item item = player.inventory.getItem(i);
+                int x = i % NUM_COLS;
+                int y = i / NUM_COLS;
+                if (item != null) {
+                    //아이템 위치
+                    item.actor.setSize(26,26);
+                    item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
+                    item.getInvenCNT().toFront();
+                    item.getInvenCNT().show(item,item.actor.getX()+10,item.actor.getY()+10);
                 }
             }
+            for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+                Item item = player.equips.getEquipAt(i);
+                float x = player.equips.positions[i].x;
+                float y = player.equips.positions[i].y;
+                if (player.equips.getEquipAt(i) != null) {
+                    item.actor.setSize(26,26);
+                    player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
+                }
+            }
+        }
         stage.draw();
         stage.act();
-        //}
-
     }
 }

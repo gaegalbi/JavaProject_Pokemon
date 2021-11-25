@@ -2,6 +2,8 @@ package com.pokemon.db;
 
 import java.sql.*;
 
+import static com.pokemon.ui.LoginUi.playerID;
+
 public class db{
     public static Connection con = null;
     public static ResultSet rs = null;
@@ -366,6 +368,41 @@ public class db{
             System.out.println("Exception:" + e);
             e.printStackTrace();
             return value;
+        }
+    }
+
+    public static void UPDATE(String target,int gold) {
+        String sql = "UPDATE USER SET " +target+ "= " + target +" + " + gold +" WHERE U_ID= '"+playerID+"';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void UPDATE_EQ(String target,String key) {
+        String sql;
+        if(key==null)
+             sql = "UPDATE USER SET " +target+ "= NULL WHERE U_ID= '"+playerID+"';";
+        else
+            sql = "UPDATE USER SET " +target+ "= '" + key +"' WHERE U_ID= '"+playerID+"';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
         }
     }
 }

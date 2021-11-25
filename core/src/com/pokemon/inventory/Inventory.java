@@ -1,5 +1,16 @@
 package com.pokemon.inventory;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.pokemon.util.SkinGenerator;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,12 +30,16 @@ public class Inventory {
 
     private String info;
     private String name;
-    public int cnt;
+    private int cnt;
 
     public static Item[] items;
 
+
     //public Inventory() {items = new Item[NUM_SLOTS];}
    public Inventory(String key) {
+       AssetManager assetManager = new AssetManager();
+       Skin skin = SkinGenerator.generateSkin_O(assetManager);
+
        items = new Item[NUM_SLOTS];
         int i = 1;
         while(i!=GET_MAX_INVEN(playerID)+1) {
@@ -37,6 +52,8 @@ public class Inventory {
                     this.cnt = rs.getInt("ITEM_CNT");
                 }
                 items[i - 1] = new Item(name);
+                items[i-1].setCNT(cnt);
+                items[i-1].setInvenCNT(new Item.InvenCNT(skin));
             } catch (SQLException e) {
                 System.out.println("SQLException" + e);
                 e.printStackTrace();
