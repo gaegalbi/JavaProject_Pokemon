@@ -6,20 +6,19 @@ import com.pokemon.model.TileMap;
 import com.pokemon.model.WorldObject;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public interface World {
     TextureAtlas atlas = new TextureAtlas("texture/texture.atlas");
+    TextureAtlas backGround = new TextureAtlas("maps/background.atlas");
     ArrayList<RenderHelper> renderList = new ArrayList<>();
-    ArrayList<WorldObject> fakeRenderList = new ArrayList<>();
 
     TileMap getMap();
 
     ArrayList<WorldObject> getCollisionObjects();
 
     ArrayList<WorldObject> getObjects();
+
+    String getBackground();
 
     void update();
 }

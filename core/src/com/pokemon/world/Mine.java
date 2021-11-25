@@ -1,6 +1,7 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
@@ -26,7 +27,6 @@ public class Mine implements World {
     private GameScreen gameScreen;
     private TransitionScreen transitionScreen;
     private ArrayList<WorldObject> objects;
-    private ArrayList<WorldObject> fakeObjects;
 
     public Mine(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -35,19 +35,15 @@ public class Mine implements World {
         this.transitionScreen = new TransitionScreen(game);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
-                map.tiles[x][y] = new Tile(x, y, "stone");
+                map.tiles[x][y] = new Tile(x, y);
             }
         }
         objects = new ArrayList<>();
-        fakeObjects = new ArrayList<>();
 
-        objects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
-        fakeObjects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
 
         renderList.clear();
 
         renderList.add(player);
-        renderList.addAll(fakeObjects);
     }
 
     @Override
@@ -62,9 +58,13 @@ public class Mine implements World {
 
     @Override
     public ArrayList<WorldObject> getObjects() {
-        return fakeObjects;
+        return null;
     }
 
+    @Override
+    public String getBackground() {
+        return null;
+    }
 
     @Override
     public void update() {

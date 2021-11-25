@@ -1,7 +1,5 @@
 package com.pokemon.model;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -9,26 +7,21 @@ import com.badlogic.gdx.math.Rectangle;
 import static com.pokemon.world.World.atlas;
 
 public class WorldObject extends Rectangle implements RenderHelper, Comparable<RenderHelper> {
-    private Texture texture;
-    private TextureAtlas.AtlasRegion textures;
+    private TextureAtlas.AtlasRegion texture;
 
-    public WorldObject(float x, float y, float width, float height, TextureAtlas.AtlasRegion texture) {
+    public WorldObject(float x, float y, float width, float height, String texture) {
         super(x, y, width, height);
-        this.textures = texture;
+        this.texture = atlas.findRegion(texture);
     }
 
     public WorldObject(float x, float y, float width, float height) {
         super(x, y, width, height);
-        this.texture = new Texture(Gdx.files.internal("texture/null.png"));
-    }
-
-    public Texture getTexture() {
-        return texture;
+        this.texture = atlas.findRegion("null");
     }
 
     @Override
     public TextureRegion getSprites() {
-        return textures;
+        return texture;
     }
 
     @Override
@@ -44,5 +37,16 @@ public class WorldObject extends Rectangle implements RenderHelper, Comparable<R
     @Override
     public int compareTo(RenderHelper o) {
         return (int) (y-o.getY());
+    }
+
+    @Override
+    public String toString() {
+        return "WorldObject{" +
+                "texture=" + texture +
+                ", x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
     }
 }

@@ -1,40 +1,75 @@
 
 texture.png
-size: 32, 128
+size: 256, 128
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-flower
-  rotate: false
-  xy: 2, 38
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-grass
+bulletin
   rotate: false
   xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-null
+flower1
+  rotate: false
+  xy: 168, 102
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+flower2
+  rotate: false
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+garden
   rotate: false
   xy: 2, 20
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+house1
+  rotate: false
+  xy: 84, 54
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+house2
+  rotate: false
+  xy: 2, 54
+  size: 80, 64
+  orig: 80, 64
+  offset: 0, 0
+  index: -1
+null
+  rotate: false
+  xy: 38, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone
   rotate: false
-  xy: 2, 56
+  xy: 150, 68
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 tree
   rotate: false
-  xy: 2, 74
+  xy: 150, 86
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+tree_head
+  rotate: false
+  xy: 20, 20
   size: 16, 32
   orig: 16, 32
   offset: 0, 0

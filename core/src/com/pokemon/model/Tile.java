@@ -6,12 +6,10 @@ import static com.pokemon.world.World.atlas;
 
 public class Tile {
     private int x, y;
-    private TextureAtlas.AtlasRegion texture;
 
-    public Tile(int x, int y, String tex) {
+    public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-        this.texture = atlas.findRegion(tex);
     }
 
     public int getX() {
@@ -22,9 +20,6 @@ public class Tile {
         return y;
     }
 
-    public TextureAtlas.AtlasRegion getTex() {
-        return texture;
-    }
 
     // 좌표 디버깅용
     @Override

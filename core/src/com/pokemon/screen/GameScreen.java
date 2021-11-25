@@ -29,6 +29,8 @@ import aurelienribon.tweenengine.TweenManager;
 
 import java.util.HashMap;
 
+import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
+
 public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;
@@ -78,7 +80,7 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        player = new Player(0, 0, animations);
+        player = new Player(13*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE, animations);
         world = new MainWorld(player,game,this);
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);

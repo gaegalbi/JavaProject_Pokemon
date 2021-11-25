@@ -1,6 +1,9 @@
 package com.pokemon.world;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
@@ -9,18 +12,20 @@ import com.pokemon.model.TileMap;
 import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.TransitionScreen;
+import com.pokemon.screen.WorldObjectYComparator;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
 import com.pokemon.util.Action;
+import com.pokemon.util.ObjectGenerator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 import static com.pokemon.screen.GameScreen.getAssetManager;
 import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class MainWorld implements World {
-
     private final TileMap map = new TileMap(29, 22);
     private Player player;
     private Pokemon game;
@@ -36,19 +41,13 @@ public class MainWorld implements World {
         this.transitionScreen = new TransitionScreen(game);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
-                map.tiles[x][y] = new Tile(x, y, "grass");
+                map.tiles[x][y] = new Tile(x, y);
             }
         }
-        collisionObjects = new ArrayList<>();
-        objects = new ArrayList<>();
-
-        collisionObjects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
-        objects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE,atlas.findRegion("tree")));
-
+        collisionObjects = ObjectGenerator.generateObject("MainWorldCollision");
         renderList.clear();
-
         renderList.add(player);
-        renderList.addAll(objects);
+        renderList.addAll(ObjectGenerator.generateObject("MainWorld"));
     }
 
     @Override
@@ -64,6 +63,11 @@ public class MainWorld implements World {
     @Override
     public ArrayList<WorldObject> getObjects() {
         return objects;
+    }
+
+    @Override
+    public String getBackground() {
+        return "MainWorld";
     }
 
     @Override
