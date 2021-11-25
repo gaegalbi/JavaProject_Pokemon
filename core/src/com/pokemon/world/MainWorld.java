@@ -1,45 +1,54 @@
 package com.pokemon.world;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Color;
+import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
 import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.screen.TransitionScreen;
+import com.pokemon.transition.FadeInTransition;
+import com.pokemon.transition.FadeOutTransition;
+import com.pokemon.util.Action;
 
 import java.util.ArrayList;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
+import static com.pokemon.screen.GameScreen.getAssetManager;
+import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class MainWorld implements World {
 
-    private final TileMap map = new TileMap(20, 20);
+    private final TileMap map = new TileMap(29, 22);
     private Player player;
+    private Pokemon game;
+    private ArrayList<WorldObject> collisionObjects;
     private ArrayList<WorldObject> objects;
-    private ArrayList<WorldObject> fakeObjects;
+    private TransitionScreen transitionScreen;
+    private GameScreen gameScreen;
 
-    public MainWorld(Player player) {
+    public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
+        this.game = game;
+        this.gameScreen = gameScreen;
+        this.transitionScreen = new TransitionScreen(game);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 map.tiles[x][y] = new Tile(x, y, "grass");
             }
         }
+        collisionObjects = new ArrayList<>();
         objects = new ArrayList<>();
-        fakeObjects = new ArrayList<>();
 
-        objects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
-        fakeObjects.add(new WorldObject(5 * Settings.TILE_SIZE, 5 * Settings.TILE_SIZE, 2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE,atlas.findRegion("tree")));
+        collisionObjects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, SCALED_TILE_SIZE,atlas.findRegion("null")));
+        objects.add(new WorldObject(3 * Settings.SCALED_TILE_SIZE, 3 * Settings.SCALED_TILE_SIZE, SCALED_TILE_SIZE, 2*SCALED_TILE_SIZE,atlas.findRegion("tree")));
 
-        objects.add(new WorldObject(8 * Settings.TILE_SIZE, 8 * Settings.TILE_SIZE, 7*SCALED_TILE_SIZE, 4*SCALED_TILE_SIZE,atlas.findRegion("null")));
-        fakeObjects.add(new WorldObject(8 * Settings.TILE_SIZE, 8 * Settings.TILE_SIZE, 7*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE,atlas.findRegion("house1")));
+        renderList.clear();
 
-        renderQueue.clear();
-
-        renderQueue.add(player);
-        renderQueue.addAll(fakeObjects);
+        renderList.add(player);
+        renderList.addAll(objects);
     }
 
     @Override
@@ -48,13 +57,13 @@ public class MainWorld implements World {
     }
 
     @Override
-    public ArrayList<WorldObject> getObjects() {
-        return objects;
+    public ArrayList<WorldObject> getCollisionObjects() {
+        return collisionObjects;
     }
 
     @Override
-    public ArrayList<WorldObject> getFakeObjects() {
-        return fakeObjects;
+    public ArrayList<WorldObject> getObjects() {
+        return objects;
     }
 
     @Override
@@ -74,7 +83,18 @@ public class MainWorld implements World {
         if (player.x > 576 && player.y < 32) {
             player.setX(0);
             player.setY(0);
-            GameScreen.setWorld(new Mine(player));
+            transitionScreen.startTransition(
+                gameScreen,
+                gameScreen,
+                new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
+                new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
+                new Action() {
+                    @Override
+                    public void action() {
+                        System.out.println("FadeOut");
+                    }
+            });
+            GameScreen.setWorld(new Mine(player,game,gameScreen));
         }
     }
 }

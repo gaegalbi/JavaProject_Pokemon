@@ -12,13 +12,14 @@ import java.util.Queue;
 
 public interface World {
     TextureAtlas atlas = new TextureAtlas("texture/texture.atlas");
-    ArrayList<RenderHelper> renderQueue = new ArrayList<>();
+    ArrayList<RenderHelper> renderList = new ArrayList<>();
+    ArrayList<WorldObject> fakeRenderList = new ArrayList<>();
 
     TileMap getMap();
 
-    ArrayList<WorldObject> getObjects();
+    ArrayList<WorldObject> getCollisionObjects();
 
-    ArrayList<WorldObject> getFakeObjects();
+    ArrayList<WorldObject> getObjects();
 
     void update();
 }
