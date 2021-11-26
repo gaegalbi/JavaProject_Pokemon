@@ -55,6 +55,7 @@ public class window extends AbstractUi {
     private ImageButton.ImageButtonStyle disabled;
     private ImageButton[] invButtons;
     private Label[] invButtonLabels;
+    private Table table;
     //
     // 0 - hp, 1 - dmg, 2 - acc, 3 - exp, 4 - gold
     private Label[] stats;
@@ -68,7 +69,7 @@ public class window extends AbstractUi {
     private static final int SLOT_HEIGHT = 30;
 
    private static final Rectangle EQUIPS_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2, 130, 160, 120);
-   private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+120, 240, 180, 120);
+   private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+160, 130, 210, 180);
     //이벤트 핸들링(드래그)
     private boolean dragging = false;
     //드래그 관련 좌표
@@ -102,7 +103,9 @@ public class window extends AbstractUi {
         skin = SkinGenerator.generateSkin_O(assetManager);
 
         TextureAtlas atlas = assetManager.get("texture/textures.atlas");
-        TextureRegion[][] invbuttons92x28 = atlas.findRegion("inv_buttons").split(36, 14);
+        //TextureRegion[][] invbuttons92x28 = atlas.findRegion("inv_buttons").split(50, 50);
+        TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
+        TextureRegion[][] invbuttons92x28 = inv_but.split(50, 30);
 
         //skin1 = SkinGenerator.generateSkin_O2(assetManager);
 
@@ -150,18 +153,19 @@ public class window extends AbstractUi {
         }
         //버튼 이미지
         enabled = new ImageButton.ImageButtonStyle();
+
         enabled.imageUp = new TextureRegionDrawable(invbuttons92x28[0][0]);
         enabled.imageDown = new TextureRegionDrawable(invbuttons92x28[1][0]);
         disabled = new ImageButton.ImageButtonStyle();
         disabled.imageUp = new TextureRegionDrawable(invbuttons92x28[2][0]);
-        invButtons = new ImageButton[2];
-        invButtonLabels = new Label[2];
+        invButtons= new ImageButton[1];
+        invButtonLabels = new Label[1];
         //판매 버튼
         String texts = " 버리기";
         //String texts = " 판매";
         invButtons[0] = new ImageButton(disabled);
-        invButtons[0].setSize(90,100);
-        invButtons[0].getImage().setFillParent(true);
+        //Texture backgroundT = new Texture(Gdx.files.internal("inven/background.png"));
+        //invButtons[0].setBackground(new TextureRegionDrawable(new TextureRegion(backgroundT)));
         invButtons[0].setTouchable(Touchable.disabled);
 
         invButtonLabels[0] = new Label(texts, skin);
@@ -169,15 +173,21 @@ public class window extends AbstractUi {
         invButtonLabels[0].setTouchable(Touchable.disabled);
         invButtonLabels[0].setAlignment(Align.center);
 
+        table = new Table();
+
+        table.add(invButtons[0]).size(50,30);
+
+
+
         //ui 및 슬롯, 버튼들 추가(init)
         stage.addActor(ui);
         for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
         for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
         stage.addActor(selectedSlot);
         stage.addActor(tooltip);
-        stage.addActor(invButtons[0]);
+        //stage.addActor(invButtons[0]);
         stage.addActor(invButtonLabels[0]);
-
+        stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
         //아이템 추가
         addInventory();
@@ -246,7 +256,6 @@ public class window extends AbstractUi {
     private void addInventoryEvent(final Item item) {
         item.actor.clearListeners();
         item.actor.addListener(new DragListener() {
-
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
@@ -260,6 +269,7 @@ public class window extends AbstractUi {
 
                 item.actor.toFront();
                 item.count.toFront();
+
                 selectedSlot.setVisible(false);
                 if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
                 else player.equips.removeEquip(item.getType() - 2);
@@ -277,7 +287,7 @@ public class window extends AbstractUi {
                 // origin positions
                 ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-                System.out.println(ax + "   " + ay);
+
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                 if (item.getEquipped()) {
                     int hi = getHoveredIndex(ax, ay);
@@ -291,9 +301,9 @@ public class window extends AbstractUi {
                             updateText();
                         } else {
                             //장비를 빈 인덱스에 넣음
-                            hi = 0;
-                            while (!player.inventory.isFreeSlot(hi)) hi++;
-                            player.inventory.addItemAtIndex(item, hi);
+                            //hi = 0; 삭제
+                           // while (!player.inventory.isFreeSlot(hi)) hi++;
+                            player.inventory.addItemAtIndex(item, player.inventory.getFirstFreeSlotIndex());
                             item.setEquipped(false);
                             player.unequip(item);
                             updateText();
@@ -303,6 +313,7 @@ public class window extends AbstractUi {
                 } else {
                     // 장비칸으로 이동시
                     if (EQUIPS_AREA.contains(ax, ay)) {
+                        System.out.println("장비영역");
                         if (item.getType() >= 2 && item.getType() <= 6) {
                             item.setEquipped(true);
                             player.equip(item);
@@ -371,6 +382,16 @@ public class window extends AbstractUi {
                 }
             }
         });
+
+        //인벤토리 밖 클릭시 선택해제
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(!(EQUIPS_AREA.contains(x,y) || INVENTORY_AREA.contains(x,y)))
+                    unselectItem();
+                return true;
+            }
+        });
     }
 
     private void handleStageEvents() {
@@ -385,7 +406,7 @@ public class window extends AbstractUi {
     }
     private void handleInvButtonEvents() {
         // 판매
-        invButtons[0].addListener(new ClickListener() {
+        table.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                     // if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
@@ -407,7 +428,7 @@ public class window extends AbstractUi {
                             protected void result(Object object) {
                                 //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                                 if (object.equals("yes")) {
-                                    player.addGold(currentItem.getSell());
+                                   // player.addGold(currentItem.getSell());
                                     if (currentItem.getEquipped()) {
                                         player.equips.getEquipAt(currentItem.getType() - 2).actor.remove();
                                         player.equips.removeEquip(currentItem.getType() - 2);
@@ -417,23 +438,20 @@ public class window extends AbstractUi {
                                         if (current > 0) {
                                             player.inventory.items[currentItem.getIndex()].setCNT(current);
                                             player.inventory.items[currentItem.getIndex()].setCurrentCNT();
-                                        } else {
+                                        }
+                                        else {
                                             player.inventory.items[currentItem.getIndex()].actor.remove();
                                             player.inventory.items[currentItem.getIndex()].count.remove();
                                             player.inventory.removeItem(currentItem.getIndex());
                                         }
                                     }
-                                    db.UPDATE("GOLD", currentItem.getSell());
-                                    if(db.COMPARE_CNT(currentItem.getKey(), 1))
-                                        db.UPDATE_CNT(currentItem.getKey(), 1);
-                                    else
-                                        System.out.println("버리려는 아이템 갯수가 너무 많습니다.");
-
+                                    //db.UPDATE("GOLD", currentItem.getSell());
+                                    //if(db.COMPARE_CNT(currentItem.getKey(), 1))
+                                    db.UPDATE_CNT(currentItem.getKey(), 1);
+                                    db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     unselectItem();
                                     updateText();
                                 }
-
-
                             }
 
                         }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -564,8 +582,9 @@ public class window extends AbstractUi {
         stats[1].setPosition(ui.getX() + 14, ui.getY() + 160);
         stats[2].setPosition(ui.getX() + 14, ui.getY() + 145);
 
-        invButtons[0].setPosition(ui.getX() + 190 , ui.getY()+80);
-        invButtonLabels[0].setPosition(invButtons[0].getX() +45, ui.getY() + 165);
+        table.setPosition(ui.getX() + 262 , ui.getY()+160);
+        invButtonLabels[0].setPosition(table.getX()-26, ui.getY() + 152);
+        invButtonLabels[0].toFront();
 
         if (!dragging) {
             for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
@@ -577,7 +596,6 @@ public class window extends AbstractUi {
                     item.actor.setSize(26,26);
                     item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
                     item.count.setPosition(item.actor.getX()+23-item.getCurrentCNT(),item.actor.getY()+2);
-
                 }
             }
             for (int i = 0; i < Equipment.NUM_SLOTS; i++) {

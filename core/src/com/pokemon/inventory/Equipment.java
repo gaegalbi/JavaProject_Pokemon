@@ -49,8 +49,6 @@ public class Equipment {
                         equips[i].setCNT(1);
                     }
                 }
-
-
             } catch (SQLException e) {
                 System.out.println("SQLException" + e);
                 e.printStackTrace();

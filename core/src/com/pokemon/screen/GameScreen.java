@@ -14,7 +14,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.inventory.Item;
 import com.pokemon.model.Player;
 import com.pokemon.model.Portal;
 import com.pokemon.ui.AbstractUi;
@@ -120,15 +122,23 @@ public class GameScreen implements Screen {
     }
 
     public void update(float delta){
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
-            System.out.println("동작");
             check = (!check);
             if(check) {
+                //아이템 추가
+                //player.inventory.addItem(new Item("ITEM_01"),1);
+                db.UPDATE("ITEM_01",1);
+                Item item = player.inventory.items[player.inventory.isSame("ITEM_01")];
+                item.setCNT(item.getCNT() + 1);
+                item.setCurrentCNT();
                 this.pushScreen(new window(this, game,player));
+
             }else {
                 AbstractUi popped = uiStack.pop();
                 popped.dispose();
             }
+
            // stage.addActor(new window(game,player));
         }
     }

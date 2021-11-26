@@ -34,7 +34,6 @@ public class Inventory {
 
     public static Item[] items;
 
-
     //public Inventory() {items = new Item[NUM_SLOTS];}
    public Inventory(String key) {
        items = new Item[NUM_SLOTS];
@@ -51,7 +50,14 @@ public class Inventory {
                 }
                 if(cnt>0){
                     items[i - 1] = new Item(name);
-                    if(items[i-1].getType()>=2 && items[i-1].getType()<=6) items[i-1].setCNT(1);
+                    if(items[i-1].getType()>=2 && items[i-1].getType()<=6 && cnt>=2){
+                        while(cnt!=1){
+                            i++;
+                            items[i-1] = new Item(name);
+                            items[i-1].setCNT(1);
+                            cnt--;
+                        }
+                    }
                     else items[i-1].setCNT(cnt);
                 }
             } catch (SQLException e) {
@@ -97,22 +103,29 @@ public class Inventory {
         return items[index] == null;
     }
 
-    /**
-     * Adds an Item to the inventory that is placed in the first available slot
-     * Returns false if item cannot be added
-     *
-     * @param item
-     * @return
-     */
-    public boolean addItem(Item item) {
-        int i = getFirstFreeSlotIndex();
-        if (i != -1) {
-            items[i] = item;
-            item.setIndex(i);
-
-            return true;
+    //아이템중에 장비 아이템을 제외하고 같은 아이템이 있는지 확인
+    public int isSame(String id) {
+        for (int i = 0; i < NUM_SLOTS; i++) {
+            if(items[i]!=null)
+                if (items[i].getKey().equals(id) && !(items[i].getType()>=2 && items[i].getType()<=6)) return i;
         }
-        return false;
+        return 0;
+    }
+
+    public void addItem(Item item, int cnt) {
+        int i;
+        if((i=isSame(item.getKey()))>0){
+            items[i].setCNT(items[i].getCNT()+cnt);
+            items[i].setCurrentCNT();
+        }else {
+            i = getFirstFreeSlotIndex();
+            if (i != -1) {
+                items[i] = item;
+                items[i].setCNT(cnt);
+                items[i].setCurrentCNT();
+                items[i].setIndex(i);
+            }
+        }
     }
 
     /**
@@ -127,7 +140,6 @@ public class Inventory {
         if (isFreeSlot(index)) {
             items[index] = item;
             item.setIndex(index);
-
             return true;
         }
         return false;

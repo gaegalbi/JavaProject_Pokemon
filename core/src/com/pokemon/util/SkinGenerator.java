@@ -74,7 +74,7 @@ public class SkinGenerator {
 		assetManager.load("texture/textures.atlas",TextureAtlas.class);
 		assetManager.load("texture/texture.atlas",TextureAtlas.class);
 		assetManager.load("texture/dialog.atlas",TextureAtlas.class);
-		//assetManager.load("inven/.png",Texture.class);
+		assetManager.load("inven/inv_buttons1.png",Texture.class);
 
 		assetManager.finishLoading();
 
@@ -87,10 +87,14 @@ public class SkinGenerator {
 		labelStyle.font = skin.getFont("font");
 		skin.add("default", labelStyle);
 
+
 		//인벤창
 		skin.add("inv_ui", atlas.findRegion("inv_ui"), TextureRegion.class);
 		skin.add("selected_slot", atlas.findRegion("selected_slot"), TextureRegion.class);
-		skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(36, 14));
+		//skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(46, 14));
+
+		TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
+		skin.add("inv_buttons",inv_but.split(50,30));
 
 		//판매창
 		Texture backgroundT = new Texture(Gdx.files.internal("inven/background.png"));

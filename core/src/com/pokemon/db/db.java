@@ -371,11 +371,24 @@ public class db {
         }
     }
 
-    public static void UPDATE(String target, int gold) {
-        String sql = "UPDATE USER SET " + target + "= " + target + " + " + gold + " WHERE U_ID= '" + playerID + "';";
+    public static void UPDATE(String target, int cnt) {
+        String sql = "SELECT ITEM_ID FROM INVEN WHERE U_ID = '" + playerID + "' AND ITEM_ID = '" + target +"';";
+        String item_id = null;
         try {
             stmt = con.createStatement();
-            stmt.executeUpdate(sql);
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                item_id = rs.getString("ITEM_ID");
+            }
+            //같은 종류의 아이템이 있으면 update
+            if(item_id != null){
+                UPDATE_CNT(target,cnt);
+            }
+            else{
+                sql = "INSERT INTO INVEN(U_ID,ITEM_ID,ITEM_CNT) VALUES ('"+playerID +"','" + target + "', '" + cnt + "');";
+                stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+            }
         } catch (SQLException e) {
             System.out.println("업데이트하는 SQL문이 틀렸습니다.");
             System.out.print("이유 : " + e);
@@ -405,7 +418,7 @@ public class db {
             e.printStackTrace();
         }
     }
-
+/*
     public static boolean COMPARE_CNT(String target, int cnt) {
         int num = 0;
         String sql = "select ITEM_CNT FROM INVEN WHERE U_ID ='" + playerID + "' AND ITEM_ID = '" + target + "';";
@@ -429,10 +442,25 @@ public class db {
             e.printStackTrace();
             return false;
         }
-    }
+    }*/
 
     public static void UPDATE_CNT(String target, int cnt) {
-        String sql = "UPDATE INVEN SET ITEM_CNT = ITEM_CNT-" + cnt + " WHERE ITEM_ID = '" + target + "' AND U_ID='" + playerID + "';";
+        String sql = "UPDATE INVEN SET ITEM_CNT = ITEM_CNT +" + cnt + " WHERE ITEM_ID = '" + target + "' AND U_ID='" + playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+    public static void DELETE() {
+        String sql = "DELETE FROM INVEN WHERE ITEM_CNT <=0 AND U_ID= '" + playerID + "';";
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
