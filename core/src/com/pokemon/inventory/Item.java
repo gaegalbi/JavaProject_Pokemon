@@ -97,7 +97,6 @@ public class Item {
                 this.sell = rs.getInt("SELL");
                 actor = new Image(assetManager.get("texture/"+name+".png", Texture.class));
                 count = new Label("",skin);
-
             }
         }catch(SQLException e){
             System.out.println("SQLException" + e);

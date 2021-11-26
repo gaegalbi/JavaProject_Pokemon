@@ -418,34 +418,10 @@ public class db {
             e.printStackTrace();
         }
     }
-/*
-    public static boolean COMPARE_CNT(String target, int cnt) {
-        int num = 0;
-        String sql = "select ITEM_CNT FROM INVEN WHERE U_ID ='" + playerID + "' AND ITEM_ID = '" + target + "';";
-        try {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                num = rs.getInt("ITEM_CNT");
-            }
-            if (cnt <= num)
-                return true;
-            else
-                return false;
-        } catch (SQLException e) {
-            System.out.println("검색하는 SQL문이 틀렸습니다.");
-            System.out.print("이유 : " + e);
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            System.out.println("Exception:" + e);
-            e.printStackTrace();
-            return false;
-        }
-    }*/
 
     public static void UPDATE_CNT(String target, int cnt) {
-        String sql = "UPDATE INVEN SET ITEM_CNT = ITEM_CNT +" + cnt + " WHERE ITEM_ID = '" + target + "' AND U_ID='" + playerID + "';";
+        String sql = "UPDATE INVEN SET ITEM_CNT = ITEM_CNT + '" + cnt + "' WHERE ITEM_ID = '" + target + "' AND U_ID='" + playerID + "';";
+        System.out.println("db cnt : " + cnt);
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);

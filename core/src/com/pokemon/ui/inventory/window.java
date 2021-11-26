@@ -228,14 +228,15 @@ public class window extends AbstractUi {
             Item item = player.inventory.getItem(i);
             if (item != null) {
                 item.actor.remove();
+                item.count.remove();
             }
         }
-        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+      /*  for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
             Item item = player.equips.getEquipAt(i);
             if (item != null) {
                 item.actor.remove();
             }
-        }
+        }*/
     }
 
     private void handleInventoryEvents() {
@@ -252,9 +253,11 @@ public class window extends AbstractUi {
             }
         }
     }
+    public static boolean dragRemove;
 
     private void addInventoryEvent(final Item item) {
         item.actor.clearListeners();
+
         item.actor.addListener(new DragListener() {
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
@@ -279,14 +282,15 @@ public class window extends AbstractUi {
                 item.actor.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
                 item.count.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
             }
+
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 dragging = false;
                 selectedSlot.setVisible(false);
-
                 // origin positions
                 ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
 
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                 if (item.getEquipped()) {
@@ -332,7 +336,7 @@ public class window extends AbstractUi {
                             player.inventory.addItemAtIndex(item, item.getIndex());
                     }
                     // 인벤토리 내에서 아이템끼리 이동
-                    else {
+                    else if(INVENTORY_AREA.contains(ax,ay)){
                         int hi = getHoveredIndex(ax, ay);
                         if (hi == -1)
                             player.inventory.addItemAtIndex(item, item.getIndex());
@@ -344,8 +348,54 @@ public class window extends AbstractUi {
                             }
                         }
                     }
+                    // 인벤토리 밖으로 전부 버리기
+                    else {
+                        System.out.println("선택 아이템 숫자" + item.getCNT());
+                        item.actor.remove();
+                        item.count.remove();
+                        //*3이유 => UPDATE_CNT에서 ITEM_CNT = ITEM_CNT + cnt
+                        db.UPDATE(item.getKey(), -item.getCNT() * 3);
+                    }
                 }
+            }
+        });
+        //더블 클릭시 절반
+        item.actor.addListener(new ClickListener(){
+            public void splitCNT(Item item1, Item item2){
+                int tmp = item1.getCNT();
+                    item2.setCNT(tmp / 2); //2
+                    item1.setCNT(tmp - item2.getCNT()); //3
+                    item1.setCurrentCNT();
+                    item2.setCurrentCNT();
+            }
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                currentItem = item;
+                if(getTapCount()==2 && item.getCNT()>=2){
+                    Item splitItem = new Item(currentItem.getKey());
+                    splitCNT(currentItem,splitItem);
+                    player.inventory.addItemAtIndex(splitItem, player.inventory.getFirstFreeSlotIndex());
 
+                    //이미지 지우고 전부 새로 불러오기
+                    removeInventoryActors();
+                    addInventory();
+
+                    db.UPDATE_CNT(splitItem.getKey(), splitItem.getCNT());
+                    db.UPDATE_CNT(currentItem.getKey(), currentItem.getCNT());
+
+                    splitItem.actor.toFront();
+                    splitItem.count.toFront();
+
+                    item.actor.toFront();
+                    item.count.toFront();
+
+                    tooltip.toFront();
+
+                    handleStageEvents();
+                    handleInvButtonEvents();
+                    handleInventoryEvents();
+                    updateText();
+                }
             }
         });
         //터치
@@ -364,6 +414,7 @@ public class window extends AbstractUi {
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
                 if (prevX == ax && prevY == ay) {
+
                     if (selectedSlot.isVisible())
                         unselectItem();
                     else {
@@ -405,7 +456,7 @@ public class window extends AbstractUi {
         });
     }
     private void handleInvButtonEvents() {
-        // 판매
+        // 버리기
         table.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -447,7 +498,7 @@ public class window extends AbstractUi {
                                     }
                                     //db.UPDATE("GOLD", currentItem.getSell());
                                     //if(db.COMPARE_CNT(currentItem.getKey(), 1))
-                                    db.UPDATE_CNT(currentItem.getKey(), 1);
+                                    db.UPDATE(currentItem.getKey(), -1);
                                     db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     unselectItem();
                                     updateText();
@@ -574,13 +625,15 @@ public class window extends AbstractUi {
 
 
     public void update() {
+        int w= Gdx.graphics.getWidth()/3 -Gdx.graphics.getWidth()/15 ;
+        int h = Gdx.graphics.getHeight()/3 -Gdx.graphics.getHeight()/18;
         //라벨 위치
-        headers[0].setPosition(ui.getX() + 14, ui.getY() + 188);
-        headers[1].setPosition(ui.getX() + 14, ui.getY() + 108);
-        headers[2].setPosition(ui.getX() + 165, ui.getY() + 188);
-        stats[0].setPosition(ui.getX() + 14, ui.getY() + 175);
-        stats[1].setPosition(ui.getX() + 14, ui.getY() + 160);
-        stats[2].setPosition(ui.getX() + 14, ui.getY() + 145);
+        headers[0].setPosition(w + 14, h + 188);
+        headers[1].setPosition(w + 14, h + 108);
+        headers[2].setPosition(w+ 165, h+ 188);
+        stats[0].setPosition(w + 14, h + 175);
+        stats[1].setPosition(w + 14, h + 160);
+        stats[2].setPosition(w + 14, h + 145);
 
         table.setPosition(ui.getX() + 262 , ui.getY()+160);
         invButtonLabels[0].setPosition(table.getX()-26, ui.getY() + 152);
