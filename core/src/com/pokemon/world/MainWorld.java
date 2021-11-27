@@ -1,6 +1,7 @@
 package com.pokemon.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,6 +16,8 @@ import com.pokemon.screen.TransitionScreen;
 import com.pokemon.screen.WorldObjectYComparator;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
+import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.rank.window;
 import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
 
@@ -33,6 +36,8 @@ public class MainWorld implements World {
     private ArrayList<WorldObject> objects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
+
+    int check = 1;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -99,6 +104,19 @@ public class MainWorld implements World {
                     }
             });
             GameScreen.setWorld(new Mine(player,game,gameScreen));
+        }
+
+        if (((int)(player.x/32) == 5 || (int)(player.x/32) == 6) && (int)(player.y/32) == 12){
+            if (check == 1)
+                gameScreen.pushUi(new window(gameScreen, game,player));
+            check++;
+        }
+        else{
+            if (check != 1){
+                AbstractUi popped = gameScreen.popUi();
+                popped.dispose();
+            }
+            check = 1;
         }
     }
 }
