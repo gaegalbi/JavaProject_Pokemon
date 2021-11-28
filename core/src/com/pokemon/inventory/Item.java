@@ -85,7 +85,7 @@ public class Item {
         assetManager.load("texture/나무괭이.png",Texture.class);
         assetManager.finishLoading();
 
-        Skin skin = SkinGenerator.generateSkin_O(assetManager);
+        Skin skin = SkinGenerator.generateSkin(assetManager);
 
         String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE,SELL FROM ITEM WHERE ITEM_ID ='"+key+"';";
         this.key = key;//ITEM_ID

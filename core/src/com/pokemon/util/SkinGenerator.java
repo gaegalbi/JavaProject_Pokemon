@@ -18,18 +18,61 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonReader;
 
-/**
- * Generates a Skin to slam on the UI. 
- * 
- * @author hydrozoa
- */
 public class SkinGenerator {
 
-	private static Skin dialogSkin;
+	public static TextureRegion inv_ui;
+	public static TextureRegion inv_but;
+	public static TextureRegion selectedSlot;
+	public static TextureRegion backgroundM;
+	public static Texture backgroundS;
+	public static Window.WindowStyle windowStyle;
+	public static TextButton.TextButtonStyle textButtonStyle;
+
 	private AssetManager assetManager;
 
 	public static Skin generateSkin(AssetManager assetManager) {
 		Skin skin = new Skin();
+		assetManager = new AssetManager();
+		assetManager.load("inven/inv_buttons1.png",Texture.class);
+		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
+		assetManager.finishLoading();
+
+	/*	assetManager.load("inven/inv_buttons1.png",Texture.class);
+		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
+		assetManager.finishLoading();*/
+
+		//인벤 폰트
+		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		skin.add("font", font);
+
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = skin.getFont("font");
+		skin.add("default", labelStyle);
+
+		//인벤 UI
+		inv_ui = new TextureRegion(new Texture(Gdx.files.internal("inven/inventory_ui.png")));
+		skin.add("inv_ui", inv_ui, TextureRegion.class);
+
+		inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
+		skin.add("inv_buttons",inv_but,TextureRegion.class);
+
+		selectedSlot = new TextureRegion(new Texture(Gdx.files.internal("inven/selectedSlot.png")));
+		skin.add("selected_slot", selectedSlot, TextureRegion.class);
+
+		backgroundM = new TextureRegion(new Texture(Gdx.files.internal("inven/background_m.png")));
+		skin.add("event_craft",backgroundM);
+
+		backgroundS = new Texture(Gdx.files.internal("inven/background.png"));
+		windowStyle = new Window.WindowStyle();
+		windowStyle.titleFont = skin.getFont("font");
+		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundS));
+		skin.add("default",windowStyle);
+
+		textButtonStyle = new TextButton.TextButtonStyle();
+		textButtonStyle.font = skin.getFont("font");
+		skin.add("default",textButtonStyle);
+		/* ========================================= */
+
 		TextureAtlas uiAtlas = assetManager.get("ui/uipack.atlas");
 
 		NinePatch buttonSquareBlue = new NinePatch(uiAtlas.findRegion("dialoguebox"), 10, 10, 5, 5);
@@ -50,65 +93,21 @@ public class SkinGenerator {
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
 
-		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		//BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 
-		font.getData().setLineHeight(16f);
+		//font.getData().setLineHeight(16f);
 		skin.add("font", font);
 
-		BitmapFont smallFont = assetManager.get("font/han/gul.fnt", BitmapFont.class);
+		BitmapFont smallFont = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 		skin.add("small_letters_font", smallFont);
 
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = skin.getFont("font");
-		skin.add("default", labelStyle);
+		//LabelStyle labelStyle = new LabelStyle();
+		//labelStyle.font = skin.getFont("font");
+		//skin.add("default", labelStyle);
 		
 		LabelStyle labelStyleSmall = new LabelStyle();
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
-
-		return skin;
-	}
-
-	public static Skin generateSkin_O(AssetManager assetManager) {
-		Skin skin = new Skin();
-		assetManager.load("texture/textures.atlas",TextureAtlas.class);
-		assetManager.load("texture/texture.atlas",TextureAtlas.class);
-		assetManager.load("texture/dialog.atlas",TextureAtlas.class);
-		assetManager.load("inven/inv_buttons1.png",Texture.class);
-
-		assetManager.finishLoading();
-
-		TextureAtlas atlas = assetManager.get("texture/textures.atlas");
-
-		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
-		skin.add("font", font);
-
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = skin.getFont("font");
-		skin.add("default", labelStyle);
-
-
-		//인벤창
-		skin.add("inv_ui", atlas.findRegion("inv_ui"), TextureRegion.class);
-		skin.add("selected_slot", atlas.findRegion("selected_slot"), TextureRegion.class);
-		//skin.add("inv_buttons",atlas.findRegion("inv_buttons").split(46, 14));
-
-		TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
-		skin.add("inv_buttons",inv_but.split(50,30));
-
-		//이벤트 창
-		TextureRegion backgroundM = new TextureRegion(new Texture(Gdx.files.internal("inven/background_m.png")));
-		skin.add("event_craft",backgroundM);
-		Texture backgroundS = new Texture(Gdx.files.internal("inven/background.png"));
-
-		Window.WindowStyle windowStyle = new Window.WindowStyle();
-		windowStyle.titleFont = skin.getFont("font");
-		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundS));
-		skin.add("default",windowStyle);
-
-		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-		textButtonStyle.font = skin.getFont("font");
-		skin.add("default",textButtonStyle);
 
 		return skin;
 	}

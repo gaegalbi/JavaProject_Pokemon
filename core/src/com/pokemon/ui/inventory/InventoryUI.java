@@ -34,6 +34,7 @@ import com.pokemon.util.SkinGenerator;
 
 import static com.pokemon.inventory.Item.TYPE;
 import static com.pokemon.ui.LoginUi.playerID;
+import static com.pokemon.util.SkinGenerator.inv_but;
 
 public class InventoryUI extends AbstractUi {
     private Stage stage;
@@ -44,11 +45,14 @@ public class InventoryUI extends AbstractUi {
     private AssetManager assetManager;
     private Skin skin;
     private Image selectedSlot;
+
     //툴팁
     private ItemTooltip tooltip;
     //창 이름
     private Label[] headers;
     private String[] headerStrs = {"상태창", "장비", "인벤토리"};
+    //버튼
+    private TextureRegion[][] invbuttons92x28;
     //버튼 스타일
     private ImageButton.ImageButtonStyle enabled;
     private ImageButton.ImageButtonStyle disabled;
@@ -87,20 +91,13 @@ public class InventoryUI extends AbstractUi {
         this.player = player;
         stage = new Stage(new ScreenViewport());
 
-        assetManager = new AssetManager();
-        assetManager.load("texture/textures.atlas", TextureAtlas.class);
-        assetManager.load("texture/texture.atlas", TextureAtlas.class);
-        assetManager.load("texture/dialog.atlas", TextureAtlas.class);
-        assetManager.finishLoading();
-
-        skin = SkinGenerator.generateSkin_O(assetManager);
-
-        TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
-        TextureRegion[][] invbuttons92x28 = inv_but.split(50, 30);
+        skin = SkinGenerator.generateSkin(assetManager);
 
         //ui = 인벤, 장비, 상태창 , craft = 제작창
         ui = new ImageUI(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), 372, 212);
         craft = new ImageUI(skin.getRegion("event_craft"), new Vector2(ui.getX()+ui.getWidth(), ui.getY()),124, 182);
+        //버튼
+        invbuttons92x28 = skin.getRegion("inv_buttons").split(50, 30);
 
         //선택 슬롯
         selectedSlot = new Image(skin.getRegion("selected_slot"));

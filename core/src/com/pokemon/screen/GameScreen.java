@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
         //TextureAtlas Texture = assetManager.get("texture/texture.atlas", TextureAtlas.class);
 
-        skin = SkinGenerator.generateSkin_O(assetManager);
+        skin = SkinGenerator.generateSkin(assetManager);
 
         AnimationSet<TextureRegion> animations = new AnimationSet<>(
                 new Animation<TextureRegion>(0.3f / 2f, playerTexture.findRegions("dawn_walk_north"), Animation.PlayMode.LOOP_PINGPONG),
@@ -98,6 +98,7 @@ public class GameScreen implements Screen {
         world.update();
         gameController.update();
         this.update(delta);
+
 
         for (AbstractUi abstractUi : uiStack) {
             abstractUi.update();
