@@ -44,7 +44,7 @@ public class Player extends Rectangle {
 
     private int LV;
     private int EXP;
-    private int gold;
+    //private int gold;
     private int RANK;
     private String skill[];
     private int skill_LV[];
@@ -58,7 +58,7 @@ public class Player extends Rectangle {
         skill_LV = db.GET_SK_LV(playerID);
         skill_EXP = db.GET_SK_EXP(playerID);
 
-        String sql = "SELECT U_LV,U_EXP,U_RANK,GOLD FROM USER WHERE U_ID ='"+playerID+"';";
+        String sql = "SELECT U_LV,U_EXP,U_RANK FROM USER WHERE U_ID ='"+playerID+"';";
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -66,7 +66,8 @@ public class Player extends Rectangle {
                 this.LV = rs.getInt("U_LV");
                 this.EXP = rs.getInt("U_EXP");
                 this.RANK = rs.getInt("U_RANK");
-                this.gold = rs.getInt("gold");
+                //this.GOLD = rs.getInt("U_GOLD");
+
             }
         }catch(SQLException e){
             System.out.println("SQLException" + e);
@@ -119,13 +120,8 @@ public class Player extends Rectangle {
             }
         }
     }
-
-    public void addGold(int g) {
-       this.gold += g;
-    }
-    public int getGold(){
-        return gold;
-    }
+    //public int getGold(){return gold;}
+    //public int setGold(int gold){return this.gold = gold;}
     public int getLV(){
         return LV;
     }
@@ -136,6 +132,12 @@ public class Player extends Rectangle {
     public int getMaxEXP(){
         return db.GET_MAX_EXP(LV);
     }
+    public int getSKLV(int index){return skill_LV[index];}
+    public void setSKLV(int index, int count){skill_LV[index] = count;}
+
+    public int getSKEXP(int index){return skill_EXP[index];}
+    public void setSKEXP(int index,int count){ skill_EXP[index] = count;}
+
 
     public void finishMove() {
         state = PLAYER_STATE.STANDING;

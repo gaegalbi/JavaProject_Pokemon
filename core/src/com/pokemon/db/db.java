@@ -26,9 +26,7 @@ public class db {
     }
 
     public static void insert(String id, String pas) {
-        //, int lv, int exp, int rank
-        //String sql = ("INSERT INTO user VALUES('" +id + "','" +pas + "','"+ lv + "','"+ exp + "','" +rank+"');");
-        String sql = ("INSERT INTO user(U_ID,U_PAS) VALUES('" + id + "','" + pas + "');");
+        String sql = "INSERT INTO user(U_ID,U_PAS) VALUES('" + id + "','" + pas + "');";
         try {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(sql);
@@ -40,6 +38,26 @@ public class db {
         } catch (Exception e) {
             System.out.println("Exception:" + e);
             e.printStackTrace();
+        }
+    }
+
+    public static void insert_basic(String id) {
+        String sql = null;
+        for(int i=1;i<=6;i++) {
+            sql = "INSERT INTO SK(U_ID,SK_ID,SK_LV,SK_EXP) VALUES ('" + id + "','SK_0" + i + "',1,0);";
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+                System.out.println("DB 삽입 Success");
+
+            } catch (SQLException e) {
+                System.out.println("삽입SQL문이 틀렸습니다.");
+                System.out.print("이유 : " + e);
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Exception:" + e);
+                e.printStackTrace();
+            }
         }
     }
 
