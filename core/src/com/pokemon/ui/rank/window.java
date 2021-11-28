@@ -12,11 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
+import static com.pokemon.ui.LoginUi.playerID;
 
 public class window extends AbstractUi {
     private Stage stage;
@@ -24,13 +26,8 @@ public class window extends AbstractUi {
     private MovingImageUI ui;
 
     private Label[] rankLabel;
-    private String[] rankStr = {"100", "200", "300", "400", "500", "600"};
-
     private Label[] IDLabel;
-    private String[] IDStr = {"홍성주", "김성주", "박성주", "최성주", "갱성주", "주성주"};
-
     private Label myRankLabel;
-    private String myRankStr = "100";
 
     private Skin skin;
 
@@ -82,19 +79,19 @@ public class window extends AbstractUi {
 
         IDLabel = new Label[6];
         for (int i = 0; i < IDLabel.length; i++) {
-            IDLabel[i] = new Label(IDStr[i], labelColors[3]);
+            IDLabel[i] = new Label(" ", labelColors[3]);
             IDLabel[i].setTouchable(Touchable.disabled);
             IDLabel[i].setAlignment(Align.left);
         }
 
         rankLabel = new Label[6];
         for (int i = 0; i < rankLabel.length; i++) {
-            rankLabel[i] = new Label(rankStr[i], labelColors[0]);
+            rankLabel[i] = new Label(" ", labelColors[0]);
             rankLabel[i].setTouchable(Touchable.disabled);
             rankLabel[i].setAlignment(Align.left);
         }
 
-        myRankLabel = new Label("50000", labelColors[0]);
+        myRankLabel = new Label(" ", labelColors[0]);
         myRankLabel.setSize(50, 14);
         myRankLabel.setTouchable(Touchable.disabled);
         myRankLabel.setAlignment(Align.right);
@@ -107,12 +104,19 @@ public class window extends AbstractUi {
 
         Gdx.input.setInputProcessor(this.stage);
 
-       // updateText();
+        updateText();
     }
 
     private void updateText() {
-        rankLabel[0].setText("HI");
-        rankLabel[1].setText("123");
+        for (int i = 1; i <= 5; i++) {
+            if (db.rank_GET_U_ID(i) != null){
+                IDLabel[i - 1].setText(db.rank_GET_U_ID(i));
+                rankLabel[i - 1].setText(db.rank_GET_U_RANK(db.rank_GET_U_ID(i)));
+            }
+        }
+        IDLabel[5].setText(playerID);
+        rankLabel[5].setText(db.rank_GET_U_RANK(playerID));
+        myRankLabel.setText(db.rank_GET_RANKINKG(playerID));
     }
 
     public void update() {
