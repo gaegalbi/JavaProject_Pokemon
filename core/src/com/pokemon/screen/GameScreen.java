@@ -129,9 +129,13 @@ public class GameScreen implements Screen {
                 //아이템 추가
                 //player.inventory.addItem(new Item("ITEM_01"),1);
                 db.UPDATE("ITEM_01",1);
-                Item item = player.inventory.items[player.inventory.isSame("ITEM_01")];
-                item.setCNT(item.getCNT() + 1);
-                item.setCurrentCNT();
+                /*if(player.inventory.isSame("ITEM_01")>0) {
+                    Item item = player.inventory.items[player.inventory.isSame("ITEM_01")];
+                    item.setCNT(item.getCNT() + 1);
+                    item.setCurrentCNT();
+                }else*/
+                    player.inventory.addItem("ITEM_01",1);
+
                 this.pushScreen(new window(this, game,player));
 
             }else {

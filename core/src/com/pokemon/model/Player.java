@@ -3,6 +3,7 @@ package com.pokemon.model;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import com.pokemon.inventory.Crafting;
 import com.pokemon.inventory.Equipment;
 import com.pokemon.inventory.Inventory;
 import com.pokemon.db.db;
@@ -39,6 +40,7 @@ public class Player extends Rectangle {
     // inventory and equips
     public Inventory inventory;
     public Equipment equips;
+    public Crafting crafts;
 
     private int LV;
     private int EXP;
@@ -51,6 +53,7 @@ public class Player extends Rectangle {
     public Player(int x, int y, AnimationSet<TextureRegion> animations) {
         inventory = new Inventory(playerID);
         equips = new Equipment(playerID);
+        crafts = new Crafting();
         skill = db.GET_SK(playerID);
         skill_LV = db.GET_SK_LV(playerID);
         skill_EXP = db.GET_SK_EXP(playerID);

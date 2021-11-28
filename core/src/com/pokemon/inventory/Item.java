@@ -60,10 +60,14 @@ public class Item {
 
     //인벤토리 인덱스
     private int index;
+    //제작 인덱스
+    private int cIndex;
     //아이템 갯수
     private int cnt;
     //장착 유무
     private boolean equipped = false;
+    //제작창
+    private boolean crafting = false;
 
    //이미지
     public Image actor;
@@ -118,15 +122,21 @@ public class Item {
         return type;
     }
     public String getName(){return name;}
+    //인벤토리 인덱스
     public int getIndex(){
         return index;
     }
     public void setIndex(int index){
        this.index = index;
     }
-    public int getSell(){
-        return sell;
+    //제작 인덱스
+    public int getCIndex(){
+        return cIndex;
     }
+    public void setCIndex(int cIndex){
+        this.cIndex = cIndex;
+    }
+    public int getSell(){return sell;}
     public boolean getEquipped(){
         return equipped;
     }
@@ -134,9 +144,28 @@ public class Item {
         this.equipped = equipped;
     }
 
+    public boolean getCrafting(){
+        return crafting;
+    }
+    public void setCrafting(boolean crafting){
+        this.crafting = crafting;
+    }
+
     public void setCNT(int cnt){this.cnt = cnt;}
     public void setCurrentCNT(){this.count.setText(getCNT());}
-    public int getCurrentCNT(){ return this.count.getText().length;}
+    public int getCurrentCNT(){
+        switch (count.getText().length){
+            case 1:
+                return 1;
+            case 2:
+                return 8;
+            case 3:
+                return 14;
+            case 4:
+                return 20;
+            default: return 0;
+        }
+    }
     public int getCNT(){return cnt;}
 
 

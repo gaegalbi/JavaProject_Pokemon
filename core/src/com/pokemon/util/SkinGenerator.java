@@ -96,12 +96,14 @@ public class SkinGenerator {
 		TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
 		skin.add("inv_buttons",inv_but.split(50,30));
 
-		//판매창
-		Texture backgroundT = new Texture(Gdx.files.internal("inven/background.png"));
+		//이벤트 창
+		TextureRegion backgroundM = new TextureRegion(new Texture(Gdx.files.internal("inven/background_m.png")));
+		skin.add("event_craft",backgroundM);
+		Texture backgroundS = new Texture(Gdx.files.internal("inven/background.png"));
 
 		Window.WindowStyle windowStyle = new Window.WindowStyle();
 		windowStyle.titleFont = skin.getFont("font");
-		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundT));
+		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundS));
 		skin.add("default",windowStyle);
 
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();

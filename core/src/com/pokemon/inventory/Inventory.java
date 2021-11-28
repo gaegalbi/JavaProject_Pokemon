@@ -106,24 +106,29 @@ public class Inventory {
     //아이템중에 장비 아이템을 제외하고 같은 아이템이 있는지 확인
     public int isSame(String id) {
         for (int i = 0; i < NUM_SLOTS; i++) {
-            if(items[i]!=null)
-                if (items[i].getKey().equals(id) && !(items[i].getType()>=2 && items[i].getType()<=6)) return i;
+            if (items[i] != null)
+                if (items[i].getKey().equals(id))
+                    return i;
         }
-        return 0;
+        return -1;
     }
 
-    public void addItem(Item item, int cnt) {
-        int i;
-        if((i=isSame(item.getKey()))>0){
-            items[i].setCNT(items[i].getCNT()+cnt);
-            items[i].setCurrentCNT();
-        }else {
-            i = getFirstFreeSlotIndex();
-            if (i != -1) {
-                items[i] = item;
-                items[i].setCNT(cnt);
-                items[i].setCurrentCNT();
-                items[i].setIndex(i);
+    public void addItem(String key, int cnt) {
+        for(int i=0;i<NUM_SLOTS;i++) {
+            if (isSame(key) >= 0) {
+                if (isSame(key) == i) {
+                    items[i].setCNT(items[i].getCNT() + cnt);
+                    items[i].setCurrentCNT();
+                }
+            }
+            else {
+                i = getFirstFreeSlotIndex();
+                if (i != -1) {
+                    items[i] = new Item(key);
+                    items[i].setCNT(cnt);
+                    items[i].setCurrentCNT();
+                    items[i].setIndex(i);
+                }
             }
         }
     }

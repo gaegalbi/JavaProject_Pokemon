@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.inventory.Crafting;
 import com.pokemon.inventory.Equipment;
 import com.pokemon.inventory.Inventory;
 import com.pokemon.inventory.Item;
@@ -41,6 +42,7 @@ public class window extends AbstractUi {
     private Pokemon game;
     private GameScreen gameScreen;
     private MovingImageUI ui;
+    private MovingImageUI craft;
     private AssetManager assetManager;
     private Skin skin;
     //private Skin skin1;
@@ -55,6 +57,8 @@ public class window extends AbstractUi {
     private ImageButton.ImageButtonStyle disabled;
     private ImageButton[] invButtons;
     private Label[] invButtonLabels;
+    private ImageButton craftButton;
+    private Label craftLabel;
     private Table table;
     //
     // 0 - hp, 1 - dmg, 2 - acc, 3 - exp, 4 - gold
@@ -68,8 +72,9 @@ public class window extends AbstractUi {
     private static final int SLOT_WIDTH = 30;
     private static final int SLOT_HEIGHT = 30;
 
-   private static final Rectangle EQUIPS_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2, 130, 160, 120);
-   private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+160, 130, 210, 180);
+   private static final Rectangle EQUIPS_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2, 135, 150, 120);
+   private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+160, 135, 210, 212);
+   private static final Rectangle CRAFT_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+160 +210, 135, 124, 182);
     //이벤트 핸들링(드래그)
     private boolean dragging = false;
     //드래그 관련 좌표
@@ -77,6 +82,7 @@ public class window extends AbstractUi {
     private int ax, ay;
     private boolean itemSelected = false;
     private Item currentItem;
+    private Item craftResult;
 
     private boolean ended = false;
 
@@ -102,7 +108,7 @@ public class window extends AbstractUi {
 
         skin = SkinGenerator.generateSkin_O(assetManager);
 
-        TextureAtlas atlas = assetManager.get("texture/textures.atlas");
+        //TextureAtlas atlas = assetManager.get("texture/textures.atlas");
         //TextureRegion[][] invbuttons92x28 = atlas.findRegion("inv_buttons").split(50, 50);
         TextureRegion inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
         TextureRegion[][] invbuttons92x28 = inv_but.split(50, 30);
@@ -110,17 +116,20 @@ public class window extends AbstractUi {
         //skin1 = SkinGenerator.generateSkin_O2(assetManager);
 
         //인벤 윈도우
-        invenWindow = new InvenWindow();
+      /*  invenWindow = new InvenWindow();
         invenWindow.setSize(400, 300);
         invenWindow.setModal(true);
         invenWindow.setVisible(true);
         invenWindow.setPosition(Gdx.graphics.getWidth() / 2 - invenWindow .getWidth() / 2, Gdx.graphics.getHeight() / 2 - invenWindow .getHeight() / 2);
-
+*/
         //인벤토리 아이템 갯수
 
-        //인벤토리
+        //인벤토리  (w, h Gdx.graphics.getWidth()/2로 변환)
         ui = new MovingImageUI(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), new Vector2(100, 100), 225.f, 372, 212);
 
+        craft = new MovingImageUI(skin.getRegion("event_craft"), new Vector2(ui.getX()+ui.getWidth(), ui.getY()), new Vector2(100, 100), 225.f, 124, 182);
+        craft.setVisible(false);
+        stage.addActor(craft);
         //선택 슬롯
         selectedSlot = new Image(skin.getRegion("selected_slot"));
         selectedSlot.setVisible(false);
@@ -144,7 +153,6 @@ public class window extends AbstractUi {
             stats[i].setStyle(labelColors[i]);
         }
 
-
         headers = new Label[3];
         for (int i = 0; i < headers.length; i++) {
             headers[i] = new Label(headerStrs[i],skin);
@@ -153,31 +161,32 @@ public class window extends AbstractUi {
         }
         //버튼 이미지
         enabled = new ImageButton.ImageButtonStyle();
-
         enabled.imageUp = new TextureRegionDrawable(invbuttons92x28[0][0]);
         enabled.imageDown = new TextureRegionDrawable(invbuttons92x28[1][0]);
         disabled = new ImageButton.ImageButtonStyle();
         disabled.imageUp = new TextureRegionDrawable(invbuttons92x28[2][0]);
-        invButtons= new ImageButton[1];
-        invButtonLabels = new Label[1];
+        invButtons= new ImageButton[2];
+
+        craftButton = new ImageButton(disabled);
+        craftButton.setTouchable(Touchable.disabled);
+        craftLabel = new Label("제작",skin);
+        craftLabel.setTouchable(Touchable.disabled);
+        craftLabel.setAlignment(Align.center);
+        craftButton.setSize(25,25);
+        craftLabel.setSize(25,25);
+
+        invButtonLabels = new Label[2];
         //판매 버튼
-        String texts = " 버리기";
-        //String texts = " 판매";
-        invButtons[0] = new ImageButton(disabled);
-        //Texture backgroundT = new Texture(Gdx.files.internal("inven/background.png"));
-        //invButtons[0].setBackground(new TextureRegionDrawable(new TextureRegion(backgroundT)));
-        invButtons[0].setTouchable(Touchable.disabled);
+        String texts[] = {" 제작"," 버리기"};
 
-        invButtonLabels[0] = new Label(texts, skin);
-        invButtonLabels[0].setSize(46, 14);
-        invButtonLabels[0].setTouchable(Touchable.disabled);
-        invButtonLabels[0].setAlignment(Align.center);
-
-        table = new Table();
-
-        table.add(invButtons[0]).size(50,30);
-
-
+        for(int i=0;i<texts.length;i++) {
+            invButtons[i] = new ImageButton(disabled);
+            invButtons[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i] = new Label(texts[i], skin);
+            invButtonLabels[i].setSize(46, 14);
+            invButtonLabels[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i].setAlignment(Align.center);
+        }
 
         //ui 및 슬롯, 버튼들 추가(init)
         stage.addActor(ui);
@@ -185,14 +194,20 @@ public class window extends AbstractUi {
         for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
         stage.addActor(selectedSlot);
         stage.addActor(tooltip);
-        //stage.addActor(invButtons[0]);
-        stage.addActor(invButtonLabels[0]);
-        stage.addActor(table);
+        for (int i = 0; i < texts.length; i++){
+            stage.addActor(invButtons[i]);
+            stage.addActor(invButtonLabels[i]);
+        }
+        stage.addActor(craftButton);
+        stage.addActor(craftLabel);
+        craftButton.setVisible(false);
+        craftLabel.setVisible(false);
+
         Gdx.input.setInputProcessor(this.stage);
+
         //아이템 추가
         addInventory();
         addEquips();
-
         //이벤트 추가
         handleStageEvents();
         handleInvButtonEvents();
@@ -252,12 +267,14 @@ public class window extends AbstractUi {
                 addInventoryEvent(equip);
             }
         }
+        craftResult = player.crafts.getCraftAt(9);
+        if(craftResult!= null){
+            addInventoryEvent(craftResult);
+        }
     }
-    public static boolean dragRemove;
 
     private void addInventoryEvent(final Item item) {
         item.actor.clearListeners();
-
         item.actor.addListener(new DragListener() {
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
@@ -266,7 +283,7 @@ public class window extends AbstractUi {
                 tooltip.hide();
                 unselectItem();
 
-                // original positions
+                //벡터 예전 위치
                 prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
@@ -276,6 +293,11 @@ public class window extends AbstractUi {
                 selectedSlot.setVisible(false);
                 if (!item.getEquipped()) player.inventory.removeItem(item.getIndex());
                 else player.equips.removeEquip(item.getType() - 2);
+
+                if (item.getCrafting()) {
+                    player.crafts.removeCraft(item.getCIndex());
+                }
+
             }
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
@@ -287,13 +309,63 @@ public class window extends AbstractUi {
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 dragging = false;
                 selectedSlot.setVisible(false);
-                // origin positions
+                // 벡터 새 위치
                 ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-
                 //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
-                if (item.getEquipped()) {
+                if(item.getCrafting()){
+                    int hc = getCHoveredIndex(ax, ay);
+                    int hi = getHoveredIndex(ax, ay);
+                    if (hi == -1 && hc == -1) {
+                        if(!(CRAFT_AREA.contains(ax,ay) && INVENTORY_AREA.contains(ax,ay) && EQUIPS_AREA.contains(ax,ay))) {
+                            item.actor.remove();
+                            item.count.remove();
+                            db.UPDATE(item.getKey(), -item.getCNT());
+                            db.DELETE();
+                        }
+                        else player.crafts.addCraft(item);
+                    }
+                    else if(hc==9)player.crafts.addCraft(item);
+                    else {
+                        if(CRAFT_AREA.contains(ax,ay)){
+                            if (!player.crafts.addItemAtIndex(item, hc)) {
+                                Item swap = player.crafts.takeItem(hc);
+                                //같은 아이템이면 합치기
+                                if (swap.getKey() == item.getKey()) {
+                                    swap.actor.remove();
+                                    swap.count.remove();
+                                    item.setCNT(swap.getCNT() + item.getCNT());
+                                    item.setCurrentCNT();
+                                    player.crafts.addItemAtIndex(item, hc);
+                                } else {
+                                    player.crafts.addItemAtIndex(swap, item.getCIndex());
+                                    player.crafts.addItemAtIndex(item, hc);
+                                }
+                            }
+                        }else if(INVENTORY_AREA.contains(ax,ay)) {
+                                item.setCrafting(false);
+                                player.crafts.removeCraft(9);
+                                System.out.println("9번 삭제");
+                                if (!player.inventory.addItemAtIndex(item, hi)) {
+                                    Item swap = player.inventory.takeItem(hi);
+                                    //같은 아이템이면 합치기
+                                    if(swap.getKey()==item.getKey()){
+                                        swap.actor.remove();
+                                        swap.count.remove();
+                                        item.setCNT(swap.getCNT()+item.getCNT());
+                                        item.setCurrentCNT();
+                                        player.inventory.addItemAtIndex(item, hi);
+                                    }
+                                    else {
+                                        player.inventory.addItemAtIndex(swap, item.getIndex());
+                                        player.inventory.addItemAtIndex(item, hi);
+                                    }
+                                }
+                        }
+                    }
+                }
+                else if (item.getEquipped()) {
                     int hi = getHoveredIndex(ax, ay);
                     if (hi == -1)
                         player.equips.addEquip(item);
@@ -302,15 +374,11 @@ public class window extends AbstractUi {
                             player.inventory.addItemAtIndex(item, hi);
                             item.setEquipped(false);
                             player.unequip(item);
-                            updateText();
                         } else {
                             //장비를 빈 인덱스에 넣음
-                            //hi = 0; 삭제
-                           // while (!player.inventory.isFreeSlot(hi)) hi++;
                             player.inventory.addItemAtIndex(item, player.inventory.getFirstFreeSlotIndex());
                             item.setEquipped(false);
                             player.unequip(item);
-                            updateText();
                         }
                         db.UPDATE_EQ(TYPE[item.getType()-2],null);
                     }
@@ -321,15 +389,13 @@ public class window extends AbstractUi {
                         if (item.getType() >= 2 && item.getType() <= 6) {
                             item.setEquipped(true);
                             player.equip(item);
-                            updateText();
+                            // 같은 부위 장비 스왚
                             if (!player.equips.addEquip(item)) {
-                                // 같은 종류 아이템 스왚
                                 Item swap = player.equips.removeEquip(item.getType() - 2);
                                 swap.setEquipped(false);
                                 player.unequip(swap);
                                 player.equips.addEquip(item);
                                 player.inventory.addItemAtIndex(swap, item.getIndex());
-                                updateText();
                             }
                             db.UPDATE_EQ(TYPE[item.getType()-2],item.getKey());
                         } else
@@ -343,18 +409,53 @@ public class window extends AbstractUi {
                         else {
                             if (!player.inventory.addItemAtIndex(item, hi)) {
                                 Item swap = player.inventory.takeItem(hi);
-                                player.inventory.addItemAtIndex(swap, item.getIndex());
-                                player.inventory.addItemAtIndex(item, hi);
+                                //같은 아이템이면 합치기
+                                if (swap.getKey() == item.getKey()) {
+                                    swap.actor.remove();
+                                    swap.count.remove();
+                                    item.setCNT(swap.getCNT() + item.getCNT());
+                                    item.setCurrentCNT();
+                                    player.inventory.addItemAtIndex(item, hi);
+                                } else {
+                                    player.inventory.addItemAtIndex(swap, item.getIndex());
+                                    player.inventory.addItemAtIndex(item, hi);
+                                }
                             }
                         }
                     }
-                    // 인벤토리 밖으로 전부 버리기
+                    //제작 영역
+                    else if(CRAFT_AREA.contains(ax,ay)){
+                        //제작창이 가득 찼으면 인벤토리에 다시 넣음
+                        if(player.crafts.isFull())
+                            player.inventory.addItemAtIndex(item, item.getIndex());
+                        int hc = getCHoveredIndex(ax, ay);
+                        //제작창 9번은 결과물만 들어갈 수 있음
+                        if (hc == -1 || hc==9)
+                            player.inventory.addItemAtIndex(item, item.getIndex());
+                        else {
+                            if (!player.crafts.addItemAtIndex(item, hc)) {
+                                Item swap = player.crafts.takeItem(hc);
+                                if (swap.getKey() == item.getKey()) {
+                                    swap.actor.remove();
+                                    swap.count.remove();
+                                    item.setCNT(swap.getCNT() + item.getCNT());
+                                    item.setCurrentCNT();
+                                    player.crafts.addItemAtIndex(item, hc);
+                                } else {
+                                    player.inventory.addItemAtIndex(swap, player.inventory.getFirstFreeSlotIndex());
+                                    swap.setCrafting(false);
+                                    player.crafts.addItemAtIndex(item, hc);
+                                }
+                            }
+                            item.setCrafting(true);
+                        }
+                    }
+                    //모든 영역 밖이면 전부 버리기
                     else {
-                        System.out.println("선택 아이템 숫자" + item.getCNT());
                         item.actor.remove();
                         item.count.remove();
-                        //*3이유 => UPDATE_CNT에서 ITEM_CNT = ITEM_CNT + cnt
-                        db.UPDATE(item.getKey(), -item.getCNT() * 3);
+                        db.UPDATE(item.getKey(), -item.getCNT());
+                        db.DELETE();
                     }
                 }
             }
@@ -363,25 +464,27 @@ public class window extends AbstractUi {
         item.actor.addListener(new ClickListener(){
             public void splitCNT(Item item1, Item item2){
                 int tmp = item1.getCNT();
-                    item2.setCNT(tmp / 2); //2
-                    item1.setCNT(tmp - item2.getCNT()); //3
+                    item2.setCNT(tmp / 2);
+                    item1.setCNT(tmp - item2.getCNT());
+                    db.UPDATE_CNT(item2.getKey(),-(item2.getCNT()+item1.getCNT()));
                     item1.setCurrentCNT();
                     item2.setCurrentCNT();
             }
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 currentItem = item;
-                if(getTapCount()==2 && item.getCNT()>=2){
+                if (getTapCount() == 2 && item.getCNT() >= 2 && !player.inventory.isFull()) {
                     Item splitItem = new Item(currentItem.getKey());
-                    splitCNT(currentItem,splitItem);
+                    splitCNT(currentItem, splitItem);
                     player.inventory.addItemAtIndex(splitItem, player.inventory.getFirstFreeSlotIndex());
+                    splitItem.setIndex(player.inventory.getFirstFreeSlotIndex());
+
+                    db.UPDATE_CNT(splitItem.getKey(), splitItem.getCNT());
+                    db.UPDATE_CNT(currentItem.getKey(), currentItem.getCNT());
 
                     //이미지 지우고 전부 새로 불러오기
                     removeInventoryActors();
                     addInventory();
-
-                    db.UPDATE_CNT(splitItem.getKey(), splitItem.getCNT());
-                    db.UPDATE_CNT(currentItem.getKey(), currentItem.getCNT());
 
                     splitItem.actor.toFront();
                     splitItem.count.toFront();
@@ -394,7 +497,7 @@ public class window extends AbstractUi {
                     handleStageEvents();
                     handleInvButtonEvents();
                     handleInventoryEvents();
-                    updateText();
+
                 }
             }
         });
@@ -414,15 +517,16 @@ public class window extends AbstractUi {
                 ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
                 if (prevX == ax && prevY == ay) {
-
-                    if (selectedSlot.isVisible())
+                    if (selectedSlot.isVisible()) {
                         unselectItem();
+                        toggleInventoryButtons(true);
+                    }
                     else {
                         //if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                         itemSelected = true;
                         currentItem = item;
                         showSelectedSlot(item);
-                        toggleInventoryButtons(true); //판매 활성화
+                        toggleInventoryButtons(true);
                         tooltip.toFront();
                         //툴팁 위치
                         if (currentItem.getEquipped())
@@ -433,31 +537,54 @@ public class window extends AbstractUi {
                 }
             }
         });
+    }
 
+    private void handleStageEvents() {
         //인벤토리 밖 클릭시 선택해제
         stage.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if(!(EQUIPS_AREA.contains(x,y) || INVENTORY_AREA.contains(x,y)))
+                if(!(EQUIPS_AREA.contains(x,y) || INVENTORY_AREA.contains(x,y) || CRAFT_AREA.contains(x,y))) {
+                    if(craft.isVisible()) {
+                        for(int i=0;i<Crafting.NUM_SLOTS;i++){
+                            if(player.crafts.getCraftAt(i)!=null) {
+                                player.inventory.addItem(player.crafts.getCraftAt(i).getKey(), player.crafts.getCraftAt(i).getCNT());
+                                player.crafts.getCraftAt(i).setCrafting(false);
+                                player.crafts.getCraftAt(i).actor.remove();
+                                player.crafts.getCraftAt(i).count.remove();
+                                player.crafts.removeCraft(i);
+                                //이미지 지우고 전부 새로 불러오기
+                                removeInventoryActors();
+                                addInventory();
+                                //이벤트 생성
+                                handleInventoryEvents();
+                            }
+                        }
+                        craft.setVisible(false);
+                        craftButton.setVisible(false);
+                        craftLabel.setVisible(false);
+                    }
                     unselectItem();
-                return true;
-            }
-        });
-    }
-
-    private void handleStageEvents() {
-        ui.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (itemSelected)
-                    unselectItem();
+                    toggleInventoryButtons(true);
+                }
                 return true;
             }
         });
     }
     private void handleInvButtonEvents() {
+        invButtons[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
+                craft.setVisible(true);
+                craftButton.setVisible(true);
+                craftLabel.setVisible(true);
+                craftButton.setTouchable(Touchable.enabled);
+                craftButton.setStyle(enabled);
+            }
+        });
         // 버리기
-        table.addListener(new ClickListener() {
+        invButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                     // if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
@@ -474,7 +601,6 @@ public class window extends AbstractUi {
                                 button("Yes", "yes");
                                 button("No", "no");
                             }
-
                             @Override
                             protected void result(Object object) {
                                 //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
@@ -496,19 +622,30 @@ public class window extends AbstractUi {
                                             player.inventory.removeItem(currentItem.getIndex());
                                         }
                                     }
-                                    //db.UPDATE("GOLD", currentItem.getSell());
-                                    //if(db.COMPARE_CNT(currentItem.getKey(), 1))
                                     db.UPDATE(currentItem.getKey(), -1);
                                     db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     unselectItem();
-                                    updateText();
                                 }
                             }
-
                         }.show(stage).getTitleLabel().setAlignment(Align.center);
                     }
             }
-
+        });
+        //제작 결과 생성
+        craftButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                   if (craftResult != null) {
+                       stage.addActor(craftResult.actor);
+                       stage.addActor(craftResult.count);
+                       craftResult.setCIndex(9);
+                       craftResult.setCrafting(true);
+                       craftResult.setCNT(1);
+                       craftResult.setCurrentCNT();
+                       //핸들 이벤트
+                       handleInventoryEvents();
+               }
+            }
         });
     }
 
@@ -563,18 +700,28 @@ public class window extends AbstractUi {
     }
 
     //드래그 위치
-    //private static final Rectangle INVENTORY_AREA = new Rectangle(Gdx.graphics.getWidth() / 2 - 372 / 2+120, 240, 180, 120);
-    //private static final Rectangle INVENTORY_AREA = new Rectangle(396, 165, 160, 100);*/
     private int getHoveredIndex(int x, int y) {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             int xx = i % NUM_COLS;
             int yy = i / NUM_COLS;
-            if (x >= Gdx.graphics.getWidth() / 2 - 372 / 2+180 + (xx * SLOT_WIDTH) && x < Gdx.graphics.getWidth() / 2 - 372 / 2+180 + (xx * SLOT_WIDTH) + SLOT_WIDTH &&
-                    y >= 240 - (yy * SLOT_HEIGHT) && y < 240 - (yy * SLOT_HEIGHT) + SLOT_HEIGHT) {
+            if (x >= 384 + (xx * SLOT_WIDTH) && x < 384 + (xx * SLOT_WIDTH) + SLOT_WIDTH &&
+                    y >= 249 - (yy * SLOT_HEIGHT) && y < 249 - (yy * SLOT_HEIGHT) + SLOT_HEIGHT) {
                 return i;
             }
         }
-        // outside of inventory range
+        return -1;
+    }
+    private int getCHoveredIndex(int x, int y) {
+        for (int i = 0; i < Crafting.NUM_SLOTS; i++) {
+            int xx = i % (NUM_COLS/2);
+            int yy = i / (NUM_COLS/2);
+            if(i==9)
+                if (x >= 635 && x < 635 + SLOT_WIDTH && y >= 157 && y < 157 + SLOT_HEIGHT)
+                    return i;
+            if (x >= 603 + (xx * SLOT_WIDTH+2) && x < 603 + (xx * SLOT_WIDTH+2) + SLOT_WIDTH &&
+                    y >= 269 - (yy * SLOT_HEIGHT+3) && y < 269 - (yy * SLOT_HEIGHT+2) + SLOT_HEIGHT)
+                return i;
+        }
         return -1;
     }
     private void updateText() {
@@ -585,17 +732,26 @@ public class window extends AbstractUi {
 
 
     private void toggleInventoryButtons(boolean toggle) {
-        if (toggle) {
-            invButtons[0].setTouchable(Touchable.enabled);
-            invButtons[0].setStyle(enabled);
+       if (toggle) {
+           if(itemSelected) {
+               invButtons[0].setTouchable(Touchable.disabled);
+               invButtons[0].setStyle(disabled);
+               invButtons[1].setTouchable(Touchable.enabled);
+               invButtons[1].setStyle(enabled);
+           }else {
+               invButtons[0].setTouchable(Touchable.enabled);
+               invButtons[0].setStyle(enabled);
+           }
             //invButtonLabels[0].setText(" " + currentItem.getSell() + "G에\n 판매");
-            invButtonLabels[0].setText(" 버리기");
+            invButtonLabels[0].setText(" 제작");
+            invButtonLabels[1].setText(" 버리기");
         } else {
-            invButtons[0].setTouchable(Touchable.disabled);
-            invButtons[0].setStyle(disabled);
-            //invButtonLabels[0].setText(" 판매");
-            invButtonLabels[0].setText(" 버리기");
-
+           for(int i=0;i<invButtons.length;i++) {
+               invButtons[i].setTouchable(Touchable.disabled);
+               invButtons[i].setStyle(disabled);
+           }
+            invButtonLabels[0].setText(" 제작");
+            invButtonLabels[1].setText(" 버리기");
         }
     }
 
@@ -625,19 +781,31 @@ public class window extends AbstractUi {
 
 
     public void update() {
-        int w= Gdx.graphics.getWidth()/3 -Gdx.graphics.getWidth()/15 ;
-        int h = Gdx.graphics.getHeight()/3 -Gdx.graphics.getHeight()/18;
-        //라벨 위치
-        headers[0].setPosition(w + 14, h + 188);
-        headers[1].setPosition(w + 14, h + 108);
-        headers[2].setPosition(w+ 165, h+ 188);
-        stats[0].setPosition(w + 14, h + 175);
-        stats[1].setPosition(w + 14, h + 160);
-        stats[2].setPosition(w + 14, h + 145);
+        int w = Gdx.graphics.getWidth();
+        int h = Gdx.graphics.getHeight();
 
-        table.setPosition(ui.getX() + 262 , ui.getY()+160);
-        invButtonLabels[0].setPosition(table.getX()-26, ui.getY() + 152);
-        invButtonLabels[0].toFront();
+        //라벨 위치
+        headers[0].setPosition(w /3 - w/15 + 14, h/3 - h/18 + 188);
+        headers[1].setPosition(w/3 - w/15 +14, h/3 - h/18 + 108);
+        headers[2].setPosition(w/3 - w/15 + 165, h/3 - h/18+ 188);
+        stats[0].setPosition(w/3 - w/15 + 14, h/3 - h/18 + 175);
+        stats[1].setPosition(w/3 - w/15 + 14, h/3 - h/18+ 160);
+        stats[2].setPosition(w/3 - w/15 + 14, h/3 - h/18 + 145);
+
+        //인벤 버튼, 라벨
+        for(int i=0;i<invButtons.length;i++) {
+            invButtons[i].setPosition(w/2 +w/35 + i*55, ui.getY() + 155);
+            invButtonLabels[i].setPosition(invButtons[i].getX()-1, invButtons[i].getY() + 8);
+            //invButtonLabels[i].toFront();
+        }
+        //제작 버튼, 라벨
+        craftButton.setPosition(ui.getWidth()/2+w/2+16 ,ui.getY()+24);
+        craftLabel.setPosition(craftButton.getX(), craftButton.getY());
+
+        //제작 토글
+        if(player.crafts.getCraftAt(9)==null) {
+            craftResult = player.crafts.craftCheck();
+        }
 
         if (!dragging) {
             for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
@@ -647,7 +815,7 @@ public class window extends AbstractUi {
                 if (item != null) {
                     //아이템 위치
                     item.actor.setSize(26,26);
-                    item.actor.setPosition(ui.getX() + 169 + (x * 32), ui.getY() + (113 - (y * 32)));
+                    item.actor.setPosition(ui.getX()*2 -ui.getX()/5-2 + (x * 32), ui.getY()*2 - ui.getY()/6 +1 - (y * 32));
                     item.count.setPosition(item.actor.getX()+23-item.getCurrentCNT(),item.actor.getY()+2);
                 }
             }
@@ -659,6 +827,17 @@ public class window extends AbstractUi {
                     item.actor.setSize(26,26);
                     player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
                 }
+            }
+            for (int i = 0; i < Crafting.NUM_SLOTS; i++) {
+                Item item = player.crafts.getCraftAt(i);
+                float x = player.crafts.positions[i].x;
+                float y = player.crafts.positions[i].y;
+                if (player.crafts.getCraftAt(i) != null) {
+                    player.crafts.getCraftAt(i).actor.setSize(26,26);
+                    player.crafts.getCraftAt(i).actor.setPosition(x, y);
+                    player.crafts.getCraftAt(i).count.setPosition(item.actor.getX()+23-item.getCurrentCNT(),item.actor.getY()+2);
+                }
+
             }
         }
         stage.draw();

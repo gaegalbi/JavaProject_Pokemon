@@ -26,7 +26,6 @@ public class Equipment {
     public static final int NUM_SLOTS = 5;
     private String[] name = new String[NUM_SLOTS];
     public Item[] equips;
-    // stores the positions of equip slots relative to inventory
     public Vector2[] positions;
 
     public Equipment(String key) {
