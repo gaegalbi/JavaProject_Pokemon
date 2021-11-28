@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.pokemon.screen.MainMenuScreen;
 //import com.pokemon.ui.inventory.InventoryUI;
-import com.pokemon.ui.inventory.window;
 
 import java.util.HashMap;
 

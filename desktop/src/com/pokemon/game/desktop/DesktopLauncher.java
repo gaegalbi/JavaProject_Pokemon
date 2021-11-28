@@ -4,7 +4,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
-import com.pokemon.ui.inventory.window;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

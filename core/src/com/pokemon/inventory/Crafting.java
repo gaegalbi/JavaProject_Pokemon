@@ -25,7 +25,7 @@ public class Crafting {
     public boolean addCraft(Item craft) {
         if (crafts[craft.getCIndex()] == null) {
             crafts[craft.getCIndex()] = craft;
-            //equip.setEquipped(true);
+            craft.setCrafting(true);
             return true;
         }
         return false;
@@ -41,7 +41,7 @@ public class Crafting {
     }
 
     public int getFirstFreeSlotIndex() {
-        for (int i = 0; i < NUM_SLOTS; i++) {
+        for (int i = 0; i < NUM_SLOTS-1; i++) {
             if (crafts[i] == null)
                 return i;
         }
@@ -75,7 +75,6 @@ public class Crafting {
                     (crafts[4].getKey().equals("ITEM_01")) &&
                     (crafts[5].getKey().equals("ITEM_01"))) {
                 crafts[9] = new Item("ITEM_03");;
-                System.out.println("제작성공" + crafts[9]);
                 return crafts[9];
             }
         return null;

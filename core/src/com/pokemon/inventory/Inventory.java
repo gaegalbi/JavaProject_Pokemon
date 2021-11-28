@@ -34,7 +34,6 @@ public class Inventory {
 
     public static Item[] items;
 
-    //public Inventory() {items = new Item[NUM_SLOTS];}
    public Inventory(String key) {
        items = new Item[NUM_SLOTS];
         int i = 1;
@@ -66,7 +65,6 @@ public class Inventory {
             }
             i++;
         }
-       // }while(items[i-1]!=null);
     }
 
     /**
@@ -121,7 +119,7 @@ public class Inventory {
                     items[i].setCurrentCNT();
                 }
             }
-            else {
+           else {
                 i = getFirstFreeSlotIndex();
                 if (i != -1) {
                     items[i] = new Item(key);

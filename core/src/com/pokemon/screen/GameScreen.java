@@ -11,26 +11,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
-import com.pokemon.inventory.Item;
 import com.pokemon.model.Player;
-import com.pokemon.model.Portal;
 import com.pokemon.ui.AbstractUi;
-import com.pokemon.ui.SignupUi;
 //import com.pokemon.ui.inventory.InventoryRenderer;
 //import com.pokemon.ui.inventory.InventoryUI;
-import com.pokemon.ui.inventory.window;
+import com.pokemon.ui.inventory.InventoryUI;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.util.SkinGenerator;
 import com.pokemon.world.World;
-import com.pokemon.world.Mine;
 import com.pokemon.world.MainWorld;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 public class GameScreen implements Screen {
@@ -136,7 +130,7 @@ public class GameScreen implements Screen {
                 }else*/
                     player.inventory.addItem("ITEM_01",1);
 
-                this.pushScreen(new window(this, game,player));
+                this.pushScreen(new InventoryUI(this, game,player));
 
             }else {
                 AbstractUi popped = uiStack.pop();
