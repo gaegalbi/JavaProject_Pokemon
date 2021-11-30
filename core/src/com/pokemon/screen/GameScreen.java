@@ -19,6 +19,7 @@ import com.pokemon.model.Player;
 import com.pokemon.ui.AbstractUi;
 //import com.pokemon.ui.inventory.InventoryRenderer;
 //import com.pokemon.ui.inventory.InventoryUI;
+import com.pokemon.ui.SkillListUi;
 import com.pokemon.ui.inventory.InventoryUI;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.util.SkinGenerator;
@@ -41,7 +42,8 @@ public class GameScreen implements Screen {
    // private InventoryRenderer inventoryRenderer;
     private Stack<AbstractUi> uiStack;
     Stage stage;
-    private boolean check=false;
+    private boolean invenCheck=false;
+    private boolean skillCheck=false;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -119,26 +121,26 @@ public class GameScreen implements Screen {
     public void update(float delta){
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
-            check = (!check);
-            if(check) {
+            invenCheck = (!invenCheck);
+            if(invenCheck) {
                 //아이템 추가
-                //player.inventory.addItem(new Item("ITEM_01"),1);
                 db.UPDATE("ITEM_01",1);
-                /*if(player.inventory.isSame("ITEM_01")>0) {
-                    Item item = player.inventory.items[player.inventory.isSame("ITEM_01")];
-                    item.setCNT(item.getCNT() + 1);
-                    item.setCurrentCNT();
-                }else*/
-                    player.inventory.addItem("ITEM_01",1);
-
+                player.inventory.addItem("ITEM_01",1);
                 this.pushScreen(new InventoryUI(this, game,player));
 
             }else {
                 AbstractUi popped = uiStack.pop();
                 popped.dispose();
             }
-
-           // stage.addActor(new window(game,player));
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
+            skillCheck = (! skillCheck);
+            if( skillCheck) {
+                this.pushScreen(new SkillListUi(this, game,player));
+            }else {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+            }
         }
     }
 

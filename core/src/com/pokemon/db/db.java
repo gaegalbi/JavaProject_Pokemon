@@ -271,6 +271,28 @@ public class db {
         return skill;
     }
 
+    public static int GET_SK_NEED_EXP(int lv) {
+        int need=0;
+        String sql = "SELECT NEED_EXP from SK_LV_INFO WHERE SK_LV = " + lv +";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                need = rs.getInt("NEED_EXP");
+            }
+            return  need;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return need;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return  need;
+        }
+    }
+
     public static int[] GET_SK_LV(String id) {
         int[] skill = new int[6];
         int i = 1;
@@ -467,4 +489,5 @@ public class db {
             e.printStackTrace();
         }
     }
+
 }

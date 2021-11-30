@@ -46,7 +46,8 @@ public class Player extends Rectangle {
     private int EXP;
     //private int gold;
     private int RANK;
-    private String skill[];
+    public String skill[];
+    private String skillName[] = {"채광","제작","공격력 증가","방어력 증가","체력 증가", "스피드 증가"};
     private int skill_LV[];
     private int skill_EXP[];
 
@@ -90,6 +91,16 @@ public class Player extends Rectangle {
                 animTimer = 0f;
             }
         }
+    }
+
+    public String getSkillName(int i) {
+        return skillName[i];
+    }
+
+    public int getSkillLV(int i) {return skill_LV[i];
+    }
+
+    public int getSkillEXP(int i) {return skill_EXP[i];
     }
 
     public enum PLAYER_STATE {

@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.JsonReader;
 public class SkinGenerator {
 
 	public static TextureRegion inv_ui;
+	public static TextureRegion skillList;
 	public static TextureRegion inv_but;
 	public static TextureRegion selectedSlot;
 	public static TextureRegion backgroundM;
@@ -37,9 +38,9 @@ public class SkinGenerator {
 		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
 		assetManager.finishLoading();
 
-	/*	assetManager.load("inven/inv_buttons1.png",Texture.class);
-		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
-		assetManager.finishLoading();*/
+		//스킬창 UI
+		skillList = new TextureRegion(new Texture(Gdx.files.internal("inven/background_s.png")));
+		skin.add("skillList", skillList, TextureRegion.class);
 
 		//인벤 폰트
 		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
@@ -93,18 +94,12 @@ public class SkinGenerator {
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
 
-		//BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
-
-		//font.getData().setLineHeight(16f);
 		skin.add("font", font);
 
 		BitmapFont smallFont = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 		skin.add("small_letters_font", smallFont);
 
-		//LabelStyle labelStyle = new LabelStyle();
-		//labelStyle.font = skin.getFont("font");
-		//skin.add("default", labelStyle);
-		
+
 		LabelStyle labelStyleSmall = new LabelStyle();
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
