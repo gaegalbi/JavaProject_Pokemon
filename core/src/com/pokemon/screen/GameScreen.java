@@ -2,6 +2,7 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -105,13 +106,19 @@ public class GameScreen implements Screen {
         game.batch.begin();
         worldRenderer.render(game.batch);
         game.batch.end();
-        playerController.update();
+        gameController.update();
         player.update(delta);
         world.update();
-        gameController.update();
 
-        for (AbstractUi abstractUi : uiStack) {
-            abstractUi.update();
+        if (uiStack.isEmpty()) {
+            playerController.update();
+        } else {
+            for (AbstractUi abstractUi : uiStack) {
+                abstractUi.update();
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                popUi();
+            }
         }
 
         // 맵 페이드 아웃
@@ -196,7 +203,10 @@ public class GameScreen implements Screen {
     public void pushUi(AbstractUi ui) {
         uiStack.add(ui);
     }
-    public AbstractUi popUi() {
-        return uiStack.pop();
+    public void popUi() {
+        if (!uiStack.isEmpty()) {
+            AbstractUi popped = uiStack.pop();
+            popped.dispose();
+        }
     }
 }

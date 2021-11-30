@@ -32,9 +32,7 @@ public class MainWorld implements World {
     private ArrayList<WorldObject> collisionObjects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
-    private Portal homePortal,MinePortal,FieldPortal;
-
-    int check = 1;
+    private Portal homePortal,MinePortal,FieldPortal,rankBoard;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -52,6 +50,7 @@ public class MainWorld implements World {
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("MainWorld"));
 
+        rankBoard = new Portal(6, 12, 1, 1);
         homePortal = new Portal(13, 6, 1, 1);
     }
 
@@ -90,19 +89,26 @@ public class MainWorld implements World {
                 player.setX(3.5f);
                 player.setY(0);
             }
+            if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                if (gameScreen.getUiStack().isEmpty()) {
+                    gameScreen.pushUi(new window(gameScreen, game, player));
+                } else {
+                    gameScreen.popUi();
+                }
+            }
         }
 
-        if (((int)(player.x/32) == 5 || (int)(player.x/32) == 6) && (int)(player.y/32) == 12){
-            if (check == 1)
-                gameScreen.pushUi(new window(gameScreen, game,player));
-            check++;
-        }
-        else{
-            if (check != 1){
-                AbstractUi popped = gameScreen.popUi();
-                popped.dispose();
-            }
-            check = 1;
-        }
+//        if (((int) (player.x / 32) == 5 || (int) (player.x / 32) == 6) && (int) (player.y / 32) == 12) {
+//            if (check == 1) {
+//                gameScreen.pushUi(new window(gameScreen, game, player));
+//            }
+//            check++;
+//        } else {
+//            if (check != 1) {
+//                AbstractUi popped = gameScreen.popUi();
+//                popped.dispose();
+//            }
+//            check = 1;
+//        }
     }
 }
