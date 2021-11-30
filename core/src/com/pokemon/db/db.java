@@ -224,4 +224,70 @@ public class db{
             return PM_TYPE;
         }
     }
+
+    public static String rank_GET_U_ID(int num) {
+        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";
+        String U_ID = null;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_ID = rs.getString("U_ID");
+            }
+            return U_ID;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_ID;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_ID;
+        }
+    }
+
+    public static int rank_GET_U_RANK(String ID) {
+        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        int U_RANK = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_RANK = rs.getInt("U_RANK");
+            }
+            return U_RANK;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_RANK;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_RANK;
+        }
+    }
+
+    public static int rank_GET_RANKINKG(String ID) {
+        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        int RANKING = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                RANKING = rs.getInt("RANKING");
+            }
+            return RANKING;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return RANKING;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return RANKING;
+        }
+    }
 }

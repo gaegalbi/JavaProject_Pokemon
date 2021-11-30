@@ -3,6 +3,7 @@ package com.pokemon.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -11,11 +12,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Generates a Skin to slam on the UI. 
- * 
+ * Generates a Skin to slam on the UI.
+ *
  * @author hydrozoa
  */
 public class SkinGenerator {
@@ -25,17 +29,17 @@ public class SkinGenerator {
 		Skin skin = new Skin();
 
 		TextureAtlas uiAtlas = assetManager.get("ui/uipack.atlas");
-		
+
 		NinePatch buttonSquareBlue = new NinePatch(uiAtlas.findRegion("dialoguebox"), 10, 10, 5, 5);
 		skin.add("dialoguebox", buttonSquareBlue);
-		
+
 		NinePatch optionbox = new NinePatch(uiAtlas.findRegion("optionbox"),6, 6, 6, 6);
 		skin.add("optionbox", optionbox);
-		
+
 		NinePatch battleinfobox = new NinePatch(uiAtlas.findRegion("battleinfobox"),14, 14, 5, 8);
 		battleinfobox.setPadLeft((int)battleinfobox.getTopHeight());
 		skin.add("battleinfobox", battleinfobox);
-		
+
 		skin.add("arrow", uiAtlas.findRegion("arrow"), TextureRegion.class);
 		skin.add("hpbar_side", uiAtlas.findRegion("hpbar_side"), TextureRegion.class);
 		skin.add("hpbar_bar", uiAtlas.findRegion("hpbar_bar"), TextureRegion.class);
@@ -43,7 +47,7 @@ public class SkinGenerator {
 		skin.add("yellow", uiAtlas.findRegion("yellow"), TextureRegion.class);
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
-		
+
 		/*
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumBarunGothic.ttf"));
@@ -63,7 +67,7 @@ public class SkinGenerator {
 
 		font.getData().setLineHeight(16f);
 		skin.add("font", font);
-		
+
 		//BitmapFont smallFont = assetManager.get("font/small_letters_font.fnt", BitmapFont.class);
 		BitmapFont smallFont = assetManager.get("font/han/gul.fnt", BitmapFont.class);
 		skin.add("small_letters_font", smallFont);
@@ -71,7 +75,7 @@ public class SkinGenerator {
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("font");
 		skin.add("default", labelStyle);
-		
+
 		LabelStyle labelStyleSmall = new LabelStyle();
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
@@ -79,4 +83,16 @@ public class SkinGenerator {
 		return skin;
 	}
 
+
+	public static Skin generateSkin_2(AssetManager assetManager) {
+		Skin skin = new Skin();
+
+		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		skin.add("font", font);
+
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = skin.getFont("font");
+
+		return skin;
+	}
 }

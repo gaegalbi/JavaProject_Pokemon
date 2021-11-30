@@ -17,6 +17,7 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.transition.*;
+import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.Home;
@@ -25,6 +26,7 @@ import com.pokemon.world.World;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
+import java.util.Stack;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
@@ -41,6 +43,8 @@ public class GameScreen implements Screen {
     private WorldRenderer worldRenderer;
     private GameController gameController;
     private TransitionScreen transitionScreen;
+
+    private Stack<AbstractUi> uiStack;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -83,6 +87,7 @@ public class GameScreen implements Screen {
         playerController = new PlayerController(player);
         gameController = new GameController(game);
         transitionScreen = new TransitionScreen(game);
+        uiStack = new Stack<>();
     }
 
     @Override
@@ -104,6 +109,10 @@ public class GameScreen implements Screen {
         player.update(delta);
         world.update();
         gameController.update();
+
+        for (AbstractUi abstractUi : uiStack) {
+            abstractUi.update();
+        }
 
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
@@ -178,5 +187,16 @@ public class GameScreen implements Screen {
     }
     public ShaderProgram getTransitionShader() {
         return transitionShader;
+    }
+
+    public Stack<AbstractUi> getUiStack() {
+        return uiStack;
+    }
+
+    public void pushUi(AbstractUi ui) {
+        uiStack.add(ui);
+    }
+    public AbstractUi popUi() {
+        return uiStack.pop();
     }
 }
