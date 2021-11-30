@@ -16,18 +16,15 @@ import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
-import com.pokemon.model.Portal;
 import com.pokemon.transition.*;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
+import com.pokemon.world.Home;
 import com.pokemon.world.World;
-import com.pokemon.world.Mine;
-import com.pokemon.world.MainWorld;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
-import java.util.HashMap;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
@@ -80,8 +77,8 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        player = new Player(13*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE, animations);
-        world = new MainWorld(player,game,this);
+        player = new Player(2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE, animations);
+        world = new Home(player,game,this);
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
