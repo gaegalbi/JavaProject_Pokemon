@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
-import com.pokemon.model.Player;
-import com.pokemon.model.Tile;
-import com.pokemon.model.TileMap;
-import com.pokemon.model.WorldObject;
+import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.TransitionScreen;
 import com.pokemon.screen.WorldObjectYComparator;
@@ -33,16 +30,15 @@ public class MainWorld implements World {
     private Player player;
     private Pokemon game;
     private ArrayList<WorldObject> collisionObjects;
-    private ArrayList<WorldObject> objects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
-
-    int check = 1;
+    private Portal homePortal,MinePortal,FieldPortal,rankBoard;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
         this.game = game;
         this.gameScreen = gameScreen;
+
         this.transitionScreen = new TransitionScreen(game);
         for (int x = 0; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
@@ -53,6 +49,9 @@ public class MainWorld implements World {
         renderList.clear();
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("MainWorld"));
+
+        rankBoard = new Portal(6, 12, 1, 1);
+        homePortal = new Portal(13, 6, 1, 1);
     }
 
     @Override
@@ -63,11 +62,6 @@ public class MainWorld implements World {
     @Override
     public ArrayList<WorldObject> getCollisionObjects() {
         return collisionObjects;
-    }
-
-    @Override
-    public ArrayList<WorldObject> getObjects() {
-        return objects;
     }
 
     @Override
@@ -89,34 +83,32 @@ public class MainWorld implements World {
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
-        if (player.x > 576 && player.y < 32) {
-            player.setX(0);
-            player.setY(0);
-            transitionScreen.startTransition(
-                gameScreen,
-                gameScreen,
-                new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
-                new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
-                new Action() {
-                    @Override
-                    public void action() {
-                        System.out.println("FadeOut");
-                    }
-            });
-            GameScreen.setWorld(new Mine(player,game,gameScreen));
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (homePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                GameScreen.setWorld(new Home(player,game,gameScreen));
+                player.setX(3.5f);
+                player.setY(0);
+            }
+            if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                if (gameScreen.getUiStack().isEmpty()) {
+                    gameScreen.pushUi(new window(gameScreen, game, player));
+                } else {
+                    gameScreen.popUi();
+                }
+            }
         }
 
-        if (((int)(player.x/32) == 5 || (int)(player.x/32) == 6) && (int)(player.y/32) == 12){
-            if (check == 1)
-                gameScreen.pushUi(new window(gameScreen, game,player));
-            check++;
-        }
-        else{
-            if (check != 1){
-                AbstractUi popped = gameScreen.popUi();
-                popped.dispose();
-            }
-            check = 1;
-        }
+//        if (((int) (player.x / 32) == 5 || (int) (player.x / 32) == 6) && (int) (player.y / 32) == 12) {
+//            if (check == 1) {
+//                gameScreen.pushUi(new window(gameScreen, game, player));
+//            }
+//            check++;
+//        } else {
+//            if (check != 1) {
+//                AbstractUi popped = gameScreen.popUi();
+//                popped.dispose();
+//            }
+//            check = 1;
+//        }
     }
 }

@@ -2,6 +2,7 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -20,8 +21,8 @@ import com.pokemon.transition.*;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
+import com.pokemon.world.Home;
 import com.pokemon.world.World;
-import com.pokemon.world.MainWorld;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -81,8 +82,8 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        player = new Player(13*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE, animations);
-        world = new MainWorld(player,game,this);
+        player = new Player(2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE, animations);
+        world = new Home(player,game,this);
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
@@ -105,13 +106,19 @@ public class GameScreen implements Screen {
         game.batch.begin();
         worldRenderer.render(game.batch);
         game.batch.end();
-        playerController.update();
+        gameController.update();
         player.update(delta);
         world.update();
-        gameController.update();
 
-        for (AbstractUi abstractUi : uiStack) {
-            abstractUi.update();
+        if (uiStack.isEmpty()) {
+            playerController.update();
+        } else {
+            for (AbstractUi abstractUi : uiStack) {
+                abstractUi.update();
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                popUi();
+            }
         }
 
         // 맵 페이드 아웃
@@ -196,7 +203,10 @@ public class GameScreen implements Screen {
     public void pushUi(AbstractUi ui) {
         uiStack.add(ui);
     }
-    public AbstractUi popUi() {
-        return uiStack.pop();
+    public void popUi() {
+        if (!uiStack.isEmpty()) {
+            AbstractUi popped = uiStack.pop();
+            popped.dispose();
+        }
     }
 }
