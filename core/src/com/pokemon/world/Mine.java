@@ -1,33 +1,25 @@
 package com.pokemon.world;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.pokemon.game.Pokemon;
-import com.pokemon.game.Settings;
-import com.pokemon.model.Player;
-import com.pokemon.model.Tile;
-import com.pokemon.model.TileMap;
-import com.pokemon.model.WorldObject;
+import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.TransitionScreen;
-import com.pokemon.transition.FadeInTransition;
-import com.pokemon.transition.FadeOutTransition;
-import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
 
 import java.util.ArrayList;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
-import static com.pokemon.screen.GameScreen.getAssetManager;
-import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class Mine implements World {
-    private final TileMap map = new TileMap(10, 10);
+    private final TileMap map = new TileMap(17, 14);
     private Player player;
     private Pokemon game;
     private GameScreen gameScreen;
     private TransitionScreen transitionScreen;
     private ArrayList<WorldObject> collisionObjects;
+    private Portal mainWorldPortal;
 
     public Mine(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -40,10 +32,11 @@ public class Mine implements World {
                 map.tiles[x][y] = new Tile(x, y);
             }
         }
-        collisionObjects = ObjectGenerator.generateObject("MineCollision");
+        collisionObjects = ObjectGenerator.generateCollisionObject("MineCollision");
         renderList.clear();
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("Mine"));
+        mainWorldPortal = new Portal(8, 2, 1, 1);
     }
 
     @Override
@@ -74,6 +67,13 @@ public class Mine implements World {
         }
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.SOUTH) {
+                GameScreen.setWorld(new MainWorld(player,game,gameScreen));
+                player.setX(11);
+                player.setY(19);
+            }
         }
 
     }

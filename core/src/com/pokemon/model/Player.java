@@ -26,7 +26,7 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     private float animTimer;
 
     public Player(int x, int y, AnimationSet<TextureRegion> animations) {
-        this.width = 32;
+        this.width = 31;
         this.height = 24;
         this.x = x;
         this.y = y;

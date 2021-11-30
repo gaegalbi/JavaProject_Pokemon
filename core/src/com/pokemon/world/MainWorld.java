@@ -2,28 +2,16 @@ package com.pokemon.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.game.Pokemon;
-import com.pokemon.game.Settings;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.TransitionScreen;
-import com.pokemon.screen.WorldObjectYComparator;
-import com.pokemon.transition.FadeInTransition;
-import com.pokemon.transition.FadeOutTransition;
-import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.rank.window;
-import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
-import static com.pokemon.screen.GameScreen.getAssetManager;
-import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class MainWorld implements World {
     private final TileMap map = new TileMap(29, 22);
@@ -32,7 +20,7 @@ public class MainWorld implements World {
     private ArrayList<WorldObject> collisionObjects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
-    private Portal homePortal,MinePortal,FieldPortal,rankBoard;
+    private Portal homePortal,minePortal,fieldPortal,rankBoard;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -52,6 +40,7 @@ public class MainWorld implements World {
 
         rankBoard = new Portal(6, 12, 1, 1);
         homePortal = new Portal(13, 6, 1, 1);
+        minePortal = new Portal(11,19,1,1);
     }
 
     @Override
@@ -88,6 +77,11 @@ public class MainWorld implements World {
                 GameScreen.setWorld(new Home(player,game,gameScreen));
                 player.setX(3.5f);
                 player.setY(0);
+            }
+            if (minePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                GameScreen.setWorld(new Mine(player,game,gameScreen));
+                player.setX(8);
+                player.setY(2);
             }
             if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 if (gameScreen.getUiStack().isEmpty()) {

@@ -13,14 +13,14 @@ bulletin
   index: -1
 flower1
   rotate: false
-  xy: 168, 102
+  xy: 150, 68
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 flower2
   rotate: false
-  xy: 20, 2
+  xy: 168, 84
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -48,14 +48,21 @@ house2
   index: -1
 null
   rotate: false
-  xy: 38, 36
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+rock
+  rotate: false
+  xy: 168, 102
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 stone
   rotate: false
-  xy: 150, 68
+  xy: 38, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
