@@ -31,6 +31,7 @@ public class SkillListUi extends AbstractUi{
     private Label[] skillLV;
     private Label[] skillEXP_C;
     private Label[] skillEXP_M;
+    private Image[] skillImage;
 
     public SkillListUi(GameScreen gameScreen, Pokemon game, Player player) {
         this.game = game;
@@ -56,9 +57,14 @@ public class SkillListUi extends AbstractUi{
         skillLV = new Label[6];
         skillEXP_C = new Label[6];
         skillEXP_M= new Label[6];
+        skillImage = new Image[6];
         //스킬 목록
         for(int i=0;i<player.skill.length;i++){
             skillName[i] = new Label(""+player.getSkillName(i),labelColors[0]);
+            System.out.println(player.getSkillName(i));
+            skillImage[i] = new Image(skin.getRegion(player.getSkillName(i)+""));
+            skillImage[i].setSize(30,30);
+
             skillLV[i] = new Label("LV."+player.getSkillLV(i),labelColors[0]);
             skillEXP_C[i] = new Label(player.getSkillEXP(i)+" / ",labelColors[0]);
             skillEXP_M[i] = new Label(""+ db.GET_SK_NEED_EXP(player.getSkillLV(i)),labelColors[0]);
@@ -71,6 +77,7 @@ public class SkillListUi extends AbstractUi{
             stage.addActor(skillLV[i]);
             stage.addActor(skillEXP_C[i]);
             stage.addActor(skillEXP_M[i]);
+            stage.addActor(skillImage[i]);
         }
         //스킬창 이미지 추가
         stage.addActor(skillList);
@@ -87,6 +94,7 @@ public class SkillListUi extends AbstractUi{
         headers.setPosition(w/2-85,h/2+158);
 
         for(int i=0;i<player.skill.length;i++) {
+            skillImage[i].setPosition(headers.getX(), headers.getY()-30-i*50);
             skillName[i].setPosition(headers.getX()+50, headers.getY()-30-i*50);
             skillLV[i].setPosition(headers.getX()+75 + (skillName[i].getText().length*10), headers.getY()-30-i*50);
             skillEXP_C[i].setPosition(headers.getX() + 120,headers.getY()-45-i*50);
@@ -95,6 +103,7 @@ public class SkillListUi extends AbstractUi{
             skillLV[i].toFront();
             skillEXP_C[i].toFront();
             skillEXP_M[i].toFront();
+            skillImage[i].toFront();
         }
 
         stage.draw();
