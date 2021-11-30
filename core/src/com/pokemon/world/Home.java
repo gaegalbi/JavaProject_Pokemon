@@ -30,7 +30,7 @@ public class Home implements World{
             }
         }
 
-        collisionObjects = ObjectGenerator.generateObject("HomeCollision");
+        collisionObjects = ObjectGenerator.generateCollisionObject("HomeCollision");
         renderList.clear();
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("Home"));
