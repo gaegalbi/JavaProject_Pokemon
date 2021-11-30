@@ -49,7 +49,7 @@ public class MainWorld implements World {
                 map.tiles[x][y] = new Tile(x, y);
             }
         }
-        collisionObjects = ObjectGenerator.generateObject("MainWorldCollision");
+        collisionObjects = ObjectGenerator.generateCollisionObject("MainWorldCollision");
         renderList.clear();
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("MainWorld"));
