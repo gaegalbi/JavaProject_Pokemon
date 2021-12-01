@@ -74,7 +74,8 @@ public class Forest implements World {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST) {
+                player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),

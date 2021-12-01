@@ -78,7 +78,8 @@ public class MainWorld implements World {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (homePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (homePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -92,7 +93,8 @@ public class MainWorld implements World {
                         }
                 );
             }
-            if (minePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (minePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -106,7 +108,8 @@ public class MainWorld implements World {
                         });
             }
 
-            if (forestPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (forestPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST) {
+                player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -120,7 +123,8 @@ public class MainWorld implements World {
                         });
 
             }
-            if (beachPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (beachPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST) {
+                player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -133,7 +137,8 @@ public class MainWorld implements World {
                             }
                         });
             }
-            if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                player.finishMove();
                 if (gameScreen.getUiStack().isEmpty()) {
                     gameScreen.pushUi(new window(gameScreen, game, player));
                 } else {
