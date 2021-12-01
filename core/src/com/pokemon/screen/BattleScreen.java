@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Stack;
 
 import static com.pokemon.ui.LoginUi.playerID;
 
@@ -76,8 +78,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
+    private Stack<AbstractUi> uiStack;
+
     public BattleScreen(Pokemon game) {
         this.game = game;
+        this.uiStack = new Stack();
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -89,17 +94,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(false);
+        this.battle = new Battle(this.game,this,false);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-        battleRenderer = new BattleRenderer(game,battle,camera);
-        eventRenderer = new EventQueueRenderer(skin, queue);
 
+        battleRenderer = new BattleRenderer(this.game,battle,camera);
+        eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
+        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack);
+
 
         battle.beginBattle();
     }
@@ -168,6 +174,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     }
 
     public void update(float delta) {
+
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;
@@ -202,6 +209,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     @Override
     public void render(float delta) {
+
         gameViewport.apply();
         camera.position.x =  Gdx.graphics.getWidth()/2;
         camera.position.y = Gdx.graphics.getHeight()/2;
@@ -218,6 +226,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         game.batch.end();
 
         uiStage.draw();
+        if(uiStack!=null) {
+            for (AbstractUi abstractUi : uiStack) {
+                abstractUi.update();
+            }
+        }
     }
 
     @Override

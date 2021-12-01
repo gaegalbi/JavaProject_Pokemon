@@ -12,7 +12,6 @@ import java.util.HashMap;
 public class Pokemon extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-   // public InventoryUI inventoryUI;
     private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
 
 	@Override

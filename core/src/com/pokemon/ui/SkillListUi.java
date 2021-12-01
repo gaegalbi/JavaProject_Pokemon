@@ -1,6 +1,7 @@
 package com.pokemon.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -14,18 +15,17 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
-import com.pokemon.screen.GameScreen;
-import com.pokemon.ui.inventory.ImageUI;
+import com.pokemon.ui.inventory.ImageUi;
 import com.pokemon.util.SkinGenerator;
 
 public class SkillListUi extends AbstractUi{
     private Stage stage;
     private Pokemon game;
-    private GameScreen gameScreen;
+    private Screen gameScreen;
     private AssetManager assetManager;
     private Skin skin;
     private Player player;
-    private ImageUI skillList;
+    private ImageUi skillList;
     private Label headers;
     private Label[] skillName;
     private Label[] skillLV;
@@ -33,7 +33,7 @@ public class SkillListUi extends AbstractUi{
     private Label[] skillEXP_M;
     private Image[] skillImage;
 
-    public SkillListUi(GameScreen gameScreen, Pokemon game, Player player) {
+    public SkillListUi(Screen gameScreen, Pokemon game, Player player) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.player = player;
@@ -41,7 +41,7 @@ public class SkillListUi extends AbstractUi{
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-        skillList = new ImageUI(skin.getRegion("skillList"),new Vector2(Gdx.graphics.getWidth() / 2-100, Gdx.graphics.getHeight() / 2-195),200,390);
+        skillList = new ImageUi(skin.getRegion("skillList"),new Vector2(Gdx.graphics.getWidth() / 2-100, Gdx.graphics.getHeight() / 2-195),200,390);
         //폰트 및 폰트 색깔
         Label.LabelStyle[] labelColors = new Label.LabelStyle[]{
                 new Label.LabelStyle(skin.getFont("font"), new Color(1, 212 / 255.f, 0, 1)), // yellow

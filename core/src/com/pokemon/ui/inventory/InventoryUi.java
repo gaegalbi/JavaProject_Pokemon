@@ -3,10 +3,6 @@ package com.pokemon.ui.inventory;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -14,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
@@ -28,20 +23,18 @@ import com.pokemon.inventory.Equipment;
 import com.pokemon.inventory.Inventory;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.Player;
-import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
 
 import static com.pokemon.inventory.Item.TYPE;
 import static com.pokemon.ui.LoginUi.playerID;
-import static com.pokemon.util.SkinGenerator.inv_but;
 
-public class InventoryUI extends AbstractUi {
+public class InventoryUi extends AbstractUi {
     private Stage stage;
     private Pokemon game;
-    private GameScreen gameScreen;
-    private ImageUI ui;
-    private ImageUI craft;
+    private Screen Screen;
+    private ImageUi ui;
+    private ImageUi craft;
     private AssetManager assetManager;
     private Skin skin;
     private Image selectedSlot;
@@ -85,17 +78,17 @@ public class InventoryUI extends AbstractUi {
     //제작 결과 아이템 객체
     private Item craftResult;
 
-    public InventoryUI(GameScreen gameScreen, Pokemon game, Player player) {
+    public InventoryUi(Screen Screen, Pokemon game, Player player) {
         this.game = game;
-        this.gameScreen = gameScreen;
+        this.Screen = Screen;
         this.player = player;
         stage = new Stage(new ScreenViewport());
 
         skin = SkinGenerator.generateSkin(assetManager);
 
         //ui = 인벤, 장비, 상태창 , craft = 제작창
-        ui = new ImageUI(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), 372, 212);
-        craft = new ImageUI(skin.getRegion("event_craft"), new Vector2(ui.getX()+ui.getWidth(), ui.getY()),124, 182);
+        ui = new ImageUi(skin.getRegion("inv_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 372 / 2, Gdx.graphics.getHeight() / 2 - 212 / 2), 372, 212);
+        craft = new ImageUi(skin.getRegion("event_craft"), new Vector2(ui.getX()+ui.getWidth(), ui.getY()),124, 182);
         //버튼
         invbuttons92x28 = skin.getRegion("inv_buttons").split(50, 30);
 

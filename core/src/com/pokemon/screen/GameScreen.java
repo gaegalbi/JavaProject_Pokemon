@@ -20,7 +20,7 @@ import com.pokemon.ui.AbstractUi;
 //import com.pokemon.ui.inventory.InventoryRenderer;
 //import com.pokemon.ui.inventory.InventoryUI;
 import com.pokemon.ui.SkillListUi;
-import com.pokemon.ui.inventory.InventoryUI;
+import com.pokemon.ui.inventory.InventoryUi;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.util.SkinGenerator;
 import com.pokemon.world.World;
@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 
     private AssetManager assetManager;
     private OrthographicCamera camera;
-    private Player player;
+    public static Player player;
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
@@ -126,8 +126,7 @@ public class GameScreen implements Screen {
                 //아이템 추가
                 db.UPDATE("ITEM_01",1);
                 player.inventory.addItem("ITEM_01",1);
-                this.pushScreen(new InventoryUI(this, game,player));
-
+                this.pushScreen(new InventoryUi(this, game,player));
             }else {
                 AbstractUi popped = uiStack.pop();
                 popped.dispose();
@@ -141,6 +140,10 @@ public class GameScreen implements Screen {
                 AbstractUi popped = uiStack.pop();
                 popped.dispose();
             }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            game.setScreen(new BattleScreen(game));
+            dispose();
         }
     }
 

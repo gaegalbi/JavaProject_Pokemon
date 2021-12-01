@@ -7,11 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -58,10 +55,12 @@ public class SkinGenerator {
 
 		//인벤 폰트
 		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		//font.setColor(Color.BLACK);
 		skin.add("font", font);
 
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("font");
+		//labelStyle.font.setColor(Color.BLACK);
 		skin.add("default", labelStyle);
 
 		//인벤 UI
@@ -85,6 +84,7 @@ public class SkinGenerator {
 
 		textButtonStyle = new TextButton.TextButtonStyle();
 		textButtonStyle.font = skin.getFont("font");
+		//textButtonStyle.font.setColor(Color.BLACK);
 		skin.add("default",textButtonStyle);
 		/* ========================================= */
 
@@ -108,14 +108,14 @@ public class SkinGenerator {
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
 
-		skin.add("font", font);
 
 		BitmapFont smallFont = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 		skin.add("small_letters_font", smallFont);
 
 
 		LabelStyle labelStyleSmall = new LabelStyle();
-		labelStyleSmall.font = skin.getFont("small_letters_font");
+		labelStyleSmall.font = skin.getFont("font");
+		labelStyleSmall.fontColor = Color.BLACK;
 		skin.add("smallLabel", labelStyleSmall);
 
 		return skin;

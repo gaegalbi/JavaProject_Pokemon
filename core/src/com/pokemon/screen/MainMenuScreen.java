@@ -3,14 +3,19 @@ package com.pokemon.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.pokemon.game.Pokemon;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.LoginUi;
+import com.pokemon.util.SkinGenerator;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -22,7 +27,6 @@ public class MainMenuScreen implements Screen {
     OrthographicCamera camera;
     private Texture logoImage;
     private Stack<AbstractUi> uiStack;
-
     public MainMenuScreen(Pokemon game) {
         VisUI.load(VisUI.SkinScale.X1);
         this.game = game;
@@ -47,6 +51,7 @@ public class MainMenuScreen implements Screen {
         game.batch.draw(logoImage, 144, 280,512,192);
         game.batch.end();
 
+
 //        testUi.update();
         for (AbstractUi abstractUi : uiStack) {
             abstractUi.update();
@@ -56,7 +61,7 @@ public class MainMenuScreen implements Screen {
     public void gameStart() {
         game.setScreen(new GameScreen(game));
 
-//        game.setScreen(new BattleScreen(game)); // 배틀스크린 테스트용
+        //game.setScreen(new BattleScreen(game)); // 배틀스크린 테스트용
         dispose();
     }
 

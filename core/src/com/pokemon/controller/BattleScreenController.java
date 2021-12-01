@@ -4,12 +4,16 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.pokemon.battle.Battle;
 import com.pokemon.db.db;
-import com.pokemon.ui.DialogueBox;
-import com.pokemon.ui.MoveSelectBox;
-import com.pokemon.ui.OptionBox;
+import com.pokemon.game.Pokemon;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
+import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
+import com.pokemon.ui.inventory.InventoryUi;
+
 import java.util.Queue;
+import java.util.Stack;
 
 
 public class BattleScreenController extends InputAdapter {
@@ -30,13 +34,20 @@ public class BattleScreenController extends InputAdapter {
 	private DialogueBox dialogue;
 	private OptionBox optionBox;
 	private MoveSelectBox moveSelect;
-	
-	public BattleScreenController(Battle battle, Queue<BattleEvent> queue,DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox) {
+
+	private Stack<AbstractUi> uiStack;
+	private Pokemon game;
+	private BattleScreen battleScreen;
+
+	public BattleScreenController(Pokemon game, BattleScreen battleScreen,Battle battle, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox, Stack uiStack) {
+		this.game = game;
+		this.battleScreen = battleScreen;
 		this.battle = battle;
 		this.queue = queue;
 		this.dialogue = dialogue;
 		this.moveSelect = options;
 		this.optionBox = optionBox;
+		this.uiStack = uiStack;
 	}
 	
 	@Override
@@ -69,9 +80,12 @@ public class BattleScreenController extends InputAdapter {
 		if (moveSelect.isVisible()) {
 			if (keycode == Keys.X) {
 				int selection = moveSelect.getSelection();
+				if(selection==4){
+					uiStack.add(new InventoryUi(battleScreen,game, GameScreen.player));
+				}
 				/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-				if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
-					queue.add(new TextEvent("No such move...", 0.5f));
+				else if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
+					queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
 				} else {
 					battle.progress(moveSelect.getSelection());
 					endTurn();
@@ -114,7 +128,6 @@ public class BattleScreenController extends InputAdapter {
 	public void restartTurn() {
 		this.state = STATE.SELECT_ACTION;
 		dialogue.setVisible(false);
-
 		for (int i = 0; i <= 3; i++) {
 			String label = "------";
 			String skill = db.GET_PM_SK_NAME(battle.getP_P().getSkill()[i]);
@@ -125,6 +138,7 @@ public class BattleScreenController extends InputAdapter {
 			}
 			moveSelect.setLabel(i, label);
 		}
+		moveSelect.setLabel(4,"아이템 사용");
 		moveSelect.setVisible(true);
 	}
 

@@ -2,18 +2,23 @@ package com.pokemon.battle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.pokemon.battle.event.*;
+import com.pokemon.game.Pokemon;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.GifDecoder;
+import com.pokemon.util.SkinGenerator;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Stack;
 
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
@@ -27,6 +32,7 @@ public class Battle implements BattleEventQueuer {
         RAN,
         WIN,
         LOSE,
+        USE_ITEM,
     }
     private STATE state;
     private PK player;
@@ -47,14 +53,25 @@ public class Battle implements BattleEventQueuer {
     public static String OppoID;
     private String[] oppoKey;
     private String wildKey;
+    private Skin skin;
+    private Pokemon game;
+    private BattleScreen battleScreen;
+    private Stack<AbstractUi> uiStack;
 
-   public Battle(boolean multi) {
-       assetManager = new AssetManager();
-       assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
+   public Battle(Pokemon game, BattleScreen battleScreen, boolean multi) {
+       this.game = game;
+       this.battleScreen = battleScreen;
+       this.uiStack = new Stack<>();
+
+       assetManager= new AssetManager();
+       assetManager.load("ui/uipack.atlas", TextureAtlas.class);
        assetManager.load("font/han/gul.fnt", BitmapFont.class);
        assetManager.finishLoading();
 
+       skin = SkinGenerator.generateSkin(assetManager);
+
        pName = db.sP(playerID,playerNum+1);
+
 
        P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
 
@@ -105,7 +122,6 @@ public class Battle implements BattleEventQueuer {
     }
 
     public void beginBattle() {
-        System.out.print(player.getName());
         //queueEvent(new PokeSpriteEvent(opponent.getSprite(), BATTLE_PARTY.OPPONENT));
         queueEvent(new TextEvent("가랏! "+player.getName()+"!", 1f));
         //queueEvent(new PokeSpriteEvent(player.getSprite(), BATTLE_PARTY.PLAYER));
@@ -131,6 +147,11 @@ public class Battle implements BattleEventQueuer {
         this.state = STATE.RAN;
     }
 
+    private void useItem(){
+        queueEvent(new TextEvent("무슨 아이템을 사용할까?", true));
+        this.state=STATE.USE_ITEM;
+    }
+
     private void playTurn(BATTLE_PARTY user,int input){
         BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
 
@@ -143,23 +164,20 @@ public class Battle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
-
         String move = pokeUser.getSkill()[input];
 
         /* Broadcast the text graphics */
-        queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move)+ "!", 0.5f));
+        queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move) + "!", 0.5f));
 
         /* 스킬 사용 횟수 적용*/
         pokeUser.applyCNT(input);
 
-        int damage = mechanics.calculateDamage(pokeUser,input,pokeTarget);
+        int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
 
         int hpBefore = pokeTarget.getCurrentHP();
 
-        //float hpPercentage = ((float)target.getCurrentHitpoints())/(float)target.getStat(STAT.HITPOINTS);
-
-        //System.out.println("데미지" + damage);
-        pokeTarget.applyDamage(damage); //해당 데미지 입음
+        //해당 데미지 입음
+        pokeTarget.applyDamage(damage);
         /* Broadcast HP change */
         queueEvent(
                 new HPAnimationEvent(
@@ -173,27 +191,25 @@ public class Battle implements BattleEventQueuer {
             queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
         }
 
-       //System.out.println("현재 피"+pokeTarget.getCurrentHP());
-
         if (player.isFainted()) {
-        //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
-        boolean anyoneAlive = false;
-        for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
-            if (!getPTrainer().getPokemon(i).isFainted()) {
-                anyoneAlive = true;
-                break;
+            //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
+            boolean anyoneAlive = false;
+            for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
+                if (!getPTrainer().getPokemon(i).isFainted()) {
+                    anyoneAlive = true;
+                    break;
+                }
             }
-        }
-        if (anyoneAlive) {
-            queueEvent(new TextEvent(player.getName() + " fainted!", true));
-            this.state = STATE.SELECT_NEW_POKEMON;
-        } else {
-            queueEvent(new TextEvent("Unfortunately, you've lost...", true));
-            this.state = STATE.LOSE;
-        }
+            if (anyoneAlive) {
+                queueEvent(new TextEvent(player.getName() + "은(는) 기절했다!", true));
+                this.state = STATE.SELECT_NEW_POKEMON;
+            } else {
+                queueEvent(new TextEvent("배틀에서 패배했습니다..", true));
+                this.state = STATE.LOSE;
+            }
         } else if (opponent.isFainted()) {
             //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.OPPONENT, new FaintingAnimation()));
-            queueEvent(new TextEvent("Congratulations! You Win!", true));
+            queueEvent(new TextEvent("배틀에서 승리했습니다!", true));
             this.state = STATE.WIN;
         }
     }

@@ -1,5 +1,7 @@
 package com.pokemon.ui;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,7 +25,7 @@ public class OptionBox extends Table {
 	
 	private List<Image> arrows = new ArrayList<Image>();
 	private List<Label> options = new ArrayList<Label>();
-	
+
 	private Table uiContainer;
 	
 	public OptionBox(Skin skin) {
@@ -34,7 +36,7 @@ public class OptionBox extends Table {
 	}
 	
 	public void addOption(String option) {
-		Label optionLabel = new Label(option, this.getSkin());
+		Label optionLabel = new Label(option, this.getSkin(),"smallLabel");
 		options.add(optionLabel);
 		Image selectorLabel = new Image(this.getSkin(), "arrow");
 		selectorLabel.setScaling(Scaling.none);

@@ -3,9 +3,12 @@ package com.pokemon.battle.event;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.pokemon.ui.DialogueBox;
+import com.pokemon.util.SkinGenerator;
 
 public class TextEvent extends BattleEvent {
 	
@@ -15,7 +18,6 @@ public class TextEvent extends BattleEvent {
 	private float delay;
 	private boolean awaitInput = false;
 	private String text;
-	
 	private DialogueBox dialogue;
 	
 	public TextEvent(String text) {
