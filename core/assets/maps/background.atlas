@@ -1,9 +1,16 @@
 
 background.png
-size: 1024, 512
+size: 2048, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
+Forest
+  rotate: false
+  xy: 468, 164
+  size: 384, 320
+  orig: 384, 320
+  offset: 0, 0
+  index: -1
 Home
   rotate: false
   xy: 2, 2
@@ -20,7 +27,7 @@ MainWorld
   index: -1
 Mine
   rotate: false
-  xy: 468, 260
+  xy: 854, 260
   size: 272, 224
   orig: 272, 224
   offset: 0, 0

@@ -20,7 +20,7 @@ public class MainWorld implements World {
     private ArrayList<WorldObject> collisionObjects;
     private TransitionScreen transitionScreen;
     private GameScreen gameScreen;
-    private Portal homePortal,minePortal,fieldPortal,rankBoard;
+    private Portal homePortal,minePortal,forestPortal,rankBoard;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -41,6 +41,7 @@ public class MainWorld implements World {
         rankBoard = new Portal(6, 12, 1, 1);
         homePortal = new Portal(13, 6, 1, 1);
         minePortal = new Portal(11,19,1,1);
+        forestPortal = new Portal(28,9,1,4);
     }
 
     @Override
@@ -83,6 +84,13 @@ public class MainWorld implements World {
                 player.setX(8);
                 player.setY(2);
             }
+
+            if (forestPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST) {
+                GameScreen.setWorld(new Forest(player,game,gameScreen));
+                player.setX(0);
+                player.setY(15.5f);
+            }
+
             if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 if (gameScreen.getUiStack().isEmpty()) {
                     gameScreen.pushUi(new window(gameScreen, game, player));
