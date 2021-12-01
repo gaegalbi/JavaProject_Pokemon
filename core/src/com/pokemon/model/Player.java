@@ -86,4 +86,8 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     public DIRECTION getFacing() {
         return facing;
     }
+
+    public PLAYER_STATE getState() {
+        return state;
+    }
 }

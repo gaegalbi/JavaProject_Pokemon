@@ -2,14 +2,20 @@ package com.pokemon.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.transition.FadeInTransition;
+import com.pokemon.transition.FadeOutTransition;
+import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
 
 import java.util.ArrayList;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
+import static com.pokemon.screen.GameScreen.getAssetManager;
+import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class Forest implements World {
     private final TileMap map = new TileMap(24, 20);
@@ -35,7 +41,7 @@ public class Forest implements World {
         renderList.add(player);
         renderList.addAll(ObjectGenerator.generateObject("Forest"));
 
-        mainWorldPortal = new Portal(0,13,1,4);
+        mainWorldPortal = new Portal(0, 13, 1, 4);
     }
 
     @Override
@@ -68,10 +74,19 @@ public class Forest implements World {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST) {
-                GameScreen.setWorld(new MainWorld(player,game,gameScreen));
-                player.setX(28);
-                player.setY(10.5f);
+            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST && player.getState() == Player.PLAYER_STATE.STANDING) {
+                gameScreen.getTransitionScreen().startTransition(
+                        new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
+                        new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
+                        new Action() {
+                            @Override
+                            public void action() {
+                                GameScreen.setWorld(new MainWorld(player, game, gameScreen));
+                                player.setX(28);
+                                player.setY(10.5f);
+                            }
+                        }
+                );
             }
         }
     }

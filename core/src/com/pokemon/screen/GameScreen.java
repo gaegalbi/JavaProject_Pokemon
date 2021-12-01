@@ -22,6 +22,7 @@ import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.Home;
+import com.pokemon.world.MainWorld;
 import com.pokemon.world.World;
 
 import aurelienribon.tweenengine.Tween;
@@ -44,6 +45,7 @@ public class GameScreen implements Screen {
     private WorldRenderer worldRenderer;
     private GameController gameController;
     private TransitionScreen transitionScreen;
+    private boolean isTransition;
 
     private Stack<AbstractUi> uiStack;
 
@@ -66,6 +68,7 @@ public class GameScreen implements Screen {
         if (!transitionShader.isCompiled()) {
             System.out.println(transitionShader.getLog());
         }
+        isTransition = false;
 
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
 
@@ -87,7 +90,7 @@ public class GameScreen implements Screen {
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
-        transitionScreen = new TransitionScreen(game);
+        transitionScreen = new TransitionScreen(game,this);
         uiStack = new Stack<>();
     }
 
@@ -110,7 +113,7 @@ public class GameScreen implements Screen {
         player.update(delta);
         world.update();
 
-        if (uiStack.isEmpty()) {
+        if (uiStack.isEmpty() && !isTransition) {
             playerController.update();
         } else {
             for (AbstractUi abstractUi : uiStack) {
@@ -124,32 +127,32 @@ public class GameScreen implements Screen {
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
-                    this,
-                    this,
                     new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                     new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
                     new Action() {
                         @Override
                         public void action() {
-                            System.out.println("FadeOut");
+                            player.setX(13);
+                            player.setY(6);
                         }
                     });
         }
-        
-        // 전투 페이드 아웃
-        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
-            transitionScreen.startTransition(
-                    this,
-                    this,
-                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
-                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager()),
-                    new Action() {
-                        @Override
-                        public void action() {
-                           // game.setScreen(new BattleScreen(game));
-                        }
-                    });
-        }
+//
+//        // 전투 페이드 아웃
+//        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
+//            transitionScreen.startTransition(
+//                    this,
+//                    this,
+//                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
+//                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager())
+//            );
+////                    new Action() {
+////                        @Override
+////                        public void action() {
+////                           // game.setScreen(new BattleScreen(game));
+////                        }
+////                    });
+//        }
     }
 
     @Override
@@ -194,6 +197,14 @@ public class GameScreen implements Screen {
     }
     public ShaderProgram getTransitionShader() {
         return transitionShader;
+    }
+
+    public TransitionScreen getTransitionScreen() {
+        return transitionScreen;
+    }
+
+    public void setTransition(boolean transition) {
+        isTransition = transition;
     }
 
     public Stack<AbstractUi> getUiStack() {

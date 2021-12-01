@@ -16,9 +16,7 @@ import com.pokemon.util.Action;
 public class TransitionScreen implements Screen {
 	final Pokemon game;
 
-	private Screen from;
-	private Screen to;
-	
+	private GameScreen gameScreen;
 	private Transition outTransition;
 	private Transition inTransition;
 	
@@ -34,8 +32,9 @@ public class TransitionScreen implements Screen {
 		IN
 	}
 	
-	public TransitionScreen(Pokemon game) {
+	public TransitionScreen(Pokemon game, GameScreen gameScreen) {
 		this.game = game;
+		this.gameScreen = gameScreen;
 		batch = new SpriteBatch();
 		viewport = new ScreenViewport();
 	}
@@ -67,17 +66,18 @@ public class TransitionScreen implements Screen {
 		} else if (state == TRANSITION_STATE.IN) {
 			inTransition.update(delta);
 			if (inTransition.isFinished()) {
-				game.setScreen(to);
+				gameScreen.setTransition(false);
+				game.setScreen(gameScreen);
 			}
 		}
 
 		if (state == TRANSITION_STATE.OUT) {
-			from.render(delta);
+			gameScreen.render(delta);
 			
 			viewport.apply();
 			outTransition.render(delta, batch);
 		} else if (state == TRANSITION_STATE.IN) {
-			to.render(delta);
+			gameScreen.render(delta);
 			
 			viewport.apply();
 			inTransition.render(delta, batch);
@@ -87,8 +87,7 @@ public class TransitionScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
-		to.resize(width, height);
-		from.resize(width, height);
+		gameScreen.resize(width, height);
 	}
 
 	@Override
@@ -101,13 +100,12 @@ public class TransitionScreen implements Screen {
 		
 	}
 	
-	public void startTransition(Screen from, Screen to, Transition out, Transition in, Action action) {
-		this.from = from;
-		this.to = to;
+	public void startTransition(Transition out, Transition in, Action action) {
 		this.outTransition = out;
 		this.inTransition = in;
 		this.action = action;
 		this.state = TRANSITION_STATE.OUT;
+		gameScreen.setTransition(true);
 		game.setScreen(this);
 	}
 }

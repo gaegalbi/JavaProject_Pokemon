@@ -17,15 +17,15 @@ import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 import static com.pokemon.screen.GameScreen.getAssetManager;
 import static com.pokemon.screen.GameScreen.getTweenManager;
 
-public class Home implements World {
-    private final TileMap map = new TileMap(10, 8);
+public class Beach implements World {
+    private final TileMap map = new TileMap(27, 20);
     private GameScreen gameScreen;
     private Player player;
     private Pokemon game;
     private ArrayList<WorldObject> collisionObjects;
     private Portal mainWorldPortal;
 
-    public Home(Player player, Pokemon game, GameScreen gameScreen) {
+    public Beach(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
         this.game = game;
         this.gameScreen = gameScreen;
@@ -36,12 +36,12 @@ public class Home implements World {
             }
         }
 
-        collisionObjects = ObjectGenerator.generateCollisionObject("HomeCollision");
+        collisionObjects = ObjectGenerator.generateCollisionObject("BeachCollision");
         renderList.clear();
         renderList.add(player);
-        renderList.addAll(ObjectGenerator.generateObject("Home"));
+        renderList.addAll(ObjectGenerator.generateObject("Beach"));
 
-        mainWorldPortal = new Portal(3, 0, 2, 1);
+        mainWorldPortal = new Portal(26, 9, 1, 4);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class Home implements World {
 
     @Override
     public String getBackground() {
-        return "Home";
+        return "Beach";
     }
 
     @Override
@@ -74,7 +74,7 @@ public class Home implements World {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.SOUTH && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST && player.getState() == Player.PLAYER_STATE.STANDING) {
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                         new FadeInTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -82,8 +82,8 @@ public class Home implements World {
                             @Override
                             public void action() {
                                 GameScreen.setWorld(new MainWorld(player, game, gameScreen));
-                                player.setX(13);
-                                player.setY(6);
+                                player.setX(0);
+                                player.setY(11.5f);
                             }
                         }
                 );

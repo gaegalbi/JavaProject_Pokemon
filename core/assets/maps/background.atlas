@@ -4,9 +4,16 @@ size: 2048, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-Forest
+Beach
   rotate: false
   xy: 468, 164
+  size: 432, 320
+  orig: 432, 320
+  offset: 0, 0
+  index: -1
+Forest
+  rotate: false
+  xy: 902, 164
   size: 384, 320
   orig: 384, 320
   offset: 0, 0
@@ -27,7 +34,7 @@ MainWorld
   index: -1
 Mine
   rotate: false
-  xy: 854, 260
+  xy: 1288, 260
   size: 272, 224
   orig: 272, 224
   offset: 0, 0
