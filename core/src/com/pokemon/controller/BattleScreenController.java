@@ -34,7 +34,7 @@ public class BattleScreenController extends InputAdapter {
 	
 	private DialogueBox dialogue;
 	private OptionBox optionBox;
-	private MoveSelectBox moveSelect;
+	public static MoveSelectBox moveSelect;
 
 	private Stack<AbstractUi> uiStack;
 	private Pokemon game;
@@ -123,6 +123,7 @@ public class BattleScreenController extends InputAdapter {
 			optionBox.addOption("NO");
 			optionBox.setVisible(true);
 		}
+
 	}
 	
 
@@ -143,7 +144,6 @@ public class BattleScreenController extends InputAdapter {
 			}
 			moveSelect.setLabel(i, label);
 		}
-		moveSelect.setLabel(4,"아이템 사용");
 		moveSelect.setVisible(true);
 	}
 

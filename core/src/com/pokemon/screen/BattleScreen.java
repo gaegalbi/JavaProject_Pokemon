@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,9 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
@@ -27,16 +24,12 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
-import com.pokemon.model.PK;
-import com.pokemon.model.Player;
 import com.pokemon.ui.*;
 import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
-
-import static com.pokemon.ui.LoginUi.playerID;
 
 public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
@@ -213,8 +206,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
                 controller.restartTurn();
             }
         }
-
-
         controller.update(delta);
         uiStage.act(); // update ui
     }
@@ -306,4 +297,5 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     public void queueEvent(BattleEvent event) {
         queue.add(event);
     }
+
 }

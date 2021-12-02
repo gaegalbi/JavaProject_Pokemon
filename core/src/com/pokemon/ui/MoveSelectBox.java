@@ -23,8 +23,8 @@ public class MoveSelectBox extends Table {
 	
 	private int selectorIndex = 0;
 	
-	private Label[] labels = new Label[5];
-	private Image[] arrows = new Image[5];
+	private Label[] labels = new Label[4];
+	private Image[] arrows = new Image[4];
 	
 	private Table uiContainer;
 	
@@ -38,7 +38,6 @@ public class MoveSelectBox extends Table {
 		labels[1] = new Label("-", skin,"smallLabel");
 		labels[2] = new Label("-", skin,"smallLabel");
 		labels[3] = new Label("-", skin,"smallLabel");
-		labels[4] = new Label("-", skin,"smallLabel");
 
 		arrows[0] = new Image(skin, "arrow");
 		arrows[0].setScaling(Scaling.none);
@@ -48,21 +47,16 @@ public class MoveSelectBox extends Table {
 		arrows[2].setScaling(Scaling.none);
 		arrows[3] = new Image(skin, "arrow");
 		arrows[3].setScaling(Scaling.none);
-		arrows[4] = new Image(skin, "arrow");
-		arrows[4].setScaling(Scaling.none);
 		
 		uiContainer.add(arrows[0]).space(5f);
 		uiContainer.add(labels[0]).space(5f).align(Align.left);
 		uiContainer.add(arrows[1]).space(5f);
-		uiContainer.add(labels[1]).space(5f).align(Align.left);
-		uiContainer.add(arrows[4]).space(5f);
-		uiContainer.add(labels[4]).space(5f).align(Align.left).row();
+		uiContainer.add(labels[1]).space(5f).align(Align.left).row();
 		uiContainer.add(arrows[2]).space(5f);
 		uiContainer.add(labels[2]).space(5f).align(Align.left);
 		uiContainer.add(arrows[3]).space(5f);
 		uiContainer.add(labels[3]).space(5f).align(Align.left);
 
-		
 		setSelection(0);
 	}
 	
@@ -89,9 +83,6 @@ public class MoveSelectBox extends Table {
 			setSelection(1);
 			return;
 		}
-		if (selectorIndex == 4) {
-			return;
-		}
 	}
 	
 	public void moveDown() {
@@ -107,10 +98,6 @@ public class MoveSelectBox extends Table {
 			return;
 		}
 		if (selectorIndex == 3) {
-			return;
-		}
-		if (selectorIndex == 4) {
-			setSelection(3);
 			return;
 		}
 	}
@@ -130,10 +117,6 @@ public class MoveSelectBox extends Table {
 			setSelection(2);
 			return;
 		}
-		if (selectorIndex == 4) {
-			setSelection(1);
-			return;
-		}
 	}
 	
 	public void moveRight() {
@@ -142,7 +125,6 @@ public class MoveSelectBox extends Table {
 			return;
 		}
 		if (selectorIndex == 1) {
-			setSelection(4);
 			return;
 		}
 		if (selectorIndex == 2) {
@@ -150,9 +132,6 @@ public class MoveSelectBox extends Table {
 			return;
 		}
 		if (selectorIndex == 3) {
-			return;
-		}
-		if (selectorIndex == 4) {
 			return;
 		}
 	}

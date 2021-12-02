@@ -19,8 +19,8 @@ public class DialogueBox extends Table {
 	private STATE state = STATE.IDLE;
 	
 	private Label textLabel;
-	
-	private enum STATE {
+
+    private enum STATE {
 		ANIMATING,
 		IDLE,
 		;

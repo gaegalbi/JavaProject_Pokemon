@@ -13,7 +13,10 @@ import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
 import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.EventQueueRenderer;
 import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.DialogueBox;
+import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.util.SkinGenerator;
 
@@ -21,8 +24,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Stack;
 
+import static com.pokemon.controller.BattleScreenController.moveSelect;
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
+
 import static com.pokemon.screen.BattleScreen.playerNum;
 import static com.pokemon.ui.LoginUi.playerID;
 
@@ -33,7 +38,6 @@ public class Battle implements BattleEventQueuer {
         RAN,
         WIN,
         LOSE,
-        USE_ITEM,
     }
     private STATE state;
     private PK player;
@@ -46,6 +50,7 @@ public class Battle implements BattleEventQueuer {
    //private Texture O_T;
     private Animation<TextureRegion> P_T;
     private Animation<TextureRegion> O_T;
+    Animation<TextureRegion> ball;
 
     private AssetManager assetManager;
     private BattleEventPlayer eventPlayer;
@@ -125,7 +130,6 @@ public class Battle implements BattleEventQueuer {
         //queueEvent(new PokeSpriteEvent(opponent.getSprite(), BATTLE_PARTY.OPPONENT));
         queueEvent(new TextEvent("가랏! "+player.getName()+"!", 1f));
         //queueEvent(new PokeSpriteEvent(player.getSprite(), BATTLE_PARTY.PLAYER));
-       // queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
     }
 
     public void chooseNewPokemon (PK pokemon){
@@ -139,7 +143,6 @@ public class Battle implements BattleEventQueuer {
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
         queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!"));
-        //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
         this.state = STATE.READY_TO_PROGRESS;
     }
     public void attemptRun () {
@@ -148,13 +151,12 @@ public class Battle implements BattleEventQueuer {
     }
 
     public void selectItem(){
-        queueEvent(new TextEvent("무슨 아이템을 사용할까?",0.5f));
-        this.state = STATE.USE_ITEM;
+        queueEvent(new TextEvent("무슨 아이템을 사용할까?", 0.5f));
+        moveSelect.setVisible(false);
     }
     public void useItem(Item item){
        this.item = item;
         queueEvent(new TextEvent(item.getName() + "을 사용했다.", 0.5f));
-        this.state = STATE.READY_TO_PROGRESS;
     }
 
     private void playTurn(BATTLE_PARTY user,int input){
