@@ -24,6 +24,7 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
+import com.pokemon.model.Player;
 import com.pokemon.ui.*;
 import com.pokemon.util.SkinGenerator;
 
@@ -57,6 +58,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Table dialogueRoot;
     private DialogueBox dialogueBox;
     private OptionBox optionBox;
+    private Player player;
 
     private Table moveSelectRoot;
     private MoveSelectBox moveSelectBox;
@@ -74,9 +76,10 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
-    public BattleScreen(Pokemon game) {
+    public BattleScreen(Pokemon game,Player player) {
         this.game = game;
-        this.uiStack = new Stack();
+        this.uiStack = new Stack<>();
+        this.player = player;
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -98,7 +101,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack);
+        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,this.player);
 
 
         battle.beginBattle();
@@ -108,8 +111,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         /* ROOT UI STAGE */
         uiStage = new Stage(new ScreenViewport());
         uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
+                Gdx.graphics.getWidth()/Settings.SCALE,
+                Gdx.graphics.getHeight()/Settings.SCALE,
                 true);
         uiStage.setDebugAll(false);
 
@@ -214,8 +217,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     public void render(float delta) {
 
         gameViewport.apply();
-        camera.position.x =  Gdx.graphics.getWidth()/2;
-        camera.position.y = Gdx.graphics.getHeight()/2;
+        camera.position.x =  Gdx.graphics.getWidth()/2f;
+        camera.position.y = Gdx.graphics.getHeight()/2f;
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         elapsed += Gdx.graphics.getDeltaTime();
@@ -241,8 +244,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
+                Gdx.graphics.getWidth()/Settings.SCALE,
+                Gdx.graphics.getHeight()/Settings.SCALE,
                 true);
         gameViewport.update(width, height);
     }

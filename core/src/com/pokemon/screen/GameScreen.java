@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
     private static AssetManager assetManager;
     private ShaderProgram transitionShader;
     private OrthographicCamera camera;
-    public static Player player;
+    public Player player;
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
@@ -173,28 +173,41 @@ public class GameScreen implements Screen {
     public void update(float delta){
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
-            invenCheck = (!invenCheck);
-            if(invenCheck) {
-                //아이템 추가
-                db.UPDATE("ITEM_01",1);
-                player.inventory.addItem("ITEM_01",1);
-                this.pushScreen(new InventoryUi(this, game,player));
-            }else {
-                AbstractUi popped = uiStack.pop();
-                popped.dispose();
+
+            if (uiStack.isEmpty()) {
+                pushUi(new InventoryUi(this, game, player));
+            } else {
+                popUi();
             }
+
+//            invenCheck = (!invenCheck);
+//            if(invenCheck) {
+//                //아이템 추가
+//                db.UPDATE("ITEM_01",1);
+//                player.inventory.addItem("ITEM_01",1);
+//                this.pushUi(new InventoryUi(this, game,player));
+//            }else {
+//                AbstractUi popped = uiStack.pop();
+//                popped.dispose();
+//            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
-            skillCheck = (!skillCheck);
-            if(skillCheck) {
-                this.pushScreen(new SkillListUi(this, game,player));
-            }else {
-                AbstractUi popped = uiStack.pop();
-                popped.dispose();
+            if (uiStack.isEmpty()) {
+                pushUi(new SkillListUi(this, game,player));
+            } else {
+                popUi();
             }
+
+//            skillCheck = (!skillCheck);
+//            if(skillCheck) {
+//                this.pushUi(new SkillListUi(this, game,player));
+//            }else {
+//                AbstractUi popped = uiStack.pop();
+//                popped.dispose();
+//            }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game));
+            game.setScreen(new BattleScreen(game,player));
             dispose();
         }
     }
@@ -252,17 +265,7 @@ public class GameScreen implements Screen {
         if (!uiStack.isEmpty()) {
             AbstractUi popped = uiStack.pop();
             popped.dispose();
-            Gdx.input.setInputProcessor(uiStack.peek().getStage());
+            //Gdx.input.setInputProcessor(uiStack.peek().getStage());
         }
-    }
-
-    public void pushScreen(AbstractUi ui) {
-        uiStack.add(ui);
-    }
-
-    public void popScreen() {
-        AbstractUi popped = uiStack.pop();
-        popped.dispose();
-        Gdx.input.setInputProcessor(uiStack.peek().getStage());
     }
 }
