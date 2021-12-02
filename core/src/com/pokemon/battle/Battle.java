@@ -64,6 +64,8 @@ public class Battle implements BattleEventQueuer {
     private BattleScreen battleScreen;
     private Item item;
 
+    private int oppo;
+
    public Battle(Pokemon game, BattleScreen battleScreen, boolean multi) {
        this.game = game;
        this.battleScreen = battleScreen;
@@ -110,16 +112,17 @@ public class Battle implements BattleEventQueuer {
        this.state = STATE.READY_TO_PROGRESS;
     }
     public void progress(int input) {
+
         if (state != STATE.READY_TO_PROGRESS) {
             return;
         }
         if (mechanics.goesFirst(player, opponent)) {
             playTurn(BATTLE_PARTY.PLAYER, input);
             if (state == STATE.READY_TO_PROGRESS) {
-                playTurn(BATTLE_PARTY.OPPONENT, 0);
+                playTurn(BATTLE_PARTY.OPPONENT, oppo); //여기서 랜덤값 넣기
             }
         } else {
-            playTurn(BATTLE_PARTY.OPPONENT, 0);
+            playTurn(BATTLE_PARTY.OPPONENT, 0);//여기서 랜덤값
             if (state == STATE.READY_TO_PROGRESS) {
                 playTurn(BATTLE_PARTY.PLAYER, input);
             }
@@ -160,6 +163,8 @@ public class Battle implements BattleEventQueuer {
     }
 
     private void playTurn(BATTLE_PARTY user,int input){
+       //상대 포켓몬 공격 랜덤
+        oppo = (int)(Math.random()*4);
         BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
         PK pokeUser = null;
         PK pokeTarget = null;
