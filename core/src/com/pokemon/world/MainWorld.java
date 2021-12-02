@@ -146,7 +146,7 @@ public class MainWorld implements World {
             if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
                 if (gameScreen.getUiStack().isEmpty()) {
-                    gameScreen.pushUi(new window(gameScreen, game, player));
+                    gameScreen.pushUi(new rankUI(gameScreen, game, player));
                 } else {
                     gameScreen.popUi();
                 }

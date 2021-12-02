@@ -62,6 +62,7 @@ public class GameScreen implements Screen {
     private boolean skillCheck=false;
     private TransitionScreen transitionScreen;
     private boolean isTransition;
+    private boolean pokemonBoxCheck;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -157,7 +158,16 @@ public class GameScreen implements Screen {
                         }
                     });
         }
-//
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
+            pokemonBoxCheck = (!pokemonBoxCheck);
+            if(pokemonBoxCheck) {
+                this.pushUi(new myPokemonUI(this, game,player));
+            }else {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+            }
+        }
+
 //        // 전투 페이드 아웃
 //        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
 //            transitionScreen.startTransition(
@@ -176,16 +186,6 @@ public class GameScreen implements Screen {
         this.update(delta);
     }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
-            pokemonBoxCheck = (!pokemonBoxCheck);
-            if(pokemonBoxCheck) {
-                this.pushUi(new myPokemonUI(this, game,player));
-            }else {
-                AbstractUi popped = uiStack.pop();
-                popped.dispose();
-            }
-        }
-    }
     @Override
     public void resize(int width, int height) {
 
