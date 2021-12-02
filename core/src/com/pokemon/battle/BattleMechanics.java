@@ -42,7 +42,7 @@ public class BattleMechanics {
 				else if(tType.equals("물"))
 					return 1;
 				else if(tType.equals("불"))
-					return 0.8;
+					return 10;
 				else
 					return 1;
 			case "전기":

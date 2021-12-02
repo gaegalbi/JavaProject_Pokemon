@@ -93,7 +93,7 @@ public class Item {
 
         Skin skin = SkinGenerator.generateSkin(assetManager);
 
-        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE FROM ITEM WHERE ITEM_ID ='"+key+"';";
+        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY, ITEM_TYPE FROM ITEM WHERE ITEM_ID ='"+key+"';";
         this.key = key;//ITEM_ID
         try {
             Statement stmt = con.createStatement();
@@ -101,8 +101,7 @@ public class Item {
             while(rs.next()) {
                 this.name = rs.getString("ITEM_NAME"); //아이템 명
                 this.info = rs.getString("ITEM_INFO"); //아이템 설명
-                this.property = rs.getString("ITEM_PROPERTY"); //아이템 속성 ex) 나무, 노멀, 등
-                this.effect = rs.getString("ITEM_EFFECT"); //아이템 효과 ex)채광, 제작, 공격력 증가등의 스킬기록 // 아이템 속성에 따라 증가시킴
+                this.property = rs.getString("ITEM_PROPERTY"); //아이템 속성 ex) 나무, 노멀, 등 //아이템 효과 ex)채광, 제작, 공격력 증가등의 스킬기록 // 아이템 속성에 따라 증가시킴
                 this.type = rs.getInt("ITEM_TYPE"); //아이템 종류 ex) 장비, 재료, 포켓몬볼
                 actor = new Image(assetManager.get("texture/"+name+".png", Texture.class));
                 count = new Label("",skin);

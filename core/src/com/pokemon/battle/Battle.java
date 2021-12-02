@@ -66,7 +66,7 @@ public class Battle implements BattleEventQueuer {
 
     private int oppo;
 
-   public Battle(Pokemon game, BattleScreen battleScreen, boolean multi) {
+   public Battle(Pokemon game, BattleScreen battleScreen) {
        this.game = game;
        this.battleScreen = battleScreen;
 
@@ -85,7 +85,7 @@ public class Battle implements BattleEventQueuer {
        String[] userKey = {playerID, String.valueOf(playerNum+1)};
        this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
-       if(!multi) {
+  /*
            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
            String PM_ID = null;
            try {
@@ -94,7 +94,7 @@ public class Battle implements BattleEventQueuer {
                while(rs.next()) {
                    PM_ID = rs.getString("PM_ID");
                }
-           }catch(SQLException e){};
+           }catch(SQLException e){};*/
 
            //일단 이상해풀로 가져옴
            wildKey = db.sP("PM_02");
@@ -102,17 +102,16 @@ public class Battle implements BattleEventQueuer {
            O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
            //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
            this.opponent = new PK("PM_02", O_T); //야생 포켓몬
-        }
-        else {
-            oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
-            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬
-         }
+
+
+         /*   oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
+            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬*/
+
 
        mechanics = new BattleMechanics();
        this.state = STATE.READY_TO_PROGRESS;
     }
     public void progress(int input) {
-
         if (state != STATE.READY_TO_PROGRESS) {
             return;
         }
@@ -177,18 +176,12 @@ public class Battle implements BattleEventQueuer {
         }
         if(input==4) {
             int hpBefore = pokeUser.getCurrentHP();
-            if(item.getType()==7) {
-                if (item.getEffect().equals("HP1"))
-                    pokeUser.applyHeal(20);
-                if ( item.getEffect().equals("HP2"))
-                    pokeUser.applyHeal(60);
-                if (item.getEffect().equals("HP3"))
-                    pokeUser.applyHeal(120);
-                if (item.getEffect().equals("HP4"))
-                    pokeUser.applyHeal(5000);
-            }
-            if(item.getType()==0){
+            if(item.getType()==7)
+                pokeUser.applyHeal(db.ITEMEFFECT(item.getKey()));
+
+           if(item.getType()==0){
                 //몬스터볼 던지기
+               //game.batch.draw()
             }
 
             queueEvent(
@@ -198,6 +191,7 @@ public class Battle implements BattleEventQueuer {
                             pokeUser.getCurrentHP(),
                             pokeUser.getStat()[2],
                             0.5f));
+
         }else {
             String move = pokeUser.getSkill()[input];
 

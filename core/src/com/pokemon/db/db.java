@@ -41,10 +41,79 @@ public class db {
         }
     }
 
-    public static void insert_basic(String id) {
+    public static void insert_basic_sk(String id) {
         String sql = null;
         for(int i=1;i<=6;i++) {
             sql = "INSERT INTO SK(U_ID,SK_ID,SK_LV,SK_EXP) VALUES ('" + id + "','SK_0" + i + "',1,0);";
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+                System.out.println("DB 삽입 Success");
+
+            } catch (SQLException e) {
+                System.out.println("삽입SQL문이 틀렸습니다.");
+                System.out.print("이유 : " + e);
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Exception:" + e);
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public static void insert_basic_pm(String id) {
+        String sql = null;
+        int battleNum=1;
+        //이상해씨 01, 파이리 04 , 꼬부기 07
+        for(int i=1;i<=7;i+=3) {
+            sql = "INSERT INTO PM(U_ID,PM_ID,PM_NUM,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04) VALUES ('"
+                    +id+"', 'PM_0" + i +"', 1, (select PM_ATT FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
+                    "(select PM_DEF FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
+                    "(select PM_HP FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
+                    "(select PM_SPEED FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
+                    "1,0," + battleNum + ", (select PM_SK_S_01 from PM_INFO where PM_ID='PM_0" + i + "'), " +
+                    "(select PM_SK_S_02 from PM_INFO where PM_ID='PM_0" + i + "'), " +
+                    "(select PM_SK_S_03 from PM_INFO where PM_ID='PM_0" + i + "'), " +
+                    "(select PM_SK_S_04 from PM_INFO where PM_ID='PM_0" + i + "'))"
+            ;
+            battleNum++;
+            try {
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate(sql);
+                System.out.println("DB 삽입 Success");
+
+            } catch (SQLException e) {
+                System.out.println("삽입SQL문이 틀렸습니다.");
+                System.out.print("이유 : " + e);
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Exception:" + e);
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public static void insert_basic_item(String id) {
+        String sql = null;
+        for(int i=0;i<4;i++) {
+            switch (i) {
+                case 0:
+                    sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_03',5)";
+                    break;
+                case 1:
+                    sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_05',1)";
+                    break;
+                case 2:
+                    sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_06',1)";
+                    break;
+                case 3:
+                    sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_07',5)";
+                    break;
+                default:
+                    break;
+            }
             try {
                 Statement stmt = con.createStatement();
                 stmt.executeUpdate(sql);
@@ -530,7 +599,6 @@ public class db {
 
     public static void UPDATE_CNT(String target, int cnt) {
         String sql = "UPDATE INVEN SET ITEM_CNT = ITEM_CNT + '" + cnt + "' WHERE ITEM_ID = '" + target + "' AND U_ID='" + playerID + "';";
-        System.out.println("db cnt : " + cnt);
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
@@ -559,4 +627,25 @@ public class db {
         }
     }
 
+    public static int ITEMEFFECT(String id) {
+        int effect = 0;
+        String sql = "select ITEM_E_V from ITEM_INFO WHERE ITEM_PROPERTY = (select ITEM_PROPERTY from item where item_id = 'item_07')";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                effect = rs.getInt("ITEM_E_V");
+            }
+            return effect;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return effect;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return effect;
+        }
+    }
 }

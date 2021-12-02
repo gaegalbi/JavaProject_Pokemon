@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.pokemon.battle.Loading;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.db.db;
@@ -51,7 +52,7 @@ public class GameScreen implements Screen {
     private static AssetManager assetManager;
     private ShaderProgram transitionShader;
     private OrthographicCamera camera;
-    public Player player;
+    public static Player player;
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
@@ -233,7 +234,8 @@ public class GameScreen implements Screen {
 //            }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,player));
+            game.setScreen(new BattleScreen(game));
+           // game.setScreen(new Loading(game));
             dispose();
         }
     }

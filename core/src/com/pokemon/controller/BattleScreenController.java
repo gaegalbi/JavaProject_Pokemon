@@ -83,7 +83,7 @@ public class BattleScreenController extends InputAdapter {
             if (keycode == Keys.X) {
                 int selection = moveSelect.getSelection();
                 /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-                if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+                if (battle.getP_P().getSkill()[selection] == null || battle.getP_P().getCurrent_SK_CNT()[selection] <= 0) {
                     queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
                 } else {
                     System.out.println(moveSelect.getSelection());

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -37,6 +38,7 @@ public class BattleRenderer {
     //private Texture P_T;
     private Animation<TextureRegion> P_T;
     private Animation<TextureRegion> O_T;
+    private Animation<TextureRegion> ball;
     //private Texture O_T;
     float elapsed;
 
@@ -46,6 +48,7 @@ public class BattleRenderer {
     private float playerSquareMiddleY = 0;
     private float opponentSquareMiddleX = 0;
     private float opponentSquareMiddleY = 0;
+    int i = 1;
 
     public BattleRenderer(Pokemon game, Battle battle, OrthographicCamera camera){
         this.game = game;
@@ -63,47 +66,59 @@ public class BattleRenderer {
         TextureAtlas atlas = assetManager.get("battle/battlepack.atlas", TextureAtlas.class);
         background = atlas.findRegion("background");
         platform = atlas.findRegion("platform");
-
+        ball = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/pokeball.gif").read());
     }
 
     public void render(Batch batch,float elapsed) {
         this.elapsed = elapsed;
+
         //플레이어 플랫폼위치
-        playerSquareMiddleX = Gdx.graphics.getWidth()/2 - (squareSize + Gdx.graphics.getWidth()/15);
-        playerSquareMiddleY = Gdx.graphics.getHeight()/2 + (25*Settings.SCALE);
+        playerSquareMiddleX = Gdx.graphics.getWidth() / 2 - (squareSize + Gdx.graphics.getWidth() / 15);
+        playerSquareMiddleY = Gdx.graphics.getHeight() / 2 + (25 * Settings.SCALE);
 
         //상대 플랫폼위치
-        opponentSquareMiddleX = Gdx.graphics.getWidth()/2 + (squareSize + Gdx.graphics.getWidth()/15);
-        opponentSquareMiddleY = Gdx.graphics.getHeight()/2 + (25*Settings.SCALE);
+        opponentSquareMiddleX = Gdx.graphics.getWidth() / 2 + (squareSize + Gdx.graphics.getWidth() / 15);
+        opponentSquareMiddleY = Gdx.graphics.getHeight() / 2 + (25 * Settings.SCALE);
 
-        float platformYOrigin = playerSquareMiddleY - platform.getRegionHeight()/2*Settings.SCALE;
+        float platformYOrigin = playerSquareMiddleY - platform.getRegionHeight() / 2 * Settings.SCALE;
 
-        batch.draw(background, 0, 0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch.draw(platform,
-                playerSquareMiddleX-platform.getRegionWidth()/2*Settings.SCALE,
-                platformYOrigin-(50*Settings.SCALE),
-                platform.getRegionWidth()*Settings.SCALE,
-                platform.getRegionHeight()*Settings.SCALE);
+                playerSquareMiddleX - platform.getRegionWidth() / 2 * Settings.SCALE,
+                platformYOrigin - (50 * Settings.SCALE),
+                platform.getRegionWidth() * Settings.SCALE,
+                platform.getRegionHeight() * Settings.SCALE);
         batch.draw(platform,
-                opponentSquareMiddleX-platform.getRegionWidth()/2*Settings.SCALE,
+                opponentSquareMiddleX - platform.getRegionWidth() / 2 * Settings.SCALE,
                 platformYOrigin,
-                platform.getRegionWidth()*Settings.SCALE,
-                platform.getRegionHeight()*Settings.SCALE);
+                platform.getRegionWidth() * Settings.SCALE,
+                platform.getRegionHeight() * Settings.SCALE);
         float playerX = 0f;
         float playerY = 0f;
-        if(P_T!=null){
-            playerX = playerSquareMiddleX-P_T.getKeyFrame(elapsed).getRegionWidth()/2;
-            playerY = platformYOrigin-P_T.getKeyFrame(elapsed).getRegionHeight();
-            batch.draw(P_T.getKeyFrame(elapsed), playerX , playerY );
+        if (i == 1) {
+            batch.draw(ball.getKeyFrame(elapsed), 0, 110);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    i = 2;
+                }
+            }, 1f);
         }
-        float opponentX = 0f;
-        float opponentY = 0f;
-        if (O_T != null) {
-            opponentX = opponentSquareMiddleX - O_T.getKeyFrame(elapsed).getRegionWidth()/2;
-            opponentY = platformYOrigin+O_T.getKeyFrame(elapsed).getRegionHeight()/3;
-            batch.draw(O_T.getKeyFrame(elapsed),  opponentX, opponentY);
+        if (i == 2) {
+            if (P_T != null) {
+                playerX = playerSquareMiddleX - P_T.getKeyFrame(elapsed).getRegionWidth() / 2;
+                playerY = platformYOrigin - P_T.getKeyFrame(elapsed).getRegionHeight();
+                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
+            }
+            float opponentX = 0f;
+            float opponentY = 0f;
+            if (O_T != null) {
+                opponentX = opponentSquareMiddleX - O_T.getKeyFrame(elapsed).getRegionWidth() / 2;
+                opponentY = platformYOrigin + O_T.getKeyFrame(elapsed).getRegionHeight() / 3;
+                batch.draw(O_T.getKeyFrame(elapsed), opponentX, opponentY);
+            }
         }
-
     }
+
 }

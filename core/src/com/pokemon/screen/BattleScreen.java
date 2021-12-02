@@ -7,8 +7,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -26,6 +28,7 @@ import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.ui.*;
+import com.pokemon.util.GifDecoder;
 import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
@@ -40,7 +43,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private PlayerController playerController;
     private BattleRenderer battleRenderer;
     private GameController gameController;
-    public static int playerNum=1;
+    public static int playerNum=0;
 
     /* Controller */
     private BattleScreenController controller;
@@ -76,10 +79,15 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
-    public BattleScreen(Pokemon game,Player player) {
+    private int playercount=0;
+    private int enemycount=0;
+
+    private Animation<TextureRegion> ball;
+//controller에 필요해서 player 추가
+    public BattleScreen(Pokemon game) {
         this.game = game;
         this.uiStack = new Stack<>();
-        this.player = player;
+
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -90,8 +98,9 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
+        ball = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/pokeball.gif").read());
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(this.game,this,false);
+        this.battle = new Battle(this.game,this);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
@@ -101,7 +110,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,this.player);
+        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,GameScreen.player);
 
 
         battle.beginBattle();
@@ -224,7 +233,9 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         elapsed += Gdx.graphics.getDeltaTime();
 
         game.batch.begin();
+
         this.update(delta);
+
         battleRenderer.render(game.batch,elapsed);
         if (currentEvent != null) {
             eventRenderer.render(game.batch, currentEvent);

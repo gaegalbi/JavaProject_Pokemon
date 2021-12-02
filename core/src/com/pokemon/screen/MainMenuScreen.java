@@ -51,8 +51,6 @@ public class MainMenuScreen implements Screen {
         game.batch.draw(logoImage, 144, 280,512,192);
         game.batch.end();
 
-
-//        testUi.update();
         for (AbstractUi abstractUi : uiStack) {
             abstractUi.update();
         }
