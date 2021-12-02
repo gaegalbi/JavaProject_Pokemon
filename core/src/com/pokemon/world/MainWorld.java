@@ -1,28 +1,21 @@
 package com.pokemon.world;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.pokemon.game.Pokemon;
-import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
 import com.pokemon.model.TileMap;
 import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.screen.TransitionScreen;
-import com.pokemon.screen.WorldObjectYComparator;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
 import com.pokemon.ui.AbstractUi;
-import com.pokemon.ui.rank.window;
+import com.pokemon.ui.rank.rankUI;
 import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 import static com.pokemon.screen.GameScreen.getAssetManager;
@@ -108,7 +101,7 @@ public class MainWorld implements World {
 
         if (((int)(player.x/32) == 5 || (int)(player.x/32) == 6) && (int)(player.y/32) == 12){
             if (check == 1)
-                gameScreen.pushUi(new window(gameScreen, game,player));
+                gameScreen.pushUi(new rankUI(gameScreen, game,player));
             check++;
         }
         else{

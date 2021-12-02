@@ -22,6 +22,7 @@ import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.world.World;
 import com.pokemon.world.MainWorld;
+import com.pokemon.ui.pokemonBox.myPokemonUI;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -45,6 +46,7 @@ public class GameScreen implements Screen {
     private TransitionScreen transitionScreen;
 
     private Stack<AbstractUi> uiStack;
+    private boolean pokemonBoxCheck=false;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -143,8 +145,17 @@ public class GameScreen implements Screen {
                         }
                     });
         }
-    }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
+            pokemonBoxCheck = (!pokemonBoxCheck);
+            if(pokemonBoxCheck) {
+                this.pushUi(new myPokemonUI(this, game,player));
+            }else {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+            }
+        }
+    }
     @Override
     public void resize(int width, int height) {
 
@@ -199,4 +210,5 @@ public class GameScreen implements Screen {
     public AbstractUi popUi() {
         return uiStack.pop();
     }
+
 }

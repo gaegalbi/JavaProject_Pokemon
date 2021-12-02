@@ -23,10 +23,68 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author hydrozoa
  */
 public class SkinGenerator {
+
+	public static TextureRegion inv_ui;
+	public static TextureRegion inv_but;
+	public static TextureRegion selectedSlot;
+	public static TextureRegion backgroundM;
+	public static Texture backgroundS;
+	public static Window.WindowStyle windowStyle;
+	public static TextButton.TextButtonStyle textButtonStyle;
+
+
 	private AssetManager assetManager;
 
 	public static Skin generateSkin(AssetManager assetManager) {
 		Skin skin = new Skin();
+		assetManager = new AssetManager();
+//		assetManager.load("inven/inv_buttons1.png",Texture.class);
+		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
+		assetManager.finishLoading();
+
+	/*	assetManager.load("inven/inv_buttons1.png",Texture.class);
+		assetManager.load("ui/uipack.atlas",TextureAtlas.class);
+		assetManager.finishLoading();*/
+
+		//인벤 폰트
+		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
+		skin.add("font", font);
+
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = skin.getFont("font");
+		skin.add("default", labelStyle);
+
+		//인벤 UI
+//		inv_ui = new TextureRegion(new Texture(Gdx.files.internal("inven/inventory_ui.png")));
+//		skin.add("inv_ui", inv_ui, TextureRegion.class);
+//
+//		inv_but = new TextureRegion(new Texture(Gdx.files.internal("inven/inv_buttons1.png")));
+//		skin.add("inv_buttons",inv_but,TextureRegion.class);
+//
+//		selectedSlot = new TextureRegion(new Texture(Gdx.files.internal("inven/selectedSlot.png")));
+//		skin.add("selected_slot", selectedSlot, TextureRegion.class);
+//
+//		backgroundM = new TextureRegion(new Texture(Gdx.files.internal("inven/background_m.png")));
+//		skin.add("event_craft",backgroundM);
+//
+//		backgroundS = new Texture(Gdx.files.internal("inven/background.png"));
+//		windowStyle = new Window.WindowStyle();
+//		windowStyle.titleFont = skin.getFont("font");
+//		windowStyle.background = new TextureRegionDrawable(new TextureRegion(backgroundS));
+//		skin.add("default",windowStyle);
+//
+//		textButtonStyle = new TextButton.TextButtonStyle();
+//		textButtonStyle.font = skin.getFont("font");
+//		skin.add("default",textButtonStyle);
+		/* ========================================= */
+
+		// 랭크 UI
+		TextureRegion rank_ui = new TextureRegion(new Texture(Gdx.files.internal("ui/rank.png")));
+		skin.add("rank_ui", rank_ui, TextureRegion.class);
+
+		// 포켓몬 UI
+		TextureRegion myPokemon_ui = new TextureRegion(new Texture(Gdx.files.internal("ui/my_pokemon.png")));
+		skin.add("myPokemon_ui", myPokemon_ui, TextureRegion.class);
 
 		TextureAtlas uiAtlas = assetManager.get("ui/uipack.atlas");
 
@@ -48,50 +106,21 @@ public class SkinGenerator {
 		skin.add("red", uiAtlas.findRegion("red"), TextureRegion.class);
 		skin.add("background_hpbar", uiAtlas.findRegion("background_hpbar"), TextureRegion.class);
 
-		/*
-		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/pkmnrsi.ttf"));
-		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumBarunGothic.ttf"));
-		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/NanumSquareRoundEB.ttf"));
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/han/gulim.ttf"));
-		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 13;
-		parameter.color = new Color(96f/255f, 96f/255f, 96f/255f, 1f);
-		parameter.shadowColor = new Color(208f/255f, 208f/255f, 200f/255f, 1f);
-		parameter.shadowOffsetX = 1;
-		parameter.shadowOffsetY = 1;
-		parameter.characters = "!  \"  #  $  %  &  '  (  )  *  +  ,  -  .  /  0  1  2  3  4  5  6  7  8  9  :  ;  <  =  >  ?  @  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z  [  \\  ]  ^  _  `  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z  {  |  }  ~  \u2190  \u2191  \u2192  \u2193  \u2640  \u2642";
-		generator.dispose(); // don't forget to dispose to avoid memory leaks!
-		*/
+		//BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 
-		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
-
-		font.getData().setLineHeight(16f);
+		//font.getData().setLineHeight(16f);
 		skin.add("font", font);
 
-		//BitmapFont smallFont = assetManager.get("font/small_letters_font.fnt", BitmapFont.class);
-		BitmapFont smallFont = assetManager.get("font/han/gul.fnt", BitmapFont.class);
+		BitmapFont smallFont = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
 		skin.add("small_letters_font", smallFont);
 
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = skin.getFont("font");
-		skin.add("default", labelStyle);
+		//LabelStyle labelStyle = new LabelStyle();
+		//labelStyle.font = skin.getFont("font");
+		//skin.add("default", labelStyle);
 
 		LabelStyle labelStyleSmall = new LabelStyle();
 		labelStyleSmall.font = skin.getFont("small_letters_font");
 		skin.add("smallLabel", labelStyleSmall);
-
-		return skin;
-	}
-
-
-	public static Skin generateSkin_2(AssetManager assetManager) {
-		Skin skin = new Skin();
-
-		BitmapFont font = new BitmapFont(Gdx.files.internal("font/han/gul.fnt"));
-		skin.add("font", font);
-
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = skin.getFont("font");
 
 		return skin;
 	}

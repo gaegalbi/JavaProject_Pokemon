@@ -20,56 +20,34 @@ import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
 import static com.pokemon.ui.LoginUi.playerID;
 
-public class window extends AbstractUi {
-    private Stage stage;
-    private rankWindow rankWindow;
-    private MovingImageUI ui;
+public class rankUI extends AbstractUi {
+    private Pokemon game;
+    private GameScreen gameScreen;
+    private Player player;
 
+    private Stage stage;
+    private ImageUI ui;
+    private AssetManager assetManager;
+    private Skin skin;
+
+    // 유저 이름, 랭크 점수
     private Label[] rankLabel;
     private Label[] IDLabel;
     private Label myRankLabel;
 
-    private Skin skin;
 
-    private Pokemon game;
-    private GameScreen gameScreen;
-    private Player player;
-    private AssetManager assetManager;
-
-    protected Texture rankTexture;
-
-    static class rankWindow extends Window{
-        static WindowStyle windowStyle = new Window.WindowStyle(new BitmapFont(), Color.BLACK, new TextureRegionDrawable());
-        public rankWindow() {
-            super("", windowStyle);
-        }
-    }
-
-    public window(GameScreen gameScreen, Pokemon game, Player player) {
+    public rankUI(GameScreen gameScreen, Pokemon game, Player player) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.player = player;
         stage = new Stage(new ScreenViewport());
 
-        assetManager = new AssetManager();
-        assetManager.load("ui/rank.png", Texture.class);
-        assetManager.finishLoading();
+        skin = SkinGenerator.generateSkin(assetManager);
 
-        skin = SkinGenerator.generateSkin_2(assetManager);
+        // ui 창
+        ui = new ImageUI(skin.getRegion("rank_ui"), new Vector2(Gdx.graphics.getWidth() / 2 - 485 / 2, Gdx.graphics.getHeight() / 2 - 428 / 2), 485, 428);
 
-        rankTexture = assetManager.get("ui/rank.png", Texture.class);
-
-        ui = new MovingImageUI(rankTexture, new Vector2(Gdx.graphics.getWidth() / 2 - 485 / 2, Gdx.graphics.getHeight() / 2 - 428 / 2), new Vector2(100, 100),
-                225.f, 485, 428);
-
-        //인벤 윈도우
-        rankWindow = new rankWindow();
-        rankWindow.setSize(400, 300);
-        rankWindow.setModal(true);
-        rankWindow.setVisible(true);
-        rankWindow.setPosition(Gdx.graphics.getWidth() / 2 - rankWindow.getWidth() / 2, Gdx.graphics.getHeight() / 2 - rankWindow.getHeight() / 2);
-
-        // Fonts and Colors
+        // 폰트 및 폰트 색깔
         Label.LabelStyle[] labelColors = new Label.LabelStyle[]{
                 new Label.LabelStyle(skin.getFont("font"), new Color(1, 212 / 255.f, 0, 1)), // yellow
                 new Label.LabelStyle(skin.getFont("font"), new Color(0, 0, 255, 1)), // blue
@@ -77,6 +55,7 @@ public class window extends AbstractUi {
                 new Label.LabelStyle(skin.getFont("font"), new Color(255 / 255.f, 255 / 255.f, 255 / 255.f, 1)), // white
         };
 
+        // ID라벨
         IDLabel = new Label[6];
         for (int i = 0; i < IDLabel.length; i++) {
             IDLabel[i] = new Label(" ", labelColors[3]);
@@ -84,6 +63,7 @@ public class window extends AbstractUi {
             IDLabel[i].setAlignment(Align.left);
         }
 
+        // 랭크 라벨
         rankLabel = new Label[6];
         for (int i = 0; i < rankLabel.length; i++) {
             rankLabel[i] = new Label(" ", labelColors[0]);
@@ -102,9 +82,8 @@ public class window extends AbstractUi {
         for (int i = 0; i < rankLabel.length; i++) stage.addActor(rankLabel[i]);
         stage.addActor(myRankLabel);
 
-        Gdx.input.setInputProcessor(this.stage);
-
         updateText();
+        Gdx.input.setInputProcessor(this.stage);
     }
 
     private void updateText() {
