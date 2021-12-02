@@ -133,8 +133,8 @@ public class GameScreen implements Screen {
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
-            skillCheck = (! skillCheck);
-            if( skillCheck) {
+            skillCheck = (!skillCheck);
+            if(skillCheck) {
                 this.pushScreen(new SkillListUi(this, game,player));
             }else {
                 AbstractUi popped = uiStack.pop();

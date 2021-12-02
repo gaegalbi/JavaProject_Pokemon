@@ -83,11 +83,17 @@ public class Item {
         assetManager.load("texture/수퍼볼.png",Texture.class);
         assetManager.load("texture/나무곡괭이.png",Texture.class);
         assetManager.load("texture/나무괭이.png",Texture.class);
+        assetManager.load("texture/상처약.png",Texture.class);
+        assetManager.load("texture/좋은상처약.png",Texture.class);
+        assetManager.load("texture/고급상처약.png",Texture.class);
+        assetManager.load("texture/풀회복약.png",Texture.class);
+        assetManager.load("texture/PP에이더.png",Texture.class);
+        assetManager.load("texture/PP맥스.png",Texture.class);
         assetManager.finishLoading();
 
         Skin skin = SkinGenerator.generateSkin(assetManager);
 
-        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE,SELL FROM ITEM WHERE ITEM_ID ='"+key+"';";
+        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE FROM ITEM WHERE ITEM_ID ='"+key+"';";
         this.key = key;//ITEM_ID
         try {
             Statement stmt = con.createStatement();
@@ -98,7 +104,6 @@ public class Item {
                 this.property = rs.getString("ITEM_PROPERTY"); //아이템 속성 ex) 나무, 노멀, 등
                 this.effect = rs.getString("ITEM_EFFECT"); //아이템 효과 ex)채광, 제작, 공격력 증가등의 스킬기록 // 아이템 속성에 따라 증가시킴
                 this.type = rs.getInt("ITEM_TYPE"); //아이템 종류 ex) 장비, 재료, 포켓몬볼
-                this.sell = rs.getInt("SELL");
                 actor = new Image(assetManager.get("texture/"+name+".png", Texture.class));
                 count = new Label("",skin);
             }

@@ -242,6 +242,8 @@ public class InventoryUi extends AbstractUi {
                 tooltip.hide();
                 unselectItem();
 
+                System.out.println(item.getType());
+
                 //벡터 예전 위치
                 prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);

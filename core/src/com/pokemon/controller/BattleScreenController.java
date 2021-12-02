@@ -2,6 +2,7 @@ package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.maps.MapLayer;
 import com.pokemon.battle.Battle;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
@@ -10,23 +11,23 @@ import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
-import com.pokemon.ui.inventory.InventoryUi;
 
 import java.util.Queue;
 import java.util.Stack;
 
 
+
 public class BattleScreenController extends InputAdapter {
-	
+
 	public enum STATE {
-		USE_NEXT_POKEMON, 	// Text displayed when Pokemon faints 
+		USE_NEXT_POKEMON, 	// Text displayed when Pokemon faints
 		SELECT_ACTION,		// Moves, Items, Pokemon, Run
 		DEACTIVATED,		// Do nothing, display nothing
 		;
 	}
-	
-	private STATE state = STATE.DEACTIVATED;
-	
+
+	private STATE state;
+
 	private Queue<BattleEvent> queue;
 	
 	private Battle battle;
@@ -80,13 +81,11 @@ public class BattleScreenController extends InputAdapter {
 		if (moveSelect.isVisible()) {
 			if (keycode == Keys.X) {
 				int selection = moveSelect.getSelection();
-				if(selection==4){
-					uiStack.add(new InventoryUi(battleScreen,game, GameScreen.player));
-				}
 				/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-				else if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
+				if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
 					queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
 				} else {
+					System.out.println(moveSelect.getSelection());
 					battle.progress(moveSelect.getSelection());
 					endTurn();
 				}
@@ -102,6 +101,9 @@ public class BattleScreenController extends InputAdapter {
 			} else if (keycode == Keys.RIGHT) {
 				moveSelect.moveRight();
 				return true;
+			}else if(keycode==Keys.F9){
+				battle.selectItem();
+				uiStack.add(new useItemUi(this,battle,battleScreen,game, GameScreen.player));
 			}
 		}
 		return false;
@@ -109,6 +111,9 @@ public class BattleScreenController extends InputAdapter {
 	
 	public STATE getState() {
 		return state;
+	}
+	public void setState(STATE state) {
+		this.state= state;
 	}
 	
 	public void update(float delta) {
@@ -149,14 +154,14 @@ public class BattleScreenController extends InputAdapter {
 	public void displayNextDialogue() {
 		this.state = STATE.USE_NEXT_POKEMON;
 		dialogue.setVisible(true);
-		dialogue.animateText("Send out next pokemon?");
+		dialogue.animateText("다음 포켓몬을 내보내시겠습니까?");
 	}
 	
 	public boolean isDisplayingNextDialogue() {
 		return this.state == STATE.USE_NEXT_POKEMON;
 	}
 	
-	private void endTurn() {
+	public void endTurn() {
 		moveSelect.setVisible(false);
 		this.state = STATE.DEACTIVATED;
 	}

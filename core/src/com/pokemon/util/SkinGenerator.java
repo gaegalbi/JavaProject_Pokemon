@@ -22,6 +22,7 @@ public class SkinGenerator {
 	public static TextureRegion inv_but;
 	public static TextureRegion selectedSlot;
 	public static TextureRegion backgroundM;
+	public static TextureRegion useitem_ui;
 	public static Texture backgroundS;
 	public static Window.WindowStyle windowStyle;
 	public static TextButton.TextButtonStyle textButtonStyle;
@@ -62,6 +63,10 @@ public class SkinGenerator {
 		labelStyle.font = skin.getFont("font");
 		//labelStyle.font.setColor(Color.BLACK);
 		skin.add("default", labelStyle);
+
+		//useItem UI
+		useitem_ui = new TextureRegion(new Texture(Gdx.files.internal("inven/useitem_ui.png")));
+		skin.add("useitem_ui", useitem_ui, TextureRegion.class);
 
 		//인벤 UI
 		inv_ui = new TextureRegion(new Texture(Gdx.files.internal("inven/inventory_ui.png")));

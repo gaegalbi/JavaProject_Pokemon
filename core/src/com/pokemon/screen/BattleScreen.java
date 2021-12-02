@@ -79,6 +79,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
     private Stack<AbstractUi> uiStack;
+    public static boolean useCheck= true;
 
     public BattleScreen(Pokemon game) {
         this.game = game;
@@ -202,6 +203,17 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         if (currentEvent != null) {
             currentEvent.update(delta);
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
+           useCheck = (!useCheck);
+            if(uiStack!=null&&useCheck) {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+                Gdx.input.setInputProcessor(controller);
+                controller.restartTurn();
+            }
+        }
+
 
         controller.update(delta);
         uiStage.act(); // update ui
