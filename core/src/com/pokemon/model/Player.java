@@ -5,8 +5,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.util.AnimationSet;
 
-import static com.pokemon.game.Settings.SCALE;
-import static com.pokemon.game.Settings.TILE_SIZE;
+import static com.pokemon.game.Settings.*;
 
 public class Player extends Rectangle implements RenderHelper, Comparable<RenderHelper> {
     private AnimationSet<TextureRegion> animations;
@@ -27,7 +26,7 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     private float animTimer;
 
     public Player(int x, int y, AnimationSet<TextureRegion> animations) {
-        this.width = 32;
+        this.width = 30;
         this.height = 24;
         this.x = x;
         this.y = y;
@@ -43,6 +42,16 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
                 animTimer = 0f;
             }
         }
+    }
+
+    @Override
+    public Rectangle setX(float x) {
+        return super.setX(x*SCALED_TILE_SIZE);
+    }
+
+    @Override
+    public Rectangle setY(float y) {
+        return super.setY(y*SCALED_TILE_SIZE);
     }
 
     @Override
@@ -72,5 +81,13 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
 
     public void setState(PLAYER_STATE state) {
         this.state = state;
+    }
+
+    public DIRECTION getFacing() {
+        return facing;
+    }
+
+    public PLAYER_STATE getState() {
+        return state;
     }
 }

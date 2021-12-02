@@ -25,9 +25,29 @@ public class ObjectGenerator {
                     new WorldObject(
                             Float.parseFloat(tempObject[0]) * SCALED_TILE_SIZE,
                             Float.parseFloat(tempObject[1]) * SCALED_TILE_SIZE,
-                            Integer.parseInt(tempObject[2]) * SCALED_TILE_SIZE,
-                            Integer.parseInt(tempObject[3]) * SCALED_TILE_SIZE,
+                            Float.parseFloat(tempObject[2]) * SCALED_TILE_SIZE,
+                            Float.parseFloat(tempObject[3]) * SCALED_TILE_SIZE,
                             tempObject[4].trim()
+                    )
+            );
+        }
+        return objectList;
+    }
+
+    public static ArrayList<WorldObject> generateCollisionObject(String file) {
+        String[] objects;
+        FileHandle mapFile = Gdx.files.internal("maps/" + file + ".txt");
+        ArrayList<WorldObject> objectList = new ArrayList<>();
+        objects = mapFile.readString().split("\n");
+
+        for (String object : objects) {
+            String[] tempObject = object.split(",");
+            objectList.add(
+                    new WorldObject(
+                            Float.parseFloat(tempObject[0]) * SCALED_TILE_SIZE,
+                            Float.parseFloat(tempObject[1]) * SCALED_TILE_SIZE,
+                            Float.parseFloat(tempObject[2]) * SCALED_TILE_SIZE,
+                            Float.parseFloat(tempObject[3]) * SCALED_TILE_SIZE
                     )
             );
         }

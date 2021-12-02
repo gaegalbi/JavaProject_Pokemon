@@ -7,7 +7,6 @@
 8,7,1,1,flower1
 10,8,1,1,flower1
 9,7,1,1,flower2
-3,11,1,1,flower2
 4,13,1,1,flower2
 9,8,1,1,flower2
 7,8,1,1,flower2
@@ -19,3 +18,18 @@
 12,3,1,2,tree_head
 13,3,1,2,tree_head
 3,3,1,2,tree_head
+4,2,1,2,tree_head
+5,2,1,2,tree_head
+6,2,1,2,tree_head
+7,2,1,2,tree_head
+8,2,1,2,tree_head
+14,2,1,2,tree_head
+15,2,1,2,tree_head
+16,2,1,2,tree_head
+17,2,1,2,tree_head
+18,2,1,2,tree_head
+19,2,1,2,tree_head
+20,2,1,2,tree_head
+0,9,1,2,tree_head
+1,9,1,2,tree_head
+2,9,1,2,tree_head

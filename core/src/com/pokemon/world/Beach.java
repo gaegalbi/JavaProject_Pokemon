@@ -17,15 +17,15 @@ import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 import static com.pokemon.screen.GameScreen.getAssetManager;
 import static com.pokemon.screen.GameScreen.getTweenManager;
 
-public class Mine implements World {
-    private final TileMap map = new TileMap(17, 14);
+public class Beach implements World {
+    private final TileMap map = new TileMap(27, 20);
+    private GameScreen gameScreen;
     private Player player;
     private Pokemon game;
-    private GameScreen gameScreen;
     private ArrayList<WorldObject> collisionObjects;
     private Portal mainWorldPortal;
 
-    public Mine(Player player, Pokemon game, GameScreen gameScreen) {
+    public Beach(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
         this.game = game;
         this.gameScreen = gameScreen;
@@ -35,11 +35,13 @@ public class Mine implements World {
                 map.tiles[x][y] = new Tile(x, y);
             }
         }
-        collisionObjects = ObjectGenerator.generateCollisionObject("MineCollision");
+
+        collisionObjects = ObjectGenerator.generateCollisionObject("BeachCollision");
         renderList.clear();
         renderList.add(player);
-        renderList.addAll(ObjectGenerator.generateObject("Mine"));
-        mainWorldPortal = new Portal(8, 2, 1, 1);
+        renderList.addAll(ObjectGenerator.generateObject("Beach"));
+
+        mainWorldPortal = new Portal(26, 9, 1, 4);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class Mine implements World {
 
     @Override
     public String getBackground() {
-        return "Mine";
+        return "Beach";
     }
 
     @Override
@@ -72,7 +74,7 @@ public class Mine implements World {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.SOUTH) {
+            if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST) {
                 player.finishMove();
                 gameScreen.getTransitionScreen().startTransition(
                         new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
@@ -80,13 +82,13 @@ public class Mine implements World {
                         new Action() {
                             @Override
                             public void action() {
-                                GameScreen.setWorld(new MainWorld(player,game,gameScreen));
-                                player.setX(11);
-                                player.setY(19);
+                                GameScreen.setWorld(new MainWorld(player, game, gameScreen));
+                                player.setX(0);
+                                player.setY(11.5f);
                             }
-                        });
+                        }
+                );
             }
         }
-
     }
 }

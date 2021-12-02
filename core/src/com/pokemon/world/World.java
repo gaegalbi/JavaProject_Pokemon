@@ -16,8 +16,6 @@ public interface World {
 
     ArrayList<WorldObject> getCollisionObjects();
 
-    ArrayList<WorldObject> getObjects();
-
     String getBackground();
 
     void update();

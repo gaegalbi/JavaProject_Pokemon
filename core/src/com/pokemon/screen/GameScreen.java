@@ -2,6 +2,7 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -20,9 +21,10 @@ import com.pokemon.transition.*;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
-import com.pokemon.world.World;
+import com.pokemon.world.Home;
 import com.pokemon.world.MainWorld;
 import com.pokemon.ui.pokemonBox.myPokemonUI;
+import com.pokemon.world.World;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -44,6 +46,7 @@ public class GameScreen implements Screen {
     private WorldRenderer worldRenderer;
     private GameController gameController;
     private TransitionScreen transitionScreen;
+    private boolean isTransition;
 
     private Stack<AbstractUi> uiStack;
     private boolean pokemonBoxCheck=false;
@@ -67,6 +70,7 @@ public class GameScreen implements Screen {
         if (!transitionShader.isCompiled()) {
             System.out.println(transitionShader.getLog());
         }
+        isTransition = false;
 
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
 
@@ -83,12 +87,12 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        player = new Player(13*SCALED_TILE_SIZE, 6*SCALED_TILE_SIZE, animations);
-        world = new MainWorld(player,game,this);
+        player = new Player(2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE, animations);
+        world = new Home(player,game,this);
         worldRenderer = new WorldRenderer(player);
         playerController = new PlayerController(player);
         gameController = new GameController(game);
-        transitionScreen = new TransitionScreen(game);
+        transitionScreen = new TransitionScreen(game,this);
         uiStack = new Stack<>();
     }
 
@@ -107,44 +111,51 @@ public class GameScreen implements Screen {
         game.batch.begin();
         worldRenderer.render(game.batch);
         game.batch.end();
-        playerController.update();
+        gameController.update();
         player.update(delta);
         world.update();
-        gameController.update();
 
-        for (AbstractUi abstractUi : uiStack) {
-            abstractUi.update();
+        if (uiStack.isEmpty() && !isTransition) {
+            playerController.update();
+        } else {
+            for (AbstractUi abstractUi : uiStack) {
+                abstractUi.update();
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                popUi();
+            }
         }
 
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
-                    this,
-                    this,
                     new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
                     new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
                     new Action() {
                         @Override
                         public void action() {
-                            System.out.println("FadeOut");
+                            player.setX(13);
+                            player.setY(6);
                         }
                     });
         }
-        
-        // 전투 페이드 아웃
-        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
-            transitionScreen.startTransition(
-                    this,
-                    this,
-                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
-                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager()),
-                    new Action() {
-                        @Override
-                        public void action() {
-                           // game.setScreen(new BattleScreen(game));
-                        }
-                    });
-        }
+//
+//        // 전투 페이드 아웃
+//        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
+//            transitionScreen.startTransition(
+//                    this,
+//                    this,
+//                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
+//                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager())
+//            );
+////                    new Action() {
+////                        @Override
+////                        public void action() {
+////                           // game.setScreen(new BattleScreen(game));
+////                        }
+////                    });
+//        }
+    }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
             pokemonBoxCheck = (!pokemonBoxCheck);
@@ -200,6 +211,14 @@ public class GameScreen implements Screen {
         return transitionShader;
     }
 
+    public TransitionScreen getTransitionScreen() {
+        return transitionScreen;
+    }
+
+    public void setTransition(boolean transition) {
+        isTransition = transition;
+    }
+
     public Stack<AbstractUi> getUiStack() {
         return uiStack;
     }
@@ -207,8 +226,11 @@ public class GameScreen implements Screen {
     public void pushUi(AbstractUi ui) {
         uiStack.add(ui);
     }
-    public AbstractUi popUi() {
-        return uiStack.pop();
+    public void popUi() {
+        if (!uiStack.isEmpty()) {
+            AbstractUi popped = uiStack.pop();
+            popped.dispose();
+        }
     }
 
 }

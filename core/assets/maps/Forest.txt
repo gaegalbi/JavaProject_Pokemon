@@ -1,0 +1,10 @@
+0,13,2,2,bigtree_head
+2,13,2,2,bigtree_head
+4,1,2,2,bigtree_head
+6,1,2,2,bigtree_head
+8,1,2,2,bigtree_head
+10,1,2,2,bigtree_head
+12,1,2,2,bigtree_head
+14,1,2,2,bigtree_head
+16,1,2,2,bigtree_head
+18,1,2,2,bigtree_head
