@@ -2,7 +2,6 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -11,16 +10,26 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
+import com.pokemon.ui.AbstractUi;
+//import com.pokemon.ui.inventory.InventoryRenderer;
+//import com.pokemon.ui.inventory.InventoryUI;
+import com.pokemon.ui.SkillListUi;
+import com.pokemon.ui.inventory.InventoryUi;
 import com.pokemon.transition.*;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
 import com.pokemon.util.AnimationSet;
+import com.pokemon.util.SkinGenerator;
+import com.pokemon.world.World;
 import com.pokemon.world.Home;
 import com.pokemon.world.MainWorld;
 import com.pokemon.ui.pokemonBox.myPokemonUI;
@@ -36,20 +45,23 @@ import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 public class GameScreen implements Screen {
     final Pokemon game;
     private static World world;
+    private Skin skin;
 
     private static TweenManager tweenManager;
     private static AssetManager assetManager;
     private ShaderProgram transitionShader;
     private OrthographicCamera camera;
-    private Player player;
+    public Player player;
     private PlayerController playerController;
     private WorldRenderer worldRenderer;
     private GameController gameController;
+   // private InventoryRenderer inventoryRenderer;
+    private Stack<AbstractUi> uiStack;
+    Stage stage;
+    private boolean invenCheck=false;
+    private boolean skillCheck=false;
     private TransitionScreen transitionScreen;
     private boolean isTransition;
-
-    private Stack<AbstractUi> uiStack;
-    private boolean pokemonBoxCheck=false;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -59,6 +71,7 @@ public class GameScreen implements Screen {
         for (int i = 0; i < 13; i++) {
             assetManager.load("transitions/transition_"+i+".png", Texture.class);
         }
+        assetManager.load("texture/texture.atlas", TextureAtlas.class);
         assetManager.finishLoading();
 
         tweenManager = new TweenManager();
@@ -72,7 +85,11 @@ public class GameScreen implements Screen {
         }
         isTransition = false;
 
+
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
+        //TextureAtlas Texture = assetManager.get("texture/texture.atlas", TextureAtlas.class);
+
+        skin = SkinGenerator.generateSkin(assetManager);
 
         AnimationSet<TextureRegion> animations = new AnimationSet<>(
                 new Animation<TextureRegion>(0.3f / 2f, playerTexture.findRegions("dawn_walk_north"), Animation.PlayMode.LOOP_PINGPONG),
@@ -109,6 +126,7 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
+
         worldRenderer.render(game.batch);
         game.batch.end();
         gameController.update();
@@ -155,6 +173,7 @@ public class GameScreen implements Screen {
 ////                        }
 ////                    });
 //        }
+        this.update(delta);
     }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
@@ -175,6 +194,48 @@ public class GameScreen implements Screen {
     @Override
     public void pause() {
 
+    }
+
+    public void update(float delta){
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
+
+            if (uiStack.isEmpty()) {
+                pushUi(new InventoryUi(this, game, player));
+            } else {
+                popUi();
+            }
+
+//            invenCheck = (!invenCheck);
+//            if(invenCheck) {
+//                //아이템 추가
+//                db.UPDATE("ITEM_01",1);
+//                player.inventory.addItem("ITEM_01",1);
+//                this.pushUi(new InventoryUi(this, game,player));
+//            }else {
+//                AbstractUi popped = uiStack.pop();
+//                popped.dispose();
+//            }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
+            if (uiStack.isEmpty()) {
+                pushUi(new SkillListUi(this, game,player));
+            } else {
+                popUi();
+            }
+
+//            skillCheck = (!skillCheck);
+//            if(skillCheck) {
+//                this.pushUi(new SkillListUi(this, game,player));
+//            }else {
+//                AbstractUi popped = uiStack.pop();
+//                popped.dispose();
+//            }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            game.setScreen(new BattleScreen(game,player));
+            dispose();
+        }
     }
 
     @Override
@@ -230,7 +291,7 @@ public class GameScreen implements Screen {
         if (!uiStack.isEmpty()) {
             AbstractUi popped = uiStack.pop();
             popped.dispose();
+            //Gdx.input.setInputProcessor(uiStack.peek().getStage());
         }
     }
-
 }

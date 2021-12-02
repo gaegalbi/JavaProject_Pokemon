@@ -13,9 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
@@ -26,15 +24,13 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
-import com.pokemon.model.PK;
 import com.pokemon.model.Player;
 import com.pokemon.ui.*;
 import com.pokemon.util.SkinGenerator;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-
-import static com.pokemon.ui.LoginUi.playerID;
+import java.util.Stack;
 
 public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
@@ -62,6 +58,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Table dialogueRoot;
     private DialogueBox dialogueBox;
     private OptionBox optionBox;
+    private Player player;
 
     private Table moveSelectRoot;
     private MoveSelectBox moveSelectBox;
@@ -76,8 +73,13 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
-    public BattleScreen(Pokemon game) {
+    private Stack<AbstractUi> uiStack;
+    public static boolean useCheck= true;
+
+    public BattleScreen(Pokemon game,Player player) {
         this.game = game;
+        this.uiStack = new Stack<>();
+        this.player = player;
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -89,17 +91,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(false);
+        this.battle = new Battle(this.game,this,false);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-        battleRenderer = new BattleRenderer(game,battle,camera);
-        eventRenderer = new EventQueueRenderer(skin, queue);
 
+        battleRenderer = new BattleRenderer(this.game,battle,camera);
+        eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(battle, queue, dialogueBox, moveSelectBox, optionBox);
+        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,this.player);
+
 
         battle.beginBattle();
     }
@@ -108,8 +111,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         /* ROOT UI STAGE */
         uiStage = new Stage(new ScreenViewport());
         uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
+                Gdx.graphics.getWidth()/Settings.SCALE,
+                Gdx.graphics.getHeight()/Settings.SCALE,
                 true);
         uiStage.setDebugAll(false);
 
@@ -168,6 +171,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     }
 
     public void update(float delta) {
+
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;
@@ -196,15 +200,25 @@ public class BattleScreen implements Screen, BattleEventPlayer {
             currentEvent.update(delta);
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
+           useCheck = (!useCheck);
+            if(uiStack!=null&&useCheck) {
+                AbstractUi popped = uiStack.pop();
+                popped.dispose();
+                Gdx.input.setInputProcessor(controller);
+                controller.restartTurn();
+            }
+        }
         controller.update(delta);
         uiStage.act(); // update ui
     }
 
     @Override
     public void render(float delta) {
+
         gameViewport.apply();
-        camera.position.x =  Gdx.graphics.getWidth()/2;
-        camera.position.y = Gdx.graphics.getHeight()/2;
+        camera.position.x =  Gdx.graphics.getWidth()/2f;
+        camera.position.y = Gdx.graphics.getHeight()/2f;
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         elapsed += Gdx.graphics.getDeltaTime();
@@ -218,6 +232,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         game.batch.end();
 
         uiStage.draw();
+        if(uiStack!=null) {
+            for (AbstractUi abstractUi : uiStack) {
+                abstractUi.update();
+            }
+        }
     }
 
     @Override
@@ -225,8 +244,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         game.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
         uiStage.getViewport().update(
-                (int)(Gdx.graphics.getWidth()/Settings.SCALE),
-                (int)(Gdx.graphics.getHeight()/Settings.SCALE),
+                Gdx.graphics.getWidth()/Settings.SCALE,
+                Gdx.graphics.getHeight()/Settings.SCALE,
                 true);
         gameViewport.update(width, height);
     }
@@ -281,4 +300,5 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     public void queueEvent(BattleEvent event) {
         queue.add(event);
     }
+
 }

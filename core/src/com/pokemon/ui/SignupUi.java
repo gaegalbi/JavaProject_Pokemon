@@ -109,6 +109,7 @@ public class SignupUi extends AbstractUi {
                         Dialogs.showOKDialog(getStage(), "message", "Password is not match!");
                     }else if(userCheck==false) {
                         db.insert(idField.getText(), passwordField.getText());
+                        db.insert_basic(idField.getText());
                         Dialogs.showOKDialog(getStage(), "message", "This ID is created!");
                     }else if(userCheck==true) {
                         Dialogs.showOKDialog(getStage(), "message", "This ID is already being used!");
