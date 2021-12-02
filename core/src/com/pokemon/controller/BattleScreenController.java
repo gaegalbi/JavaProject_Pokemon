@@ -2,41 +2,53 @@ package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.maps.MapLayer;
 import com.pokemon.battle.Battle;
 import com.pokemon.db.db;
-import com.pokemon.ui.DialogueBox;
-import com.pokemon.ui.MoveSelectBox;
-import com.pokemon.ui.OptionBox;
+import com.pokemon.game.Pokemon;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
+import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
+
 import java.util.Queue;
+import java.util.Stack;
+
 
 
 public class BattleScreenController extends InputAdapter {
-	
+
 	public enum STATE {
-		USE_NEXT_POKEMON, 	// Text displayed when Pokemon faints 
+		USE_NEXT_POKEMON, 	// Text displayed when Pokemon faints
 		SELECT_ACTION,		// Moves, Items, Pokemon, Run
 		DEACTIVATED,		// Do nothing, display nothing
 		;
 	}
-	
-	private STATE state = STATE.DEACTIVATED;
-	
+
+	private STATE state;
+
 	private Queue<BattleEvent> queue;
 	
 	private Battle battle;
 	
 	private DialogueBox dialogue;
 	private OptionBox optionBox;
-	private MoveSelectBox moveSelect;
-	
-	public BattleScreenController(Battle battle, Queue<BattleEvent> queue,DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox) {
+	public static MoveSelectBox moveSelect;
+
+	private Stack<AbstractUi> uiStack;
+	private Pokemon game;
+	private BattleScreen battleScreen;
+
+	public BattleScreenController(Pokemon game, BattleScreen battleScreen,Battle battle, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox, Stack uiStack) {
+		this.game = game;
+		this.battleScreen = battleScreen;
 		this.battle = battle;
 		this.queue = queue;
 		this.dialogue = dialogue;
 		this.moveSelect = options;
 		this.optionBox = optionBox;
+		this.uiStack = uiStack;
 	}
 	
 	@Override
@@ -71,8 +83,9 @@ public class BattleScreenController extends InputAdapter {
 				int selection = moveSelect.getSelection();
 				/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
 				if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection]>0) {
-					queue.add(new TextEvent("No such move...", 0.5f));
+					queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
 				} else {
+					System.out.println(moveSelect.getSelection());
 					battle.progress(moveSelect.getSelection());
 					endTurn();
 				}
@@ -88,6 +101,9 @@ public class BattleScreenController extends InputAdapter {
 			} else if (keycode == Keys.RIGHT) {
 				moveSelect.moveRight();
 				return true;
+			}else if(keycode==Keys.F9){
+				battle.selectItem();
+				uiStack.add(new useItemUi(this,battle,battleScreen,game, GameScreen.player));
 			}
 		}
 		return false;
@@ -95,6 +111,9 @@ public class BattleScreenController extends InputAdapter {
 	
 	public STATE getState() {
 		return state;
+	}
+	public void setState(STATE state) {
+		this.state= state;
 	}
 	
 	public void update(float delta) {
@@ -104,6 +123,7 @@ public class BattleScreenController extends InputAdapter {
 			optionBox.addOption("NO");
 			optionBox.setVisible(true);
 		}
+
 	}
 	
 
@@ -114,7 +134,6 @@ public class BattleScreenController extends InputAdapter {
 	public void restartTurn() {
 		this.state = STATE.SELECT_ACTION;
 		dialogue.setVisible(false);
-
 		for (int i = 0; i <= 3; i++) {
 			String label = "------";
 			String skill = db.GET_PM_SK_NAME(battle.getP_P().getSkill()[i]);
@@ -135,14 +154,14 @@ public class BattleScreenController extends InputAdapter {
 	public void displayNextDialogue() {
 		this.state = STATE.USE_NEXT_POKEMON;
 		dialogue.setVisible(true);
-		dialogue.animateText("Send out next pokemon?");
+		dialogue.animateText("다음 포켓몬을 내보내시겠습니까?");
 	}
 	
 	public boolean isDisplayingNextDialogue() {
 		return this.state == STATE.USE_NEXT_POKEMON;
 	}
 	
-	private void endTurn() {
+	public void endTurn() {
 		moveSelect.setVisible(false);
 		this.state = STATE.DEACTIVATED;
 	}

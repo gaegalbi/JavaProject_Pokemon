@@ -24,4 +24,5 @@ public interface BattleEventPlayer {
 	public TweenManager getTweenManager();
 	
 	public void queueEvent(BattleEvent event);
+
 }

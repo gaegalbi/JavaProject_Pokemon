@@ -14,6 +14,7 @@ public class DesktopLauncher {
 		config.vSyncEnabled = true;
 		config.foregroundFPS = 200;
 		db.DBC();
+
 		new LwjglApplication(new Pokemon(), config);
 	}
 }
