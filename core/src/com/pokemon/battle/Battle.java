@@ -57,8 +57,39 @@ public class Battle implements BattleEventQueuer {
     private String[] selectedPokemon;
     boolean multi;
     private boolean Changecharacter;
+    private boolean skill;
+    private boolean effect;
     int poket1=0;
     int poket2=0;
+    public int getPoket1(){
+        return poket1;
+    }
+    public void setPoket1(int poket1){
+        this.poket1 = poket1;
+    }
+    public int getPoket2(){
+        return poket2;
+    }
+    public void setPoket2(int poket2){
+        this.poket2 = poket2;
+    }
+    public boolean isEffect() {
+        return effect;
+    }
+
+    public void setEffect(boolean effect) {
+        this.effect = effect;
+    }
+
+    public boolean isSkill() {
+        return skill;
+    }
+
+    public void setSkill(boolean skill) {
+        this.skill = skill;
+    }
+
+
     public boolean getChangecharacter() {
         return setChangecharacter;
     }
@@ -144,6 +175,7 @@ public class Battle implements BattleEventQueuer {
          }
 
        mechanics = new BattleMechanics();
+       setSkill(mechanics.goesFirst(player, opponent));
        this.state = STATE.READY_TO_PROGRESS;
     }
     public void progress(int input) {
@@ -167,11 +199,13 @@ public class Battle implements BattleEventQueuer {
                 return;
             }
             if (mechanics.goesFirst(player, opponent)) {
+                setSkill(true);
                 playTurn(BATTLE_PARTY.PLAYER, input);
                 if (state == STATE.READY_TO_PROGRESS) {
                     playTurn(BATTLE_PARTY.OPPONENT, parseInt(game.getrecieveMessage()));
                 }
             } else {
+                setSkill(false);
                 playTurn(BATTLE_PARTY.OPPONENT, parseInt(game.getrecieveMessage()));
                 if (state == STATE.READY_TO_PROGRESS) {
                     playTurn(BATTLE_PARTY.PLAYER, input);
@@ -179,6 +213,7 @@ public class Battle implements BattleEventQueuer {
             }
         }
     }
+    public boolean getGoesFirst(){return mechanics.goesFirst(player, opponent);}
 
     public void beginBattle() {
         System.out.print(player.getName());
@@ -194,7 +229,7 @@ public class Battle implements BattleEventQueuer {
                 pokemon.getCurrentHP(),
                 pokemon.getCurrentHP(),
                 pokemon.getStat()[2],
-                1f));
+                0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
         queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!",2));
@@ -208,7 +243,7 @@ public class Battle implements BattleEventQueuer {
                 pokemon.getCurrentHP(),
                 pokemon.getCurrentHP(),
                 pokemon.getStat()[2],
-                1f));
+                0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.OPPONENT));
         queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!",2));
@@ -262,7 +297,7 @@ public class Battle implements BattleEventQueuer {
         if (mechanics.hasMessage()) {
             queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
         }
-
+        game.setOnoff(true);
        //System.out.println("현재 피"+pokeTarget.getCurrentHP());
 
         /*if (player.isFainted()) {
@@ -319,14 +354,14 @@ public class Battle implements BattleEventQueuer {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 queueEvent(new TextEvent(getPTrainer().getPokemon(poket1).getName() + " fainted!", 1));
                 setChangecharacter(true);
-                poket1++;
+                setPoket1(1);
                 this.state = STATE.SELECT_NEW_POKEMON;
             }
             if (getOTrainer().getPokemon(poket2).isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 queueEvent(new TextEvent(getOTrainer().getPokemon(poket2).getName() + " fainted!", 1));
                 setChangecharacter(false);
-                poket2++;
+                setPoket2(1);
                 this.state = STATE.SELECT_NEW_POKEMON;
             }
             if(getPTrainer().getPokemon(1).isFainted()){

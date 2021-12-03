@@ -25,6 +25,15 @@ public class Pokemon extends Game {
 	private String str;
 	private int i;
 	private int j;
+	private boolean onoff;
+	public boolean isOnoff() {
+		return onoff;
+	}
+
+	public void setOnoff(boolean onoff) {
+		this.onoff = onoff;
+	}
+
 	public int getJ() {
 		return j;
 	}

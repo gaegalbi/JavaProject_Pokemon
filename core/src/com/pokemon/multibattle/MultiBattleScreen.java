@@ -42,6 +42,7 @@ import static java.lang.Integer.parseInt;
 
 public class MultiBattleScreen implements Screen, BattleEventPlayer {
     int i=0;
+    int skillcount=0;
     final Pokemon game;
     GameScreen gameScreen;
     SpriteBatch batch;
@@ -56,6 +57,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     private Texture fieldimage2;
     private Texture background;
     float elapsed;
+    float elapsed2;
     private Texture buttonTexture;
     private TextureRegion buttonTextureRegion;
     private TextureRegionDrawable buttonTextureRegionDrawable;
@@ -103,6 +105,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     private AssetManager assetManager;
     private BattleClient bc;
     private MoveEvent moveEvent;
+    private SkillEvent skillEvent;
     public MultiBattleScreen(final Pokemon game,final BattleClient bc) {
         this.bc = bc;
         this.game = game;
@@ -114,7 +117,6 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         game.setSelectedPokemon(selectedPokemon);
         selectedPokemon2 =  game.getrecieveMessage().split(" ");
         System.out.println(game.getrecieveMessage());
-
         selected[0] = db.sP(selectedPokemon[0],parseInt(selectedPokemon[1]));
         selected[1] = db.sP(selectedPokemon[2],parseInt(selectedPokemon[3]));
         selected[2] = db.sP(selectedPokemon2[0],parseInt(selectedPokemon2[1]));
@@ -141,7 +143,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
 
         this.battle = new Battle(game,true);
         battle.setEventPlayer(this);
-
+        skillEvent = new SkillEvent(this,batch,game,battle.getPTrainer().getPokemon(battle.getPoket1()).getType(),battle.getOTrainer().getPokemon(battle.getPoket2()).getType(),battle.isSkill());
         skin = MultiSkinGenerator.generateSkin(assetManager);
 
         eventRenderer = new EventQueueRenderer(skin, queue);
@@ -177,10 +179,14 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                 public void run() {
                     ballTime1 = 1;
                 }
-            }, 3);
+            }, 1);
+
             System.out.println(ballTime1);
             if(ballTime1 ==1){
                 batch.draw(animation2.getKeyFrame(elapsed), 150.0f, 200.0f);
+            }else{
+                elapsed2 += Gdx.graphics.getDeltaTime();
+                batch.draw(ballRight.getKeyFrame(elapsed2),-60.0f,120.0f);
             }
         }
 
@@ -192,10 +198,13 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                 public void run() {
                     ballTime2 = 1;
                 }
-            }, 3);
+            }, 1);
             System.out.println(ballTime2);
             if(ballTime2 == 1){
                 batch.draw(enemyanimation2.getKeyFrame(elapsed), 550.0f, 200.0f);
+            }else{
+                elapsed2 += Gdx.graphics.getDeltaTime();
+                batch.draw(ballLeft.getKeyFrame(elapsed2),260.0f,120.0f);
             }
         }
 
@@ -214,6 +223,14 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         }
         if (currentEvent != null) {
             eventRenderer.render(batch, currentEvent);
+        }
+        if(game.isOnoff()){
+            skillEvent.effectSkill();
+            System.out.println("스킬해해해");
+        }
+        if(skillcount == 1){
+            skillEvent = new SkillEvent(this,batch,game,battle.getPTrainer().getPokemon(battle.getPoket1()).getType(),battle.getOTrainer().getPokemon(battle.getPoket2()).getType(),battle.isSkill());
+            skillcount = 0;
         }
         batch.end();
         uiStage.draw();
@@ -334,7 +351,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
             return null;
         }
     }
-
+    public SpriteBatch getBatch(){return batch;}
     @Override
     public TweenManager getTweenManager() {
         return null;
@@ -394,6 +411,9 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
 
         //controller.update(delta);
         uiStage.act(); // update ui
+    }
+    public void setSkillcount(int skillcount) {
+        this.skillcount = skillcount;
     }
 
 }

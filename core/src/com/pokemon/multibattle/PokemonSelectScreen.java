@@ -52,16 +52,16 @@ public class PokemonSelectScreen implements Screen {
         for(int i=0; i<6; i++){
             pokemonList[i] = db.sP(playerID,i+1);
         }
-        oneP = new Texture(Gdx.files.internal("C:\\001.png"));
-        twoP = new Texture(Gdx.files.internal("C:\\002.png"));
+        oneP = new Texture(Gdx.files.internal("multibattle/001.png"));
+        twoP = new Texture(Gdx.files.internal("multibattle/002.png"));
         character1 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[0] +".gif").read());
         character2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[1] +".gif").read());
         character3 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[2] +".gif").read());
         character4 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[3] +".gif").read());
         character5 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[4] +".gif").read());
         character6 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/"+pokemonList[5] +".gif").read());
-        Time = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\시간초.gif").read());
-        SelectBacground = new Texture(Gdx.files.internal("C:\\선택배경.png"));
+        Time = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/시간초.gif").read());
+        SelectBacground = new Texture(Gdx.files.internal("multibattle/선택배경.png"));
         stackList = new Stack<>();
         this.battleClient = bs;
     }

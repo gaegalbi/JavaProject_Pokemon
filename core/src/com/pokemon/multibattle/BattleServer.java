@@ -1,6 +1,7 @@
 package com.pokemon.multibattle;
 
 import com.pokemon.chat.ChatServer2;
+import com.pokemon.game.Pokemon;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,14 +11,13 @@ public class BattleServer {
     Socket socket;
     ServerSocket serverSocket;
 
-
     public BattleServer(){
         Runnable recieved2 = new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
-                        serverSocket = new ServerSocket(9000);
+                        serverSocket = new ServerSocket(9011);
 
                     } catch (IOException e) {
                         System.out.println("해당포트가 열려있습니다");

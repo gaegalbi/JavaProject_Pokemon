@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.pokemon.chat.ChatClient;
+import com.pokemon.chat.Person;
 import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
 
@@ -22,7 +23,6 @@ public class ChatButton extends AbstractUi{
     SpriteBatch batch;
     GameScreen gameScreen;
     Pokemon game;
-
     public ChatButton(final GameScreen gameScreen, final Pokemon game) {
         batch = new SpriteBatch();
         stage = new Stage();
@@ -37,7 +37,7 @@ public class ChatButton extends AbstractUi{
         table.setPosition(-350, -210);
 
         TextButton chatButton = new TextButton("CHAT", skin);
-        chatButton.setColor(Color.CLEAR);
+        chatButton.setColor(Color.RED);
 
         table.row();
         table.add(chatButton).width(100).height(50).pad(5).colspan(2);

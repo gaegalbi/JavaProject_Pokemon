@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import static com.pokemon.ui.LoginUi.playerID;
+
 
 public class ChatClient extends AbstractUi {
     private Stage stage;
@@ -31,7 +33,10 @@ public class ChatClient extends AbstractUi {
     OutputStream out;
     BufferedReader in;
     int i = 900;
+    Person person;
     public ChatClient(final GameScreen gameScreen, final Pokemon game){
+        person = new Person();
+        person.setName(playerID);
         batch = new SpriteBatch();
         stage = new Stage();
         this.gameScreen = gameScreen;
@@ -73,7 +78,7 @@ public class ChatClient extends AbstractUi {
         table.add(exitButton).width(50).pad(3).left();
 
         try {
-            socket = new Socket("localhost", 9001);
+            socket = new Socket("localhost", 9010);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = socket.getOutputStream();
         } catch (IOException e) {
@@ -85,7 +90,8 @@ public class ChatClient extends AbstractUi {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("눌림");
                 String text;
-                text = chatField.getText();
+                text = person.getName() + ": "+chatField.getText();
+                System.out.println(text);
                 try {
                     out.write(new String(text+"\n").getBytes());
                     chatField.setText("");
@@ -120,7 +126,7 @@ public class ChatClient extends AbstractUi {
             public void keyTyped(TextField textField, char c) {
                 if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
                     String text;
-                    text = chatField.getText();
+                    text = person.getName() + ": "+chatField.getText();
                     try {
                         out.write(new String(text+"\n").getBytes());
                         chatField.setText("");

@@ -1,6 +1,7 @@
 package com.pokemon.chat;
 
 import com.badlogic.gdx.utils.Array;
+import com.pokemon.game.Pokemon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,6 @@ public class ChatServer2 {
     Socket socket;
     Array<SocketThread> array;
     Person person = new Person();
-
     public ChatServer2() {
         array = new Array<SocketThread>(100);
         newServer();
@@ -31,7 +31,7 @@ public class ChatServer2 {
             public void run() {
                 while (true) {
                     try {
-                        serverSocket = new ServerSocket(9001);
+                        serverSocket = new ServerSocket(9010);
                     } catch (IOException e) {
                         System.out.println("해당포트가 열려있습니다");
                     }
@@ -105,9 +105,9 @@ public class ChatServer2 {
         String send;
 
         if (person.getMessage().equals("")) {
-            send = person.getName() + " came";
+            send ="came";
         } else {
-            send = person.getName() + ": " + person.getMessage();
+            send = person.getMessage();
         }
         writeToAllUsers(send);
         System.out.println("보냄2");

@@ -2,7 +2,7 @@ package com.pokemon.chat;
 
 public class Person {
         private String type;
-        private String name = "minseok";
+        private String name;
         private String message;
 
         public void setType(String n){
