@@ -150,6 +150,9 @@ public class InventoryUi extends AbstractUi {
             invButtonLabels[i].setTouchable(Touchable.disabled);
             invButtonLabels[i].setAlignment(Align.center);
         }
+        //처음 시작시 활성화
+        invButtons[0].setTouchable(Touchable.enabled);
+        invButtons[0].setStyle(enabled);
 
         //init
         stage.addActor(ui);
@@ -241,8 +244,6 @@ public class InventoryUi extends AbstractUi {
                 dragging = true;
                 tooltip.hide();
                 unselectItem();
-
-                System.out.println(item.getType());
 
                 //벡터 예전 위치
                 prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);

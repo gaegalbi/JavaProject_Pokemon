@@ -2,16 +2,15 @@ package com.pokemon.battle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Timer;
 import com.pokemon.battle.event.*;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
+import com.pokemon.screen.BattleRenderer;
 import com.pokemon.screen.BattleScreen;
 import com.pokemon.screen.EventQueueRenderer;
 import com.pokemon.ui.AbstractUi;
@@ -28,7 +27,7 @@ import static com.pokemon.controller.BattleScreenController.moveSelect;
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
 
-import static com.pokemon.screen.BattleScreen.playerNum;
+import static com.pokemon.screen.BattleScreen.playerNum;;
 import static com.pokemon.ui.LoginUi.playerID;
 
 public class Battle implements BattleEventQueuer {
@@ -38,6 +37,7 @@ public class Battle implements BattleEventQueuer {
         RAN,
         WIN,
         LOSE,
+        USEITEM,
     }
     private STATE state;
     private PK player;
@@ -50,7 +50,9 @@ public class Battle implements BattleEventQueuer {
    //private Texture O_T;
     private Animation<TextureRegion> P_T;
     private Animation<TextureRegion> O_T;
-    Animation<TextureRegion> ball;
+    private Animation<TextureRegion> open;
+    private Animation<TextureRegion> close;
+
 
     private AssetManager assetManager;
     private BattleEventPlayer eventPlayer;
@@ -63,7 +65,7 @@ public class Battle implements BattleEventQueuer {
     private Pokemon game;
     private BattleScreen battleScreen;
     private Item item;
-
+    private boolean pokeball =false;
     private int oppo;
 
    public Battle(Pokemon game, BattleScreen battleScreen) {
@@ -81,6 +83,8 @@ public class Battle implements BattleEventQueuer {
 
 
        P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+       open= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/open.gif").read());
+       close= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/close.gif").read());
 
        String[] userKey = {playerID, String.valueOf(playerNum+1)};
        this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
@@ -176,21 +180,27 @@ public class Battle implements BattleEventQueuer {
         }
         if(input==4) {
             int hpBefore = pokeUser.getCurrentHP();
-            if(item.getType()==7)
+            if(item.getType()==7) {
                 pokeUser.applyHeal(db.ITEMEFFECT(item.getKey()));
-
-           if(item.getType()==0){
-                //몬스터볼 던지기
-               //game.batch.draw()
+                queueEvent(
+                        new HPAnimationEvent(
+                                user,
+                                hpBefore,
+                                pokeUser.getCurrentHP(),
+                                pokeUser.getStat()[2],
+                                0.5f));
             }
-
-            queueEvent(
-                    new HPAnimationEvent(
-                            user,
-                            hpBefore,
-                            pokeUser.getCurrentHP(),
-                            pokeUser.getStat()[2],
-                            0.5f));
+           if(item.getType()==0){
+               System.out.println(pokeball + " 소비");
+               pokeball = true;
+               Timer.schedule(new Timer.Task() {
+                   @Override
+                   public void run() {
+                       pokeball = true;
+                   }
+               }, 20);
+               //battleRenderer와 같이 딜레이 줘야함
+            }
 
         }else {
             String move = pokeUser.getSkill()[input];
@@ -219,6 +229,7 @@ public class Battle implements BattleEventQueuer {
             if (mechanics.hasMessage()) {
                 queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
             }
+
         }
 
             if (player.isFainted()) {
@@ -274,5 +285,20 @@ public class Battle implements BattleEventQueuer {
 
     public PK getO_P() {
         return opponent;
+    }
+    public boolean getCapture(){
+       int per = getO_P().getStat()[2]/getO_P().getCurrentHP(); //크게 남으면 남을수록
+        int match = (int)(Math.random()*10);
+        if(per>match){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getPokeball(){
+       return pokeball;
+    }
+    public void setPokeball(boolean pokeball){
+       this.pokeball=pokeball;
     }
 }

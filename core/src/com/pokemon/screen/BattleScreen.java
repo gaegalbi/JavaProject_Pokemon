@@ -82,9 +82,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private int playercount=0;
     private int enemycount=0;
 
-    private Animation<TextureRegion> ball;
-//controller에 필요해서 player 추가
-    public BattleScreen(Pokemon game) {
+    public BattleScreen(Pokemon game, Player player) {
         this.game = game;
         this.uiStack = new Stack<>();
 
@@ -98,7 +96,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
-        ball = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/pokeball.gif").read());
         //배틀 생성 및 이벤트 할당
         this.battle = new Battle(this.game,this);
         battle.setEventPlayer(this);
@@ -110,7 +107,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,GameScreen.player);
+        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,player);
 
 
         battle.beginBattle();
