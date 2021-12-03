@@ -78,7 +78,7 @@ public class ChatClient extends AbstractUi {
         table.add(exitButton).width(50).pad(3).left();
 
         try {
-            socket = new Socket("localhost", 9010);
+            socket = new Socket("localhost", 9021);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = socket.getOutputStream();
         } catch (IOException e) {

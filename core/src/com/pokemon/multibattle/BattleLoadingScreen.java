@@ -23,8 +23,8 @@ public class BattleLoadingScreen implements Screen {
         bc = new BattleClient(game);
         this.game = game;
         batch = new SpriteBatch();
-        background = new Texture(Gdx.files.internal("C:\\loding.png"));
-        clock = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\loding4.gif").read());
+        background = new Texture(Gdx.files.internal("multibattle/loding.png"));
+        clock = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/loding4.gif").read());
     }
 
     @Override

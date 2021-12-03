@@ -31,13 +31,13 @@ public class Loading implements Screen {
         this.game = game;
         this.bc = bc;
         batch = new SpriteBatch();
-        background2 = new Texture(Gdx.files.internal("C:\\battlebgField.png"));
-        fieldimage1 = new Texture(Gdx.files.internal("C:\\enemybaseFieldGrass.png"));
-        fieldimage2 = new Texture(Gdx.files.internal("C:\\enemybaseFieldGrass.png"));
-        animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\loding4.gif").read());
+        background2 = new Texture(Gdx.files.internal("multibattle/battlebgField.png"));
+        fieldimage1 = new Texture(Gdx.files.internal("multibattle/enemybaseFieldGrass.png"));
+        fieldimage2 = new Texture(Gdx.files.internal("multibattle/enemybaseFieldGrass.png"));
+        animation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/loding4.gif").read());
         animation2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/battle7.gif").read());
-        ballRight = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\ball.gif").read());
-        ballLeft = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("C:\\ball2.gif").read());
+        ballRight = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/ball.gif").read());
+        ballLeft = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/ball2.gif").read());
     }
 
 
