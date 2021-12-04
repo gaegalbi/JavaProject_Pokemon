@@ -100,34 +100,67 @@ public class BattleScreenController extends InputAdapter {
                 }
             }
         }
-        if (moveSelect.isVisible()) {
-            if (keycode == Keys.X) {
-                int selection = moveSelect.getSelection();
-                /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-                if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
-                    queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
-                } else {
-                    System.out.println(moveSelect.getSelection());
-                    battle.progress(moveSelect.getSelection());
-                    endTurn();
+        if (!turnon) {
+            if (moveSelect.isVisible()) {
+                if (keycode == Keys.X) {
+                    int selection = moveSelect.getSelection();
+                    /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
+                    if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+                        queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
+                    } else {
+                        System.out.println(moveSelect.getSelection());
+                        battle.progress(moveSelect.getSelection());
+                        endTurn();
+                    }
+                } else if (keycode == Keys.UP) {
+                    moveSelect.moveUp();
+                    return true;
+                } else if (keycode == Keys.DOWN) {
+                    moveSelect.moveDown();
+                    return true;
+                } else if (keycode == Keys.LEFT) {
+                    moveSelect.moveLeft();
+                    return true;
+                } else if (keycode == Keys.RIGHT) {
+                    moveSelect.moveRight();
+                    return true;
+                } else if (keycode == Keys.F9) {
+                    battle.selectItem();
+                    uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
                 }
-            } else if (keycode == Keys.UP) {
-                moveSelect.moveUp();
-                return true;
-            } else if (keycode == Keys.DOWN) {
-                moveSelect.moveDown();
-                return true;
-            } else if (keycode == Keys.LEFT) {
-                moveSelect.moveLeft();
-                return true;
-            } else if (keycode == Keys.RIGHT) {
-                moveSelect.moveRight();
-                return true;
-            } else if (keycode == Keys.F9) {
-                battle.selectItem();
-                uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
+            }
+        } else {
+            if (moveSelect.isVisible()) {
+                if (keycode == Keys.X) {
+                    count=1;
+                    System.out.println("X눌림");
+                    selection = moveSelect.getSelection();
+                    String a = String.valueOf(selection);
+                    System.out.println(a);
+
+                    /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
+					/*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+						queue.add(new TextEvent("No such move...", 0.5f));
+					} else {
+						battle.progress(moveSelect.getSelection());
+						endTurn();
+					}*/
+                } else if (keycode == Keys.UP) {
+                    moveSelect.moveUp();
+                    return true;
+                } else if (keycode == Keys.DOWN) {
+                    moveSelect.moveDown();
+                    return true;
+                } else if (keycode == Keys.LEFT) {
+                    moveSelect.moveLeft();
+                    return true;
+                } else if (keycode == Keys.RIGHT) {
+                    moveSelect.moveRight();
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
