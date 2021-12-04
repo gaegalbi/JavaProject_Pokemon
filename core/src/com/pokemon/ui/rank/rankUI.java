@@ -3,13 +3,10 @@ package com.pokemon.ui.rank;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.db.db;
@@ -18,6 +15,7 @@ import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
+
 import static com.pokemon.ui.LoginUi.playerID;
 
 public class rankUI extends AbstractUi {

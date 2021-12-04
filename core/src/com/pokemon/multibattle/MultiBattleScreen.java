@@ -22,11 +22,9 @@ import com.pokemon.battle.Battle;
 import com.pokemon.battle.event.*;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.db.db;
+import com.pokemon.model.Player;
 import com.pokemon.screen.EventQueueRenderer;
-import com.pokemon.ui.DialogueBox;
-import com.pokemon.ui.MoveSelectBox;
-import com.pokemon.ui.OptionBox;
-import com.pokemon.ui.StatusBox;
+import com.pokemon.ui.*;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
@@ -36,6 +34,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Stack;
 
 import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
@@ -44,7 +43,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     int i=0;
     int skillcount=0;
     final Pokemon game;
-    GameScreen gameScreen;
+    private GameScreen gameScreen;
     SpriteBatch batch;
     Animation<TextureRegion> animation;
     Animation<TextureRegion> animation2;
@@ -106,9 +105,10 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     private BattleClient bc;
     private MoveEvent moveEvent;
     private SkillEvent skillEvent;
-    public MultiBattleScreen(final Pokemon game,final BattleClient bc) {
+    public MultiBattleScreen(final Pokemon game,final BattleClient bc, GameScreen gameScreen) {
         this.bc = bc;
         this.game = game;
+        this.gameScreen = gameScreen;
         game.setI(0);
         game.setJ(0);
         batch = new SpriteBatch();
@@ -149,7 +149,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         eventRenderer = new EventQueueRenderer(skin, queue);
 
         initUI();
-        controller = new BattleScreenController(game, battle,true, queue, dialogueBox, moveSelectBox, optionBox);
+        controller = new BattleScreenController(game, battle,true, queue, dialogueBox, moveSelectBox, optionBox,new Stack<AbstractUi>(), gameScreen.player);
 
 
         battle.beginBattle();
@@ -245,7 +245,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         }
     }
     public void gameScreenStart(){
-        game.setScreen(new GameScreen(game));
+        game.setScreen(gameScreen);
         dispose();
     }
     @Override
@@ -271,6 +271,9 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     @Override
     public void dispose() {
         batch.dispose();
+        assetManager.dispose();
+        skin.dispose();
+        uiStage.dispose();
     }
     private void initUI() {
         /* ROOT UI STAGE */

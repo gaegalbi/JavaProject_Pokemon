@@ -1,26 +1,16 @@
 package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.pokemon.game.Pokemon;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.LoginUi;
-import com.pokemon.util.SkinGenerator;
 
-import java.util.HashMap;
 import java.util.Stack;
-
-import java.util.HashMap;
 
 public class MainMenuScreen implements Screen {
     final Pokemon game;

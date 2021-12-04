@@ -2,27 +2,12 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.Battle;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
-import com.pokemon.model.PK;
-import com.pokemon.ui.AbstractUi;
-import com.pokemon.util.GifDecoder;
-import com.pokemon.util.SkinGenerator;
-
-import java.util.Stack;
-
-import static com.pokemon.screen.BattleScreen.playerNum;
-import static com.pokemon.ui.LoginUi.playerID;
 
 public class BattleRenderer {
     final Pokemon game;

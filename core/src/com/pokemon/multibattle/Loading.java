@@ -80,7 +80,7 @@ public class Loading implements Screen {
         }
     }
     public void BattleScreenStart(){
-        game.setScreen(new MultiBattleScreen(game,bc));
+        game.setScreen(new MultiBattleScreen(game,bc, gameScreen));
         dispose();
     }
     @Override

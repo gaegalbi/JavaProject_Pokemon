@@ -1,10 +1,8 @@
 package com.pokemon.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,20 +20,14 @@ import com.pokemon.battle.Battle;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
-import com.pokemon.inventory.Crafting;
 import com.pokemon.inventory.Equipment;
 import com.pokemon.inventory.Inventory;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
-import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.inventory.ImageUi;
 import com.pokemon.ui.inventory.ItemTooltip;
 import com.pokemon.util.SkinGenerator;
-
-import static com.pokemon.controller.BattleScreenController.STATE.DEACTIVATED;
-import static com.pokemon.inventory.Item.TYPE;
-import static com.pokemon.ui.LoginUi.playerID;
 
 public class useItemUi extends AbstractUi {
     private Stage stage;
@@ -411,7 +403,7 @@ public class useItemUi extends AbstractUi {
         //아이템 위치, 라벨 업데이트
         if (!dragging) {
             for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-                Item item = player.inventory.getItem(i);
+                Item item = Inventory.getItem(i);
                 int x = i % NUM_COLS;
                 int y = i / NUM_COLS;
                 if (item != null) {

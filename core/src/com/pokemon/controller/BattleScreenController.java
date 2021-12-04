@@ -25,177 +25,238 @@ import java.util.Stack;
 
 
 public class BattleScreenController extends InputAdapter {
-	
-	public enum STATE {
-		USE_NEXT_POKEMON, 	// Text displayed when Pokemon faints 
-		SELECT_ACTION,		// Moves, Items, Pokemon, Run
-		DEACTIVATED,		// Do nothing, display nothing
-		;
-	}
-	private Player player;
-	private STATE state = STATE.DEACTIVATED;
 
-	private Queue<BattleEvent> queue;
+    public enum STATE {
+        USE_NEXT_POKEMON,    // Text displayed when Pokemon faints
+        SELECT_ACTION,        // Moves, Items, Pokemon, Run
+        DEACTIVATED,        // Do nothing, display nothing
+    }
 
-	private Battle battle;
+    private Player player;
+    public STATE state = STATE.DEACTIVATED;
 
-	private DialogueBox dialogue;
-	private OptionBox optionBox;
-	private MoveSelectBox moveSelect;
-	private Pokemon game;
-	private Stack<AbstractUi> uiStack;
-	private BattleScreen battleScreen;
+    private Queue<BattleEvent> queue;
 
-	boolean turnon;
-	int i =0;
-	int selection;
+    private Battle battle;
 
-	private int count;
-	public BattleScreenController(
-			final Pokemon game,
-			Battle battle,
-			boolean turnon,
-			Queue<BattleEvent> queue,
-			DialogueBox dialogue,
-			MoveSelectBox options,
-			OptionBox optionBox,
-			Stack<AbstractUi> uiStack,
-			Player player
-	) {
-		this.game = game;
-		this.battle = battle;
-		this.queue = queue;
-		this.dialogue = dialogue;
-		this.moveSelect = options;
-		this.optionBox = optionBox;
-		this.turnon = turnon;
-		this.uiStack = uiStack;
-		this.player = player;
-	}
+    private DialogueBox dialogue;
+    private OptionBox optionBox;
+    public static MoveSelectBox moveSelect;
+    private Pokemon game;
+    private Stack<AbstractUi> uiStack;
+    private BattleScreen battleScreen;
 
-	@Override
-	public boolean keyDown(int keycode) {
-		if (this.state == STATE.DEACTIVATED) {
-			return false;
-		}
-		if (this.state == STATE.USE_NEXT_POKEMON && optionBox.isVisible()) {
-			if (keycode == Keys.UP) {
-				optionBox.moveUp();
-			} else if (keycode == Keys.DOWN) {
-				optionBox.moveDown();
-			} else if (keycode == Keys.X) {
-				if (optionBox.getIndex() == 0) { // YES selected
-					for (int i = 0; i < battle.getPTrainer().getTeamSize(); i++) {
-						if (!battle.getPTrainer().getPokemon(i).isFainted()) {
-							battle.chooseNewPokemon(battle.getPTrainer().getPokemon(i));
-							optionBox.setVisible(false);
-							this.state = STATE.DEACTIVATED;
-							break;
-						}
-					}
-				} else if (optionBox.getIndex() == 1) { // NO selected
-					battle.attemptRun();
-					optionBox.setVisible(false);
-					this.state = STATE.DEACTIVATED;
-				}
-			}
-		}
-		if(!turnon) {
-			if (moveSelect.isVisible()) {
-				if (keycode == Keys.X) {
-					int selection = moveSelect.getSelection();
-					if (turnon == true) {
-						game.setSendMessage(String.valueOf(selection));
-					}
-					/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-					if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+    boolean turnon;
+    int selection;
+
+    private int count;
+
+    public BattleScreenController(
+            final Pokemon game,
+            Battle battle,
+            boolean turnon,
+            Queue<BattleEvent> queue,
+            DialogueBox dialogue,
+            MoveSelectBox options,
+            OptionBox optionBox,
+            Stack<AbstractUi> uiStack,
+            Player player
+    ) {
+        this.game = game;
+        this.battle = battle;
+        this.queue = queue;
+        this.dialogue = dialogue;
+        moveSelect = options;
+        this.optionBox = optionBox;
+        this.turnon = turnon;
+        this.uiStack = uiStack;
+        this.player = player;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (this.state == STATE.DEACTIVATED) {
+            return false;
+        }
+        if (this.state == STATE.USE_NEXT_POKEMON && optionBox.isVisible()) {
+            if (keycode == Keys.UP) {
+                optionBox.moveUp();
+            } else if (keycode == Keys.DOWN) {
+                optionBox.moveDown();
+            } else if (keycode == Keys.X) {
+                if (optionBox.getIndex() == 0) { // YES selected
+                    for (int i = 0; i < battle.getPTrainer().getTeamSize(); i++) {
+                        if (!battle.getPTrainer().getPokemon(i).isFainted()) {
+                            battle.chooseNewPokemon(battle.getPTrainer().getPokemon(i));
+                            optionBox.setVisible(false);
+                            this.state = STATE.DEACTIVATED;
+                            break;
+                        }
+                    }
+                } else if (optionBox.getIndex() == 1) { // NO selected
+                    battle.attemptRun();
+                    optionBox.setVisible(false);
+                    this.state = STATE.DEACTIVATED;
+                }
+            }
+        }
+        if (moveSelect.isVisible()) {
+            if (keycode == Keys.X) {
+                int selection = moveSelect.getSelection();
+                /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
+                if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+                    queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
+                } else {
+                    System.out.println(moveSelect.getSelection());
+                    battle.progress(moveSelect.getSelection());
+                    endTurn();
+                }
+            } else if (keycode == Keys.UP) {
+                moveSelect.moveUp();
+                return true;
+            } else if (keycode == Keys.DOWN) {
+                moveSelect.moveDown();
+                return true;
+            } else if (keycode == Keys.LEFT) {
+                moveSelect.moveLeft();
+                return true;
+            } else if (keycode == Keys.RIGHT) {
+                moveSelect.moveRight();
+                return true;
+            } else if (keycode == Keys.F9) {
+                battle.selectItem();
+                uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
+            }
+        }
+        return false;
+    }
+
+    /*@Override
+    public boolean keyDown(int keycode) {
+        if (this.state == STATE.DEACTIVATED) {
+            return false;
+        }
+        if (this.state == STATE.USE_NEXT_POKEMON && optionBox.isVisible()) {
+            if (keycode == Keys.UP) {
+                optionBox.moveUp();
+            } else if (keycode == Keys.DOWN) {
+                optionBox.moveDown();
+            } else if (keycode == Keys.X) {
+                if (optionBox.getIndex() == 0) { // YES selected
+                    for (int i = 0; i < battle.getPTrainer().getTeamSize(); i++) {
+                        if (!battle.getPTrainer().getPokemon(i).isFainted()) {
+                            battle.chooseNewPokemon(battle.getPTrainer().getPokemon(i));
+                            optionBox.setVisible(false);
+                            this.state = STATE.DEACTIVATED;
+                            break;
+                        }
+                    }
+                } else if (optionBox.getIndex() == 1) { // NO selected
+                    battle.attemptRun();
+                    optionBox.setVisible(false);
+                    this.state = STATE.DEACTIVATED;
+                }
+            }
+        }
+        if (!turnon) {
+            if (moveSelect.isVisible()) {
+                if (keycode == Keys.X) {
+                    int selection = moveSelect.getSelection();
+                    if (turnon) {
+                        game.setSendMessage(String.valueOf(selection));
+                    }
+                    *//* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*//*
+                    if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+                        queue.add(new TextEvent("No such move...", 0.5f));
+                    } else {
+                        battle.progress(moveSelect.getSelection());
+                        endTurn();
+                    }
+                } else if (keycode == Keys.UP) {
+                    moveSelect.moveUp();
+                    return true;
+                } else if (keycode == Keys.DOWN) {
+                    moveSelect.moveDown();
+                    return true;
+                } else if (keycode == Keys.LEFT) {
+                    moveSelect.moveLeft();
+                    return true;
+                } else if (keycode == Keys.RIGHT) {
+                    moveSelect.moveRight();
+                    return true;
+                } else if (keycode == Keys.F9) {
+                    battle.selectItem();
+                    uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
+                }
+            }
+        } else {
+            if (moveSelect.isVisible()) {
+                if (keycode == Keys.X) {
+                    count = 1;
+                    System.out.println("X눌림");
+                    selection = moveSelect.getSelection();
+                    String a = String.valueOf(selection);
+                    System.out.println(a);
+
+                    *//* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*//*
+					*//*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
 						queue.add(new TextEvent("No such move...", 0.5f));
 					} else {
 						battle.progress(moveSelect.getSelection());
 						endTurn();
-					}
-				} else if (keycode == Keys.UP) {
-					moveSelect.moveUp();
-					return true;
-				} else if (keycode == Keys.DOWN) {
-					moveSelect.moveDown();
-					return true;
-				} else if (keycode == Keys.LEFT) {
-					moveSelect.moveLeft();
-					return true;
-				} else if (keycode == Keys.RIGHT) {
-					moveSelect.moveRight();
-					return true;
-				} else if (keycode == Keys.F9) {
-					battle.selectItem();
-					uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
-				}
-			}
-		}else{
-			if (moveSelect.isVisible()) {
-				if (keycode == Keys.X) {
-					count=1;
-					System.out.println("X눌림");
-					selection = moveSelect.getSelection();
-					String a = String.valueOf(selection);
-					System.out.println(a);
+					}*//*
+                } else if (keycode == Keys.UP) {
+                    moveSelect.moveUp();
+                    return true;
+                } else if (keycode == Keys.DOWN) {
+                    moveSelect.moveDown();
+                    return true;
+                } else if (keycode == Keys.LEFT) {
+                    moveSelect.moveLeft();
+                    return true;
+                } else if (keycode == Keys.RIGHT) {
+                    moveSelect.moveRight();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }*/
 
-					/* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-					/*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
-						queue.add(new TextEvent("No such move...", 0.5f));
-					} else {
-						battle.progress(moveSelect.getSelection());
-						endTurn();
-					}*/
-				} else if (keycode == Keys.UP) {
-					moveSelect.moveUp();
-					return true;
-				} else if (keycode == Keys.DOWN) {
-					moveSelect.moveDown();
-					return true;
-				} else if (keycode == Keys.LEFT) {
-					moveSelect.moveLeft();
-					return true;
-				} else if (keycode == Keys.RIGHT) {
-					moveSelect.moveRight();
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	public int getCount() {
-		return count;
-	}
+    public int getCount() {
+        return count;
+    }
 
-	public void setCount(int count) {
-		this.count = count;
-	}
+    public void setCount(int count) {
+        this.count = count;
+    }
 
-	public int X(){
-		return selection;
-	}
-	public void setX(int selection){
-		if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
-			queue.add(new TextEvent("No such move...", 0.5f));
-		} else {
-			battle.progress(selection);
-			endTurn();
-		}
-	}
-	public STATE getState() {
-		return state;
-	}
-	
-	public void update(float delta) {
-		if (isDisplayingNextDialogue() && dialogue.isFinished() && !optionBox.isVisible()) {
-			optionBox.clearChoices();
-			optionBox.addOption("YES");
-			optionBox.addOption("NO");
-			optionBox.setVisible(true);
-		}
-	}
-	
+    public int X() {
+        return selection;
+    }
+
+    public void setX(int selection) {
+        if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+            queue.add(new TextEvent("No such move...", 0.5f));
+        } else {
+            battle.progress(selection);
+            endTurn();
+        }
+    }
+
+    public STATE getState() {
+        return state;
+    }
+
+    public void update(float delta) {
+        if (isDisplayingNextDialogue() && dialogue.isFinished() && !optionBox.isVisible()) {
+            optionBox.clearChoices();
+            optionBox.addOption("YES");
+            optionBox.addOption("NO");
+            optionBox.setVisible(true);
+        }
+    }
+
 
     /*
      * Displays the UI for a new turn

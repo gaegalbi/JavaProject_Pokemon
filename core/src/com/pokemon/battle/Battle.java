@@ -13,16 +13,11 @@ import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
 import com.pokemon.screen.BattleScreen;
-import com.pokemon.screen.EventQueueRenderer;
-import com.pokemon.ui.AbstractUi;
-import com.pokemon.ui.DialogueBox;
-import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.util.SkinGenerator;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Stack;
 
 import static com.pokemon.controller.BattleScreenController.moveSelect;
 import static com.pokemon.db.db.con;
@@ -122,9 +117,9 @@ public class Battle implements BattleEventQueuer {
 
     private boolean setChangecharacter;
 
-    public Battle(Pokemon game, BattleScreen battleScreen, boolean multi) {
+    public Battle(Pokemon game, boolean multi) {
         this.game = game;
-        this.battleScreen = battleScreen;
+//        this.battleScreen = battleScreen;
         this.multi = multi;
 
         assetManager = new AssetManager();
@@ -150,7 +145,6 @@ public class Battle implements BattleEventQueuer {
                 }
             } catch (SQLException e) {
             }
-            ;
 
             //일단 이상해풀로 가져옴
             wildKey = db.sP("PM_02");

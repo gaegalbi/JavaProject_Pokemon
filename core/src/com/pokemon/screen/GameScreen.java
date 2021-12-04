@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
-import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.ui.AbstractUi;
@@ -25,24 +24,18 @@ import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.SkillListUi;
 import com.pokemon.ui.inventory.InventoryUi;
 import com.pokemon.transition.*;
-import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.Action;
-import com.pokemon.model.Portal;
 import com.pokemon.multibattle.BattleLoadingScreen;
-import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.ChatButton;
 import com.pokemon.util.AnimationSet;
 import com.pokemon.util.SkinGenerator;
 import com.pokemon.world.World;
 import com.pokemon.world.Home;
-import com.pokemon.world.MainWorld;
 import com.pokemon.ui.pokemonBox.myPokemonUI;
-import com.pokemon.world.World;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
-import java.util.HashMap;
 import java.util.Stack;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
@@ -199,9 +192,14 @@ public class GameScreen implements Screen {
         popped.dispose();
         Gdx.input.setInputProcessor(uiStack1.peek().getStage());
     }
+
+    public void pushScreen(AbstractUi ui) {
+        uiStack1.add(ui);
+    }
+
     public void loadingStart(){
         game.setScreen(new BattleLoadingScreen(game));
-        dispose();
+        //dispose();
     }
 
     @Override
@@ -251,8 +249,9 @@ public class GameScreen implements Screen {
 //            }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,player));
-            dispose();
+            //game.setScreen(new BattleScreen(game,this));
+            loadingStart();
+            //dispose();
         }
     }
 

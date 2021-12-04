@@ -34,6 +34,7 @@ import java.util.Stack;
 
 public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
+    private final GameScreen gameScreen;
     private AssetManager assetManager;
     private OrthographicCamera camera;
 
@@ -58,7 +59,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Table dialogueRoot;
     private DialogueBox dialogueBox;
     private OptionBox optionBox;
-    private Player player;
 
     private Table moveSelectRoot;
     private MoveSelectBox moveSelectBox;
@@ -76,10 +76,10 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
-    public BattleScreen(Pokemon game,Player player) {
+    public BattleScreen(Pokemon game,GameScreen gameScreen) {
         this.game = game;
         this.uiStack = new Stack<>();
-        this.player = player;
+        this.gameScreen = gameScreen;
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -91,17 +91,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(this.game,this,false);
+        this.battle = new Battle(this.game,false);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
+
 
 
         battleRenderer = new BattleRenderer(this.game,battle,camera);
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,this.player);
+        controller = new BattleScreenController(this.game,battle,true, queue, dialogueBox, moveSelectBox, optionBox,uiStack,gameScreen.player);
 
 
         battle.beginBattle();
@@ -182,11 +183,14 @@ public class BattleScreen implements Screen, BattleEventPlayer {
                 } else if (battle.getState() == Battle.STATE.READY_TO_PROGRESS) {
                     controller.restartTurn();
                 } else if (battle.getState() == Battle.STATE.WIN) {
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
+                    dispose();
                 } else if (battle.getState() == Battle.STATE.LOSE) {
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
+                    dispose();
                 } else if (battle.getState() == Battle.STATE.RAN) {
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
+                    dispose();
                 }
                 break;
             } else {					// event queued up
@@ -265,7 +269,9 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     @Override
     public void dispose() {
-
+        assetManager.dispose();
+        skin.dispose();
+        uiStage.dispose();
     }
 
     @Override
