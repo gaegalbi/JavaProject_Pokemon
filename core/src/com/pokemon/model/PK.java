@@ -114,8 +114,13 @@ public class PK {
     }
     public int getCurrentHP(){ return currentHP;}
 
+
     public int[] getSK_CNT(){return SK_CNT; }
     public int[] getCurrent_SK_CNT(){return current_SK_CNT; }
+    public void setCurrent_SK_CNT(int cnt){
+        for(int i=0;i< skill.length;i++)
+            current_SK_CNT[i] += cnt;
+        }
 
     public String getName(){
         String conName = null;
@@ -139,6 +144,12 @@ public class PK {
         currentHP -= amount;
         if (currentHP < 0) {
             currentHP = 0;
+        }
+    }
+    public void applyHeal(int amount) {
+        currentHP += amount;
+        if (currentHP > getStat()[2]) {
+            currentHP = getStat()[2];
         }
     }
     /* 스킬 사용 횟수 적용 */

@@ -1,5 +1,7 @@
 package com.pokemon.ui;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -17,8 +19,8 @@ public class DialogueBox extends Table {
 	private STATE state = STATE.IDLE;
 	
 	private Label textLabel;
-	
-	private enum STATE {
+
+    private enum STATE {
 		ANIMATING,
 		IDLE,
 		;
@@ -27,7 +29,8 @@ public class DialogueBox extends Table {
 	public DialogueBox(Skin skin) {
 		super(skin);
 		this.setBackground("dialoguebox");
-		textLabel = new Label("\n", skin);
+
+		textLabel = new Label("\n", skin,"smallLabel");
 		this.add(textLabel).expand().align(Align.left).pad(5f);
 	}
 	

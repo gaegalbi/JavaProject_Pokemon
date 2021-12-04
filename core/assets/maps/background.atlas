@@ -1,0 +1,41 @@
+
+background.png
+size: 2048, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Beach
+  rotate: false
+  xy: 468, 164
+  size: 432, 320
+  orig: 432, 320
+  offset: 0, 0
+  index: -1
+Forest
+  rotate: false
+  xy: 902, 164
+  size: 384, 320
+  orig: 384, 320
+  offset: 0, 0
+  index: -1
+Home
+  rotate: false
+  xy: 2, 2
+  size: 160, 128
+  orig: 160, 128
+  offset: 0, 0
+  index: -1
+MainWorld
+  rotate: false
+  xy: 2, 132
+  size: 464, 352
+  orig: 464, 352
+  offset: 0, 0
+  index: -1
+Mine
+  rotate: false
+  xy: 1288, 260
+  size: 272, 224
+  orig: 272, 224
+  offset: 0, 0
+  index: -1

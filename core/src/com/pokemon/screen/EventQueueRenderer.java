@@ -3,6 +3,7 @@ package com.pokemon.screen;
 import java.util.Queue;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -20,15 +21,11 @@ public class EventQueueRenderer {
 	private Queue eventQueue;
 	
 	public EventQueueRenderer(Skin skin, Queue queue) {
-		assetManager = new AssetManager();
-		assetManager.load("font/han/gul.fnt", BitmapFont.class);
-		assetManager.finishLoading();
-
 		this.skin = skin;
 		this.eventQueue = queue;
 		patch = skin.getPatch("optionbox");
 		font = skin.getFont("font");
-
+		font.setColor(Color.BLACK);
 		layout = new GlyphLayout();
 	}
 	

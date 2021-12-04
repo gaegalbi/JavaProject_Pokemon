@@ -5,16 +5,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
+import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
-import com.pokemon.world.MainWorld;
-import com.pokemon.world.Mine;
-import com.pokemon.world.World;
 
 import static com.pokemon.game.Settings.PLAYER_MOVE_SPEED;
-import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
 
 public class PlayerController extends InputAdapter {
     private final Player player;
+    private float tempX,tempY;
 
 
     public PlayerController(Player player) {
@@ -26,22 +24,47 @@ public class PlayerController extends InputAdapter {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.setFacing(DIRECTION.WEST);
             player.setState(Player.PLAYER_STATE.WALKING);
+            tempX = player.x;
             player.x -= PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
+                if (object.overlaps(player)) {
+                    player.x = tempX;
+                }
+            }
+
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             player.setFacing(DIRECTION.EAST);
             player.setState(Player.PLAYER_STATE.WALKING);
+            tempX = player.x;
             player.x += PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
+                if (object.overlaps(player)) {
+                    player.x = tempX;
+                }
+            }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.setFacing(DIRECTION.NORTH);
             player.setState(Player.PLAYER_STATE.WALKING);
+            tempY = player.y;
             player.y += PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
+                if (object.overlaps(player)) {
+                    player.y = tempY;
+                }
+            }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.setFacing(DIRECTION.SOUTH);
             player.setState(Player.PLAYER_STATE.WALKING);
+            tempY = player.y;
             player.y -= PLAYER_MOVE_SPEED * Gdx.graphics.getDeltaTime();
+            for (WorldObject object : GameScreen.getWorld().getCollisionObjects()) {
+                if (object.overlaps(player)) {
+                    player.y = tempY;
+                }
+            }
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {

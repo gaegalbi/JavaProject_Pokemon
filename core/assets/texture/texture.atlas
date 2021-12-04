@@ -1,41 +1,104 @@
 
 texture.png
-size: 128, 32
+size: 256, 128
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-dirt
+bigtree_head
   rotate: false
-  xy: 38, 2
-  size: 16, 16
-  orig: 16, 16
+  xy: 2, 20
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-grass
-  rotate: false
-  xy: 20, 2
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-leaves
-  rotate: false
-  xy: 56, 2
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-stone
+bulletin
   rotate: false
   xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-wood
+flower1
   rotate: false
-  xy: 74, 2
+  xy: 186, 102
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+flower2
+  rotate: false
+  xy: 186, 84
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+flower3
+  rotate: false
+  xy: 168, 68
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+garden
+  rotate: false
+  xy: 150, 86
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 72, 36
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+house1
+  rotate: false
+  xy: 84, 54
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+house2
+  rotate: false
+  xy: 2, 54
+  size: 80, 64
+  orig: 80, 64
+  offset: 0, 0
+  index: -1
+null
+  rotate: false
+  xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+rock
+  rotate: false
+  xy: 54, 36
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+stone
+  rotate: false
+  xy: 150, 68
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+tree
+  rotate: false
+  xy: 36, 20
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+tree_head
+  rotate: false
+  xy: 168, 86
+  size: 16, 32
+  orig: 16, 32
   offset: 0, 0
   index: -1

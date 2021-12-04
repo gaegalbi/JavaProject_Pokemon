@@ -3,6 +3,7 @@ package com.pokemon.controller;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.pokemon.battle.Battle;
 import com.pokemon.battle.event.BattleEventPlayer;
 import com.pokemon.db.db;
@@ -11,9 +12,16 @@ import com.pokemon.model.DIRECTION;
 import com.pokemon.ui.DialogueBox;
 import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.ui.OptionBox;
+import com.pokemon.game.Pokemon;
+import com.pokemon.model.Player;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
+import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
+
 import java.util.Queue;
+import java.util.Stack;
 
 
 public class BattleScreenController extends InputAdapter {
@@ -24,23 +32,36 @@ public class BattleScreenController extends InputAdapter {
 		DEACTIVATED,		// Do nothing, display nothing
 		;
 	}
-	
-	public STATE state = STATE.DEACTIVATED;
-	
+	private Player player;
+	private STATE state = STATE.DEACTIVATED;
+
 	private Queue<BattleEvent> queue;
-	
+
 	private Battle battle;
 
 	private DialogueBox dialogue;
 	private OptionBox optionBox;
 	private MoveSelectBox moveSelect;
 	private Pokemon game;
+	private Stack<AbstractUi> uiStack;
+	private BattleScreen battleScreen;
+
 	boolean turnon;
 	int i =0;
 	int selection;
 
 	private int count;
-	public BattleScreenController(final Pokemon game, Battle battle, boolean turnon, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox) {
+	public BattleScreenController(
+			final Pokemon game,
+			Battle battle,
+			boolean turnon,
+			Queue<BattleEvent> queue,
+			DialogueBox dialogue,
+			MoveSelectBox options,
+			OptionBox optionBox,
+			Stack<AbstractUi> uiStack,
+			Player player
+	) {
 		this.game = game;
 		this.battle = battle;
 		this.queue = queue;
@@ -48,8 +69,10 @@ public class BattleScreenController extends InputAdapter {
 		this.moveSelect = options;
 		this.optionBox = optionBox;
 		this.turnon = turnon;
+		this.uiStack = uiStack;
+		this.player = player;
 	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 		if (this.state == STATE.DEACTIVATED) {
@@ -103,6 +126,9 @@ public class BattleScreenController extends InputAdapter {
 				} else if (keycode == Keys.RIGHT) {
 					moveSelect.moveRight();
 					return true;
+				} else if (keycode == Keys.F9) {
+					battle.selectItem();
+					uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
 				}
 			}
 		}else{
@@ -171,44 +197,43 @@ public class BattleScreenController extends InputAdapter {
 	}
 	
 
-/*
-	 * Displays the UI for a new turn
-	*/
+    /*
+     * Displays the UI for a new turn
+     */
 
-	public void restartTurn() {
-		this.state = STATE.SELECT_ACTION;
-		dialogue.setVisible(false);
+    public void restartTurn() {
+        this.state = STATE.SELECT_ACTION;
+        dialogue.setVisible(false);
+        for (int i = 0; i <= 3; i++) {
+            String label = "------";
+            String skill = db.GET_PM_SK_NAME(battle.getP_P().getSkill()[i]);
+            int max = battle.getP_P().getSK_CNT()[i];
+            int cur = battle.getP_P().getCurrent_SK_CNT()[i];
+            if (skill != null) {
+                label = skill + " " + cur + "/" + max;
+            }
+            moveSelect.setLabel(i, label);
+        }
+        moveSelect.setVisible(true);
+    }
 
-		for (int i = 0; i <= 3; i++) {
-			String label = "------";
-			String skill = db.GET_PM_SK_NAME(battle.getP_P().getSkill()[i]);
-			int max = battle.getP_P().getSK_CNT()[i];
-			int cur = battle.getP_P().getCurrent_SK_CNT()[i];
-			if (skill != null) {
-				label = skill + " "+ cur+"/"+max;
-			}
-			moveSelect.setLabel(i, label);
-		}
-		moveSelect.setVisible(true);
-	}
+    /*
+     * Displays UI for selecting a new Pokemon
+     */
 
-/*
-	 * Displays UI for selecting a new Pokemon
-	 */
+    public void displayNextDialogue() {
+        this.state = STATE.USE_NEXT_POKEMON;
+        dialogue.setVisible(true);
+        dialogue.animateText("다음 포켓몬을 내보내시겠습니까?");
+    }
 
-	public void displayNextDialogue() {
-		this.state = STATE.USE_NEXT_POKEMON;
-		dialogue.setVisible(true);
-		dialogue.animateText("Send out next pokemon?");
-	}
-	
-	public boolean isDisplayingNextDialogue() {
-		return this.state == STATE.USE_NEXT_POKEMON;
-	}
-	
-	public void endTurn() {
-		moveSelect.setVisible(false);
-		this.state = STATE.DEACTIVATED;
-	}
+    public boolean isDisplayingNextDialogue() {
+        return this.state == STATE.USE_NEXT_POKEMON;
+    }
+
+    public void endTurn() {
+        moveSelect.setVisible(false);
+        this.state = STATE.DEACTIVATED;
+    }
 }
 

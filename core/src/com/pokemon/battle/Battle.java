@@ -2,22 +2,32 @@ package com.pokemon.battle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.pokemon.battle.event.*;
 import com.pokemon.game.Pokemon;
+import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
+import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.EventQueueRenderer;
+import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.DialogueBox;
+import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.util.GifDecoder;
+import com.pokemon.util.SkinGenerator;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Stack;
 
+import static com.pokemon.controller.BattleScreenController.moveSelect;
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
+
 import static com.pokemon.screen.BattleScreen.playerNum;
 import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
@@ -30,6 +40,7 @@ public class Battle implements BattleEventQueuer {
         WIN,
         LOSE,
     }
+
     private STATE state;
     private PK player;
     private PK opponent;
@@ -39,12 +50,13 @@ public class Battle implements BattleEventQueuer {
     private String oName;
     private Trainer pTrainer;
     private Trainer oTrainer;
-   //private Texture P_T;
-   //private Texture O_T;
+    //private Texture P_T;
+    //private Texture O_T;
     private Animation<TextureRegion> P_T;
     private Animation<TextureRegion> P_T2;
     private Animation<TextureRegion> O_T;
     private Animation<TextureRegion> O_T2;
+    Animation<TextureRegion> ball;
 
     private AssetManager assetManager;
     private BattleEventPlayer eventPlayer;
@@ -53,26 +65,36 @@ public class Battle implements BattleEventQueuer {
     public static String OppoID;
     private String[] oppoKey;
     private String wildKey;
-    Pokemon game;
+    private Skin skin;
+    private Pokemon game;
+    private BattleScreen battleScreen;
+    private Item item;
+
+    private int oppo;
     private String[] selectedPokemon;
     boolean multi;
     private boolean Changecharacter;
     private boolean skill;
     private boolean effect;
-    int poket1=0;
-    int poket2=0;
-    public int getPoket1(){
+    int poket1 = 0;
+    int poket2 = 0;
+
+    public int getPoket1() {
         return poket1;
     }
-    public void setPoket1(int poket1){
+
+    public void setPoket1(int poket1) {
         this.poket1 = poket1;
     }
-    public int getPoket2(){
+
+    public int getPoket2() {
         return poket2;
     }
-    public void setPoket2(int poket2){
+
+    public void setPoket2(int poket2) {
         this.poket2 = poket2;
     }
+
     public boolean isEffect() {
         return effect;
     }
@@ -100,42 +122,48 @@ public class Battle implements BattleEventQueuer {
 
     private boolean setChangecharacter;
 
-   public Battle(Pokemon game, boolean multi) {
-       this.multi = multi;
-       this.game = game;
-       assetManager = new AssetManager();
-       assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
-       assetManager.load("font/han/gul.fnt", BitmapFont.class);
-       assetManager.finishLoading();
+    public Battle(Pokemon game, BattleScreen battleScreen, boolean multi) {
+        this.game = game;
+        this.battleScreen = battleScreen;
+        this.multi = multi;
 
-       if(!multi) {
-           pName = db.sP(playerID,playerNum+1);
+        assetManager = new AssetManager();
+        assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
+        assetManager.load("font/han/gul.fnt", BitmapFont.class);
+        assetManager.finishLoading();
+        skin = SkinGenerator.generateSkin(assetManager);
 
-           P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
 
-           String[] userKey = {playerID, String.valueOf(playerNum+1)};
-           this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
+        if (!multi) {
+            pName = db.sP(playerID, playerNum + 1);
+            P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + pName + ".gif").read());
+            String[] userKey = {playerID, String.valueOf(playerNum + 1)};
+            this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
-           String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
-           String PM_ID = null;
-           try {
-               Statement stmt = con.createStatement();
-               rs = stmt.executeQuery(sql);
-               while(rs.next()) {
-                   PM_ID = rs.getString("PM_ID");
-               }
-           }catch(SQLException e){};
+            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
+            String PM_ID = null;
+            try {
+                Statement stmt = con.createStatement();
+                rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    PM_ID = rs.getString("PM_ID");
+                }
+            } catch (SQLException e) {
+            }
+            ;
 
-           //일단 이상해풀로 가져옴
-           wildKey = db.sP("PM_02");
+            //일단 이상해풀로 가져옴
+            wildKey = db.sP("PM_02");
 
-           O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
-           //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
-           this.opponent = new PK("PM_02", O_T); //야생 포켓몬
+            O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey + ".gif").read());
+            //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
+            this.opponent = new PK("PM_02", O_T); //야생 포켓몬
         }
-       /*멀티 일때 실행*/
+        /*멀티 일때 실행*/
         else {
-           /*pName = db.sP(game.getSelectedPokemon(0),parseInt(game.getSelectedPokemon(1)));
+            oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
+            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬
+            /*pName = db.sP(game.getSelectedPokemon(0),parseInt(game.getSelectedPokemon(1)));
             //game에서 선택된 포켓몬 불러오기
            P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
 
@@ -147,39 +175,40 @@ public class Battle implements BattleEventQueuer {
            wildKey = db.sP(selectedPokemon[0],parseInt(selectedPokemon[1]));
            O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬*/
-           pName = db.sP(game.getSelectedPokemon(0),parseInt(game.getSelectedPokemon(1)));
-           //game에서 선택된 포켓몬 불러오기
-           P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
-           pName = db.sP(game.getSelectedPokemon(2),parseInt(game.getSelectedPokemon(3)));
-           //game에서 선택된 포켓몬 불러오기
-           P_T2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+            pName = db.sP(game.getSelectedPokemon(0), parseInt(game.getSelectedPokemon(1)));
+            //game에서 선택된 포켓몬 불러오기
+            P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + pName + ".gif").read());
+            pName = db.sP(game.getSelectedPokemon(2), parseInt(game.getSelectedPokemon(3)));
+            //game에서 선택된 포켓몬 불러오기
+            P_T2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + pName + ".gif").read());
 
-           String[] userKey1 = {game.getSelectedPokemon(0), game.getSelectedPokemon(1)};
-           player2 = new PK(userKey1, P_T); //유저 포켓몬 가져오기
-           String[] userKey2 = {game.getSelectedPokemon(2), game.getSelectedPokemon(3)};
-           player = new PK(userKey2, P_T2); //유저 포켓몬 가져오기
-           pTrainer = new Trainer(this.player,this.player2);
+            String[] userKey1 = {game.getSelectedPokemon(0), game.getSelectedPokemon(1)};
+            player2 = new PK(userKey1, P_T); //유저 포켓몬 가져오기
+            String[] userKey2 = {game.getSelectedPokemon(2), game.getSelectedPokemon(3)};
+            player = new PK(userKey2, P_T2); //유저 포켓몬 가져오기
+            pTrainer = new Trainer(this.player, this.player2);
 
-           selectedPokemon =  game.getrecieveMessage().split(" ");
-           oppoKey = new String[]{selectedPokemon[0], selectedPokemon[1]};
-           wildKey = db.sP(selectedPokemon[0],parseInt(selectedPokemon[1]));
-           O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
-           opponent2 = new PK(oppoKey, O_T); //상대 포켓몬
+            selectedPokemon = game.getrecieveMessage().split(" ");
+            oppoKey = new String[]{selectedPokemon[0], selectedPokemon[1]};
+            wildKey = db.sP(selectedPokemon[0], parseInt(selectedPokemon[1]));
+            O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey + ".gif").read());
+            opponent2 = new PK(oppoKey, O_T); //상대 포켓몬
 
-           oppoKey = new String[]{selectedPokemon[2], selectedPokemon[3]};
-           wildKey = db.sP(selectedPokemon[2],parseInt(selectedPokemon[3]));
-           O_T2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
-           opponent = new PK(oppoKey, O_T); //상대 포켓몬
+            oppoKey = new String[]{selectedPokemon[2], selectedPokemon[3]};
+            wildKey = db.sP(selectedPokemon[2], parseInt(selectedPokemon[3]));
+            O_T2 = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey + ".gif").read());
+            opponent = new PK(oppoKey, O_T); //상대 포켓몬
 
-           oTrainer = new Trainer(opponent,opponent2);
-         }
+            oTrainer = new Trainer(opponent, opponent2);
+        }
 
-       mechanics = new BattleMechanics();
-       setSkill(mechanics.goesFirst(player, opponent));
-       this.state = STATE.READY_TO_PROGRESS;
+        mechanics = new BattleMechanics();
+        setSkill(mechanics.goesFirst(player, opponent));
+        this.state = STATE.READY_TO_PROGRESS;
     }
+
     public void progress(int input) {
-        if(!multi) {
+        if (!multi) {
             if (state != STATE.READY_TO_PROGRESS) {
                 return;
             }
@@ -194,7 +223,7 @@ public class Battle implements BattleEventQueuer {
                     playTurn(BATTLE_PARTY.PLAYER, input);
                 }
             }
-        }else{
+        } else {
             if (state != STATE.READY_TO_PROGRESS) {
                 return;
             }
@@ -213,16 +242,20 @@ public class Battle implements BattleEventQueuer {
             }
         }
     }
-    public boolean getGoesFirst(){return mechanics.goesFirst(player, opponent);}
+
+    public boolean getGoesFirst() {
+        return mechanics.goesFirst(player, opponent);
+    }
 
     public void beginBattle() {
         System.out.print(player.getName());
         //queueEvent(new PokeSpriteEvent(opponent.getSprite(), BATTLE_PARTY.OPPONENT));
-        queueEvent(new TextEvent("가랏! "+player.getName()+"!", 1f));
+        queueEvent(new TextEvent("가랏! " + player.getName() + "!", 1f));
         //queueEvent(new PokeSpriteEvent(player.getSprite(), BATTLE_PARTY.PLAYER));
-       // queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
+        // queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
     }
-    public void chooseNewPokemon (PK pokemon){
+
+    public void chooseNewPokemon(PK pokemon) {
         this.player = pokemon;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.PLAYER,
@@ -232,11 +265,12 @@ public class Battle implements BattleEventQueuer {
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
-        queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!",2));
+        queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!", 2));
         //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
         this.state = STATE.READY_TO_PROGRESS;
     }
-    public void chooseNewPokemon2 (PK pokemon){
+
+    public void chooseNewPokemon2(PK pokemon) {
         this.opponent = pokemon;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.OPPONENT,
@@ -246,17 +280,30 @@ public class Battle implements BattleEventQueuer {
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.OPPONENT));
-        queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!",2));
+        queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!", 2));
 
         //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new PokeballAnimation()));
         this.state = STATE.READY_TO_PROGRESS;
     }
-    public void attemptRun () {
-        queueEvent(new TextEvent("도망치는데 성공했다..", true));
+
+    public void attemptRun() {
+        queueEvent(new TextEvent("도망치는데 성공했다..", false));
         this.state = STATE.RAN;
     }
 
-    private void playTurn(BATTLE_PARTY user,int input){
+    public void selectItem() {
+        queueEvent(new TextEvent("무슨 아이템을 사용할까?", 0.5f));
+        moveSelect.setVisible(false);
+    }
+
+    public void useItem(Item item) {
+        this.item = item;
+        queueEvent(new TextEvent(item.getName() + "을 사용했다.", 0.5f));
+    }
+
+    private void playTurn(BATTLE_PARTY user, int input) {
+        //상대 포켓몬 공격 랜덤
+        oppo = (int) (Math.random() * 4);
         BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
 
         PK pokeUser = null;
@@ -268,60 +315,59 @@ public class Battle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
+        if (input == 4) {
+            int hpBefore = pokeUser.getCurrentHP();
+            if (item.getType() == 7) {
+                if (item.getEffect().equals("HP1"))
+                    pokeUser.applyHeal(20);
+                if (item.getEffect().equals("HP2"))
+                    pokeUser.applyHeal(60);
+                if (item.getEffect().equals("HP3"))
+                    pokeUser.applyHeal(120);
+                if (item.getEffect().equals("HP4"))
+                    pokeUser.applyHeal(5000);
+            }
+            if (item.getType() == 0) {
+                //몬스터볼 던지기
+            }
 
-        String move = pokeUser.getSkill()[input];
+            queueEvent(
+                    new HPAnimationEvent(
+                            user,
+                            hpBefore,
+                            pokeUser.getCurrentHP(),
+                            pokeUser.getStat()[2],
+                            0.5f));
+        } else {
+            String move = pokeUser.getSkill()[input];
 
-        /* Broadcast the text graphics */
-        queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move)+ "!", 0.5f));
+            /* Broadcast the text graphics */
+            queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move) + "!", 0.5f));
 
-        /* 스킬 사용 횟수 적용*/
-        pokeUser.applyCNT(input);
+            /* 스킬 사용 횟수 적용*/
+            pokeUser.applyCNT(input);
 
-        int damage = mechanics.calculateDamage(pokeUser,input,pokeTarget);
+            int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
 
-        int hpBefore = pokeTarget.getCurrentHP();
+            int hpBefore = pokeTarget.getCurrentHP();
 
-        //float hpPercentage = ((float)target.getCurrentHitpoints())/(float)target.getStat(STAT.HITPOINTS);
+            //해당 데미지 입음
+            pokeTarget.applyDamage(damage);
+            /* Broadcast HP change */
+            queueEvent(
+                    new HPAnimationEvent(
+                            BATTLE_PARTY.getOpposite(user),
+                            hpBefore,
+                            pokeTarget.getCurrentHP(),
+                            pokeTarget.getStat()[2],
+                            0.5f));
 
-        //System.out.println("데미지" + damage);
-        pokeTarget.applyDamage(damage); //해당 데미지 입음
-        /* Broadcast HP change */
-        queueEvent(
-                new HPAnimationEvent(
-                        BATTLE_PARTY.getOpposite(user),
-                        hpBefore,
-                        pokeTarget.getCurrentHP(),
-                        pokeTarget.getStat()[2],
-                        0.5f));
-
-        if (mechanics.hasMessage()) {
-            queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
-        }
-        game.setOnoff(true);
-       //System.out.println("현재 피"+pokeTarget.getCurrentHP());
-
-        /*if (player.isFainted()) {
-        //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
-        boolean anyoneAlive = false;
-        for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
-            if (!getPTrainer().getPokemon(i).isFainted()) {
-                anyoneAlive = true;
-                break;
+            if (mechanics.hasMessage()) {
+                queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
             }
         }
-        if (anyoneAlive) {
-            queueEvent(new TextEvent(player.getName() + " fainted!", true));
-            this.state = STATE.SELECT_NEW_POKEMON;
-        } else {
-            queueEvent(new TextEvent("Unfortunately, you've lost...", true));
-            this.state = STATE.LOSE;
-        }
-        } else if (opponent.isFainted()) {
-            //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.OPPONENT, new FaintingAnimation()));
-            queueEvent(new TextEvent("Congratulations! You Win!", true));
-            this.state = STATE.WIN;
-        }*/
-        if(!multi) {
+        game.setOnoff(true);
+        if (!multi) {
             if (player.isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 boolean anyoneAlive = false;
@@ -349,7 +395,7 @@ public class Battle implements BattleEventQueuer {
                 queueEvent(new TextEvent("Congratulations! You Win!", true));
                 this.state = STATE.WIN;
             }
-        }else{
+        } else {
             if (getPTrainer().getPokemon(poket1).isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 queueEvent(new TextEvent(getPTrainer().getPokemon(poket1).getName() + " fainted!", 1));
@@ -364,11 +410,11 @@ public class Battle implements BattleEventQueuer {
                 setPoket2(1);
                 this.state = STATE.SELECT_NEW_POKEMON;
             }
-            if(getPTrainer().getPokemon(1).isFainted()){
+            if (getPTrainer().getPokemon(1).isFainted()) {
                 queueEvent(new TextEvent("Unfortunately, you've lost...", true));
                 this.state = STATE.LOSE;
             }
-            if(getOTrainer().getPokemon(1).isFainted()){
+            if (getOTrainer().getPokemon(1).isFainted()) {
                 queueEvent(new TextEvent("Congratulations! You Win!", true));
                 this.state = STATE.WIN;
             }
@@ -387,9 +433,14 @@ public class Battle implements BattleEventQueuer {
         return state;
     }
 
+    public void setState(STATE state) {
+        this.state = state;
+    }
+
     public void setEventPlayer(BattleEventPlayer player) {
         eventPlayer = player;
     }
+
     @Override
     public void queueEvent(BattleEvent event) {
         eventPlayer.queueEvent(event);

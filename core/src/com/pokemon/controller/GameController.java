@@ -17,8 +17,8 @@ public class GameController {
     }
 
     public void update() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new MainMenuScreen(game));
-        }
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            game.setScreen(new MainMenuScreen(game));
+//        }
     }
 }
