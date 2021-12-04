@@ -76,6 +76,10 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
+    public void removeQueue(){
+        queue.remove();
+    }
+
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
@@ -103,11 +107,12 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         skin = SkinGenerator.generateSkin(assetManager);
 
 
-        battleRenderer = new BattleRenderer(this.game,battle,camera);
+
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
         controller = new BattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,player);
+        battleRenderer = new BattleRenderer(this,controller,this.game,battle,camera);
 
 
         battle.beginBattle();
@@ -181,7 +186,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;
-
                 if (battle.getState() == Battle.STATE.SELECT_NEW_POKEMON) {
                     if (controller.getState() != BattleScreenController.STATE.USE_NEXT_POKEMON) {
                         controller.displayNextDialogue();

@@ -40,6 +40,10 @@ public class BattleScreenController extends InputAdapter {
     private Pokemon game;
     private BattleScreen battleScreen;
 
+    public void setDialogue(boolean visible){
+        dialogue.setVisible(visible);
+    }
+
     public BattleScreenController(Pokemon game, BattleScreen battleScreen, Battle battle, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox, Stack<AbstractUi> uiStack, Player player) {
         this.game = game;
         this.battleScreen = battleScreen;
@@ -79,6 +83,9 @@ public class BattleScreenController extends InputAdapter {
                 }
             }
         }
+  /*      if (battle.getO_P().isCapture()) {
+            endTurn();
+        }*/
         if (moveSelect.isVisible()) {
             if (keycode == Keys.X) {
                 int selection = moveSelect.getSelection();
@@ -86,7 +93,6 @@ public class BattleScreenController extends InputAdapter {
                 if (battle.getP_P().getSkill()[selection] == null || battle.getP_P().getCurrent_SK_CNT()[selection] <= 0) {
                     queue.add(new TextEvent("사용할 수 없습니다.", 0.5f));
                 } else {
-                    System.out.println(moveSelect.getSelection());
                     battle.progress(moveSelect.getSelection());
                     endTurn();
                 }

@@ -57,7 +57,7 @@ public class BattleMechanics {
 				else
 					return 1;
 			default:
-				return 1; //노말은 1
+				return 7; //노말은 1
 			//물 => 불 => 풀 => 전기  / 노말은 1고정
 		}
 	}

@@ -66,6 +66,9 @@ public class Battle implements BattleEventQueuer {
     private BattleScreen battleScreen;
     private Item item;
     private boolean pokeball =false;
+    private boolean capture = false;
+    private int per;
+    private int match;
     private int oppo;
 
    public Battle(Pokemon game, BattleScreen battleScreen) {
@@ -119,17 +122,23 @@ public class Battle implements BattleEventQueuer {
         if (state != STATE.READY_TO_PROGRESS) {
             return;
         }
+        //상대 포켓몬 공격 랜덤
+        oppo = (int)(Math.random()*4);
+       // System.out.println("동작 전 capture 값" + getO_P().isCapture());
         if (mechanics.goesFirst(player, opponent)) {
             playTurn(BATTLE_PARTY.PLAYER, input);
+            System.out.println("포크볼" + pokeball);
             if (state == STATE.READY_TO_PROGRESS) {
+                System.out.println("상대턴 시작해버림");
                 playTurn(BATTLE_PARTY.OPPONENT, oppo); //여기서 랜덤값 넣기
             }
         } else {
-            playTurn(BATTLE_PARTY.OPPONENT, 0);//여기서 랜덤값
+            playTurn(BATTLE_PARTY.OPPONENT, oppo);//여기서 랜덤값
             if (state == STATE.READY_TO_PROGRESS) {
                 playTurn(BATTLE_PARTY.PLAYER, input);
             }
         }
+       // System.out.println("동작 후 capture 값" + getO_P().isCapture());
     }
 
     public void beginBattle() {
@@ -166,11 +175,10 @@ public class Battle implements BattleEventQueuer {
     }
 
     private void playTurn(BATTLE_PARTY user,int input){
-       //상대 포켓몬 공격 랜덤
-        oppo = (int)(Math.random()*4);
         BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
         PK pokeUser = null;
         PK pokeTarget = null;
+
         if (user == BATTLE_PARTY.PLAYER) {
             pokeUser = player;
             pokeTarget = opponent;
@@ -190,21 +198,16 @@ public class Battle implements BattleEventQueuer {
                                 pokeUser.getStat()[2],
                                 0.5f));
             }
-           if(item.getType()==0){
-               System.out.println(pokeball + " 소비");
-               pokeball = true;
-               Timer.schedule(new Timer.Task() {
-                   @Override
-                   public void run() {
-                       pokeball = true;
-                   }
-               }, 20);
-               //battleRenderer와 같이 딜레이 줘야함
-            }
+           if(item.getType()==0 && !pokeball){
+               per = getO_P().getStat()[2]/getO_P().getCurrentHP(); //크게 남으면 남을수록
+               match = (int)(Math.random()*10);
+               if(per>match) capture = true;
+               else capture = false;
 
+               pokeball = true;
+            }
         }else {
             String move = pokeUser.getSkill()[input];
-
             /* Broadcast the text graphics */
             queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move) + "!", 0.5f));
 
@@ -231,7 +234,6 @@ public class Battle implements BattleEventQueuer {
             }
 
         }
-
             if (player.isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 boolean anyoneAlive = false;
@@ -278,7 +280,6 @@ public class Battle implements BattleEventQueuer {
         eventPlayer.queueEvent(event);
     }
 
-
     public PK getP_P() {
         return player;
     }
@@ -286,13 +287,9 @@ public class Battle implements BattleEventQueuer {
     public PK getO_P() {
         return opponent;
     }
+
     public boolean getCapture(){
-       int per = getO_P().getStat()[2]/getO_P().getCurrentHP(); //크게 남으면 남을수록
-        int match = (int)(Math.random()*10);
-        if(per>match){
-            return true;
-        }
-        return false;
+       return capture;
     }
 
     public boolean getPokeball(){

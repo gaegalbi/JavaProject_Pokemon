@@ -25,6 +25,7 @@ public class PK {
     private Animation<TextureRegion> image;
     private int currentHP;
     private int battleNum;
+    private boolean capture;
     private String type;
     //야생 포켓몬
     public PK(String key, Animation<TextureRegion> image){
@@ -162,5 +163,11 @@ public class PK {
     }
     public boolean isFainted() {
         return currentHP == 0;
+    }
+    public boolean isCapture() {
+        return capture;
+    }
+    public void setCapture(boolean capture) {
+        this.capture = capture;
     }
 }
