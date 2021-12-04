@@ -20,6 +20,7 @@ public class SkillEvent{
     int time3 = 3;
     float elapsed;
     float elapsed2;
+    float x,y;
     boolean turn;
     SpriteBatch batch;
     MultiBattleScreen multiBattleScreen;
@@ -37,11 +38,11 @@ public class SkillEvent{
         if(turn){
             if(count == 1) {
                 elapsed += Gdx.graphics.getDeltaTime();
-                batch.draw(playeranimation.getKeyFrame(elapsed), 500.0f, 200.0f);
+                batch.draw(playeranimation.getKeyFrame(elapsed), 500.0f, 180.0f);
             }
             if(enemyCount == 1) {
                 elapsed2 += Gdx.graphics.getDeltaTime();
-                batch.draw(enemyanimation.getKeyFrame(elapsed2), 130.0f, 200.0f);
+                batch.draw(enemyanimation.getKeyFrame(elapsed2), 130.0f, 180.0f);
             }
             if(game.isOnoff()) {
                 Timer.schedule(new Timer.Task() {
@@ -68,11 +69,11 @@ public class SkillEvent{
         }else{
             if(enemyCount == 1) {
                 elapsed += Gdx.graphics.getDeltaTime();
-                batch.draw(enemyanimation.getKeyFrame(elapsed), 130.0f, 200.0f);
+                batch.draw(enemyanimation.getKeyFrame(elapsed), 130.0f, 180.0f);
             }
             if(count == 1) {
                 elapsed2 += Gdx.graphics.getDeltaTime();
-                batch.draw(playeranimation.getKeyFrame(elapsed2), 500.0f, 200.0f);
+                batch.draw(playeranimation.getKeyFrame(elapsed2), 500.0f, 180.0f);
             }
             if(game.isOnoff()) {
                 Timer.schedule(new Timer.Task() {
