@@ -199,6 +199,13 @@ public class InventoryUi extends AbstractUi {
                 item.setIndex(i); //아이템 인덱스값 설정
             }
         }
+ /*       for (int i = 0; i < Crafting.NUM_SLOTS; i++) {
+            Item item = player.crafts.getCraftAt(i);
+            if(item!=null){
+                stage.addActor(item.actor);
+                item.setCIndex(i);
+            }
+        }*/
 
     }
     private void addEquips() {
@@ -289,7 +296,7 @@ public class InventoryUi extends AbstractUi {
                         if(!(CRAFT_AREA.contains(ax,ay) && INVENTORY_AREA.contains(ax,ay) && EQUIPS_AREA.contains(ax,ay))) {
                             item.actor.remove();
                             item.count.remove();
-                            db.UPDATE(item.getKey(), -item.getCNT());
+                            db.ITEM_UPDATE(item.getKey(), -item.getCNT());
                             db.DELETE();
                         }
                         else player.crafts.addCraft(item);
@@ -425,7 +432,7 @@ public class InventoryUi extends AbstractUi {
                     else {
                         item.actor.remove();
                         item.count.remove();
-                        db.UPDATE(item.getKey(), -item.getCNT());
+                        db.ITEM_UPDATE(item.getKey(), -item.getCNT());
                         db.DELETE();
                     }
                 }
@@ -586,6 +593,8 @@ public class InventoryUi extends AbstractUi {
                             protected void result(Object object) {
                                 //if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                                 if (object.equals("yes")) {
+                                    //DB데이터 연동
+                                    db.ITEM_UPDATE(currentItem.getKey(), -1);
                                     //장비는 각 index별로 한개만 가질 수 있어서
                                     if (currentItem.getEquipped()) {
                                         player.equips.getEquipAt(currentItem.getType() - 2).actor.remove();
@@ -606,8 +615,6 @@ public class InventoryUi extends AbstractUi {
                                             player.inventory.removeItem(currentItem.getIndex());
                                         }
                                     }
-                                    //DB데이터 연동
-                                    db.UPDATE(currentItem.getKey(), -1);
                                     //DB데이터 중 삭제할 데이터 삭제
                                     db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     //아이템 선택 해제
@@ -622,22 +629,37 @@ public class InventoryUi extends AbstractUi {
         craftButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //craftResult
-                   if (craftResult != null) {
-                       stage.addActor(craftResult.actor);
-                       stage.addActor(craftResult.count);
+                int cnt=0;
+                Item temp=null;
+                   if (player.crafts.getCraftAt(9) == null) {
+                           while(player.crafts.getCraftAt(0)!=null||player.crafts.getCraftAt(1)!=null
+                                   ||player.crafts.getCraftAt(2)!=null||player.crafts.getCraftAt(3)!=null
+                                   ||player.crafts.getCraftAt(4)!=null||player.crafts.getCraftAt(5)!=null
+                                   ||player.crafts.getCraftAt(6)!=null||player.crafts.getCraftAt(7)!=null
+                                   ||player.crafts.getCraftAt(8)!=null) {
+                           temp = player.crafts.craftCheck();
+                           if(temp!=null) {
+                               craftResult = temp;
+                               cnt++;
+                           }
+                           else
+                               break;
+                       }
+                       player.crafts.addItemAtIndex(craftResult, 9);
                        craftResult.setCIndex(9);
                        craftResult.setCrafting(true);
-                       craftResult.setCNT(1);  //변경 => 숫자는 제작법따라 변경되게
+                       craftResult.setCNT(cnt);
                        craftResult.setCurrentCNT();
-
-                       //다시불러오기
-                       removeInventoryActors();
-                       addInventory();
+                       stage.addActor(craftResult.actor);
+                       stage.addActor(craftResult.count);
+                       //DB데이터 연동
+                       db.ITEM_UPDATE(craftResult.getKey(), cnt);
                        //이벤트 생성
                        addInventoryEvent(craftResult);
-               }
+                       unselectItem();
+                   }
             }
+
         });
     }
     //아이템 선택 해제
@@ -754,10 +776,10 @@ public class InventoryUi extends AbstractUi {
         craftButton.setPosition(ui.getWidth()/2+w/2+16 ,ui.getY()+24);
         craftLabel.setPosition(craftButton.getX(), craftButton.getY());
 
-        //제작 토글
+/*        //제작 토글
         if(player.crafts.getCraftAt(9)==null) {
             craftResult = player.crafts.craftCheck();
-        }
+        }*/
         //아이템 위치, 라벨 업데이트
         if (!dragging) {
             for (int i = 0; i < Inventory.NUM_SLOTS; i++) {

@@ -10,6 +10,7 @@ import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.db.db;
+import com.pokemon.model.Player;
 import com.pokemon.screen.BattleRenderer;
 import com.pokemon.screen.BattleScreen;
 import com.pokemon.screen.EventQueueRenderer;
@@ -70,10 +71,13 @@ public class Battle implements BattleEventQueuer {
     private int per;
     private int match;
     private int oppo;
-
-   public Battle(Pokemon game, BattleScreen battleScreen) {
+    private boolean turn;
+    private String[] userKey;
+    private Player userPlayer;
+   public Battle(Pokemon game, BattleScreen battleScreen,Player player) {
        this.game = game;
        this.battleScreen = battleScreen;
+       this.userPlayer=player;
 
        assetManager= new AssetManager();
        assetManager.load("ui/uipack.atlas", TextureAtlas.class);
@@ -82,15 +86,15 @@ public class Battle implements BattleEventQueuer {
 
        skin = SkinGenerator.generateSkin(assetManager);
 
-       pName = db.sP(playerID,playerNum+1);
+       pName = db.sP(playerID,playerNum);
 
 
        P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
        open= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/open.gif").read());
        close= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/close.gif").read());
 
-       String[] userKey = {playerID, String.valueOf(playerNum+1)};
-       this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
+       userKey = new String[]{playerID, String.valueOf(playerNum)};
+       this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
 
   /*
            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
@@ -114,6 +118,8 @@ public class Battle implements BattleEventQueuer {
          /*   oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
             this.opponent = new PK(oppoKey, O_T); //상대 포켓몬*/
 
+       pTrainer = new Trainer(this.player);
+       oTrainer = new Trainer(this.opponent);
 
        mechanics = new BattleMechanics();
        this.state = STATE.READY_TO_PROGRESS;
@@ -122,23 +128,25 @@ public class Battle implements BattleEventQueuer {
         if (state != STATE.READY_TO_PROGRESS) {
             return;
         }
-        //상대 포켓몬 공격 랜덤
+        //상대 포켓몬 공격 랜덤 및 PP 적용
         oppo = (int)(Math.random()*4);
-       // System.out.println("동작 전 capture 값" + getO_P().isCapture());
+        if(opponent.getCurrent_SK_CNT()[oppo]<=0){
+            while(opponent.getCurrent_SK_CNT()[oppo]<=0){
+                oppo = (int)(Math.random()*4);
+            }
+        }
+
         if (mechanics.goesFirst(player, opponent)) {
             playTurn(BATTLE_PARTY.PLAYER, input);
-            System.out.println("포크볼" + pokeball);
             if (state == STATE.READY_TO_PROGRESS) {
-                System.out.println("상대턴 시작해버림");
-                playTurn(BATTLE_PARTY.OPPONENT, oppo); //여기서 랜덤값 넣기
+                playTurn(BATTLE_PARTY.OPPONENT, oppo);
             }
         } else {
-            playTurn(BATTLE_PARTY.OPPONENT, oppo);//여기서 랜덤값
+            playTurn(BATTLE_PARTY.OPPONENT, oppo);
             if (state == STATE.READY_TO_PROGRESS) {
                 playTurn(BATTLE_PARTY.PLAYER, input);
             }
         }
-       // System.out.println("동작 후 capture 값" + getO_P().isCapture());
     }
 
     public void beginBattle() {
@@ -151,11 +159,10 @@ public class Battle implements BattleEventQueuer {
         this.player = pokemon;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.PLAYER,
-                pokemon.getCurrentHP(),
-                pokemon.getCurrentHP(),
-                pokemon.getStat()[2],
+                pokemon.getCurrentChHP(),
+                pokemon.getCurrentChHP(),
+                pokemon.getChStat()[2],
                 0f));
-        //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
         queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!"));
         this.state = STATE.READY_TO_PROGRESS;
@@ -175,7 +182,6 @@ public class Battle implements BattleEventQueuer {
     }
 
     private void playTurn(BATTLE_PARTY user,int input){
-        BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
         PK pokeUser = null;
         PK pokeTarget = null;
 
@@ -187,55 +193,90 @@ public class Battle implements BattleEventQueuer {
             pokeTarget = player;
         }
         if(input==4) {
-            int hpBefore = pokeUser.getCurrentHP();
-            if(item.getType()==7) {
+            int hpBefore = pokeUser.getCurrentChHP();
+            //회복아이템
+            if(item.getType()==7&&(item.getProperty().equals("HP1")||item.getProperty().equals("HP2")
+                    ||item.getProperty().equals("HP3") ||item.getProperty().equals("HP4"))){
                 pokeUser.applyHeal(db.ITEMEFFECT(item.getKey()));
                 queueEvent(
                         new HPAnimationEvent(
                                 user,
                                 hpBefore,
-                                pokeUser.getCurrentHP(),
-                                pokeUser.getStat()[2],
+                                pokeUser.getCurrentChHP(),
+                                pokeUser.getChStat()[2],
                                 0.5f));
             }
+            //PP아이템
+            if(item.getType()==7&&(item.getProperty().equals("PP1")||item.getProperty().equals("PP2"))){
+                pokeUser.applyHealPP(db.ITEMEFFECT(item.getKey()));
+            }
            if(item.getType()==0 && !pokeball){
-               per = getO_P().getStat()[2]/getO_P().getCurrentHP(); //크게 남으면 남을수록
+               per = getO_P().getChStat()[2]/getO_P().getCurrentChHP(); //크게 남으면 남을수록
                match = (int)(Math.random()*10);
                if(per>match) capture = true;
                else capture = false;
 
                pokeball = true;
-            }
+           }
         }else {
-            String move = pokeUser.getSkill()[input];
-            /* Broadcast the text graphics */
-            queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move) + "!", 0.5f));
+            //잡히지않아야 실행
+            if(capture==false) {
+                String move = pokeUser.getSkill()[input];
 
-            /* 스킬 사용 횟수 적용*/
-            pokeUser.applyCNT(input);
+                /* Broadcast the text graphics */
+                queueEvent(new TextEvent(pokeUser.getName() + "의\n" + db.GET_PM_SK_NAME(move) + "!", 0.5f));
 
-            int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
+                /* 스킬 사용 횟수 적용*/
+                pokeUser.applyCNT(input);
 
-            int hpBefore = pokeTarget.getCurrentHP();
+                int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
+                int heal = mechanics.calculateHeal(pokeUser,input,damage);
+                int selfDamage = mechanics.calculateSelfDamage(pokeUser,input,damage);
 
-            //해당 데미지 입음
-            pokeTarget.applyDamage(damage);
-            /* Broadcast HP change */
-            queueEvent(
-                    new HPAnimationEvent(
-                            BATTLE_PARTY.getOpposite(user),
-                            hpBefore,
-                            pokeTarget.getCurrentHP(),
-                            pokeTarget.getStat()[2],
-                            0.5f));
+                int hpBefore = pokeTarget.getCurrentChHP();
+                int hpHealBefore = pokeUser.getCurrentChHP();
+                int hpSelfBefore = pokeUser.getCurrentChHP();
+                //HP애니메이션 이상할 경우 duration
+                if(heal>0) {
+                    //해당 회복량을 회복함
+                    pokeUser.applyHeal(heal);
+                    queueEvent(
+                            new HPAnimationEvent(
+                                    user,
+                                    hpHealBefore,
+                                    pokeUser.getCurrentChHP(),
+                                    pokeUser.getChStat()[2],
+                                    1f));
+                }
+                if(damage>0) {
+                    //버그 실제 currentHP보다 1작게 표시됨
+                    //해당 데미지를 상대가 입음
+                    pokeTarget.applyDamage(damage);
+                    /* Broadcast HP change */
+                    queueEvent(
+                            new HPAnimationEvent(
+                                    BATTLE_PARTY.getOpposite(user),
+                                    hpBefore,
+                                    pokeTarget.getCurrentChHP(),
+                                    pokeTarget.getChStat()[2],
+                                    1f));
+                }
+                if(selfDamage>0) {
+                    //해당 데미지를 유저가 입음
+                    pokeUser.applyDamage(selfDamage);
+                    /* Broadcast HP change */
+                    queueEvent(
+                            new HPAnimationEvent(
+                                    user,
+                                    hpSelfBefore,
+                                    pokeUser.getCurrentChHP(),
+                                    pokeUser.getChStat()[2],
+                                    1f));
+                }
 
-            if (mechanics.hasMessage()) {
-                queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
             }
-
         }
             if (player.isFainted()) {
-                //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
                 boolean anyoneAlive = false;
                 for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
                     if (!getPTrainer().getPokemon(i).isFainted()) {
@@ -251,8 +292,12 @@ public class Battle implements BattleEventQueuer {
                     this.state = STATE.LOSE;
                 }
             } else if (opponent.isFainted()) {
-                //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.OPPONENT, new FaintingAnimation()));
                 queueEvent(new TextEvent("배틀에서 승리했습니다!", true));
+                pokeUser.setEXP(pokeUser.getEXP()+10);
+                if(pokeUser.getEXP() ==db.PM_EXP(pokeUser))
+                    pokeUser.setLV(pokeUser.getLV()+1);
+                db.PM_LV_UPDATE(pokeUser,playerNum);
+                db.PM_EXP_UPDATE(pokeUser,playerNum);
                 this.state = STATE.WIN;
             }
     }

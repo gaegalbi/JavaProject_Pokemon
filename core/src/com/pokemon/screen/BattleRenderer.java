@@ -61,13 +61,12 @@ public class BattleRenderer {
 
     //private Texture o;
     private int i = 1;
-    int cnt=0;
+    int openCnt=0;
+    int failCnt=30;
+    private boolean check = false;
     private  BattleScreen battleScreen;
     private BattleScreenController battleScreenController;
-    //Image o;
-/*public void setInt(int i){
-    this.i = i;
-}*/
+
     public BattleRenderer(BattleScreen battleScreen, BattleScreenController battleScreenController, Pokemon game, Battle battle, OrthographicCamera camera){
         this.game = game;
         this.camera = camera;
@@ -98,8 +97,6 @@ public class BattleRenderer {
 
 
     public void render(Batch batch,float elapsed) {
-
-
         //플레이어 플랫폼위치
         playerSquareMiddleX = Gdx.graphics.getWidth() / 2 - (squareSize + Gdx.graphics.getWidth() / 15);
         playerSquareMiddleY = Gdx.graphics.getHeight() / 2 + (25 * Settings.SCALE);
@@ -130,17 +127,112 @@ public class BattleRenderer {
         float opponentY = 0f;
 
         playerX = playerSquareMiddleX - P_T.getKeyFrame(elapsed).getRegionWidth() / 2;
-        playerY = platformYOrigin - P_T.getKeyFrame(elapsed).getRegionHeight();
+       // playerY = platformYOrigin - (P_T.getKeyFrame(elapsed).getRegionHeight() +  P_T.getKeyFrame(elapsed).getRegionHeight()/2);
+        playerY = 183;
 
         opponentX = opponentSquareMiddleX - O_T.getKeyFrame(elapsed).getRegionWidth() / 2;
-        opponentY = platformYOrigin + O_T.getKeyFrame(elapsed).getRegionHeight() / 3;
-        if(battle.getPokeball()&&cnt==0) {
-            System.out.println("동작");
+        //opponentY = platformYOrigin + O_T.getKeyFrame(elapsed).getRegionHeight() / 3;
+        opponentY = 280;
+
+        if(battle.getPokeball()) {
             i = 3;
         }
-            //닫히고
-            //batch.draw(close.getKeyFrame(elapsed), opponentX, opponentY + close.getKeyFrame(elapsed).getRegionHeight() + 10);
-            //System.out.println("닫힘");
+        if (i == 1) {
+            batch.draw(ball.getKeyFrame(elapsed), 0, 110);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    i = 2;
+                }
+            }, 0.8f);
+        }
+        if (i == 2) {
+            if (P_T != null)
+                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
+            if (O_T != null)
+                batch.draw(O_T.getKeyFrame(elapsed), opponentX, opponentY);
+        }
+        if(i==3){
+            if (P_T != null)
+                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
+            //몬스터볼 열린 모습
+            batch.draw(open, opponentX+80, opponentY+60);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                }
+            }, 0.8f);
+
+            //들어가는 모션
+            if(openCnt<30){
+                batch.draw(O_T.getKeyFrame(elapsed),opponentX+openCnt*2,opponentY+openCnt*2,O_T.getKeyFrame(elapsed).getRegionWidth()-openCnt*2,O_T.getKeyFrame(elapsed).getRegionHeight()-openCnt*2);
+                openCnt++;
+                if(openCnt==30)
+                    check = true;
+            }
+            //잡혔는지 안잡혔는지
+            if(battle.getCapture()){
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        if(openCnt!=0) {
+                            battle.setPokeball(false);
+                            battle.getO_P().setCapture(true);
+
+                            battle.queueEvent(new TextEvent(battle.getO_P().getName() + "을(를) 잡았습니다!", true));
+                            battle.setState(Battle.STATE.WIN);
+                            i=4;
+                        }
+                        openCnt = 0;
+                    }
+                }, 1f);
+            }else if(!battle.getCapture()&&check){
+                batch.draw(open, opponentX+80, opponentY+60);
+
+                //511 , 300
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                    }
+                }, 2f);
+
+
+                if(failCnt>=1){
+                    batch.draw(O_T.getKeyFrame(elapsed),opponentX+failCnt*2,opponentY+failCnt*2,
+                            O_T.getKeyFrame(elapsed).getRegionWidth()-failCnt*2,O_T.getKeyFrame(elapsed).getRegionHeight()-failCnt*2);
+                    failCnt--;
+                    System.out.println(failCnt);
+                }
+
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        if(failCnt!=30){
+                            battle.setPokeball(false);
+                            i = 2;
+                            check=false;
+                            openCnt=0;
+                        }
+                        failCnt=30;
+                    }
+                }, 1f);
+
+                if (O_T != null && check && failCnt==0)
+                    batch.draw(O_T.getKeyFrame(elapsed), opponentX, opponentY);
+            }
+        }
+        if(i==4){
+            if (P_T != null)
+                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
+
+        }
+
+    }
+
+}
+//닫히고
+//batch.draw(close.getKeyFrame(elapsed), opponentX, opponentY + close.getKeyFrame(elapsed).getRegionHeight() + 10);
+//System.out.println("닫힘");
        /*     Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
@@ -156,8 +248,8 @@ public class BattleRenderer {
 
                 }
             }, 1f);*/
-            //if(false){
-            //if(true){
+//if(false){
+//if(true){
           /*  if(battle.getCapture()){
                 //끝 ,수정해야함
                 batch.draw(close.getKeyFrame(elapsed), opponentX, opponentY + close.getKeyFrame(elapsed).getRegionHeight() + 10);
@@ -185,88 +277,3 @@ public class BattleRenderer {
             //batch.draw(o,opponentX,opponentY + open.getKeyFrame(elapsed).getRegionHeight() + 10,O_T.getKeyFrame(elapsed).getRegionWidth()-cnt*2,O_T.getKeyFrame(elapsed).getRegionHeight()-cnt*10);
         }else
             cnt = 0;*/
-
-        if (i == 1) {
-            batch.draw(ball.getKeyFrame(elapsed), 0, 110);
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    i = 2;
-                }
-            }, 0.8f);
-        }
-        if (i == 2) {
-            if (P_T != null)
-                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
-            if (O_T != null)
-                batch.draw(O_T.getKeyFrame(elapsed), opponentX, opponentY);
-        }
-        if(i==3){
-            if (P_T != null)
-                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
-
-            batch.draw(open, opponentX+80, opponentY+60);
-            //511 , 300
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                }
-            }, 0.8f);
-
-            if(O_T.getKeyFrame(elapsed).getRegionWidth()>20&&cnt<40){
-                batch.draw(O_T.getKeyFrame(elapsed),opponentX+cnt*2,opponentY+cnt*2,O_T.getKeyFrame(elapsed).getRegionWidth()-cnt*2,O_T.getKeyFrame(elapsed).getRegionHeight()-cnt*2);
-                cnt++;
-            }
-            //이까지가 썼을때 잡혀들어감
-
-            //여기부터는 잡혔는지 안잡혔는지
-            if(battle.getCapture()){
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        if(cnt!=0) {
-                            //progress가 이어서 동작해서 그냥 상대 공격한 걸 무시
-                            battleScreen.removeQueue();
-
-                            battle.setPokeball(false);
-                            battle.getO_P().setCapture(true);
-
-                            battle.queueEvent(new TextEvent(battle.getO_P().getName() + "을(를) 잡았습니다!", true));
-                            battle.setState(Battle.STATE.WIN);
-                            i=4;
-                        }
-                        cnt = 0;
-                    }
-                }, 1f);
-            }else {
-                //튀어나옴,수정해야함
-                batch.draw(open, opponentX+80, opponentY+60);
-                //511 , 300
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                    }
-                }, 0.8f);
-
-                if(cnt<=1){
-                    batch.draw(O_T.getKeyFrame(elapsed),opponentX+cnt*2,opponentY+cnt*2,O_T.getKeyFrame(elapsed).getRegionWidth()-cnt*2,O_T.getKeyFrame(elapsed).getRegionHeight()-cnt*2);
-                    cnt--;
-                }
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        battle.setPokeball(false);
-                        i = 2;
-                    }
-                }, 1f);
-            }
-        }
-        if(i==4){
-            if (P_T != null)
-                batch.draw(P_T.getKeyFrame(elapsed), playerX, playerY);
-
-        }
-
-    }
-
-}

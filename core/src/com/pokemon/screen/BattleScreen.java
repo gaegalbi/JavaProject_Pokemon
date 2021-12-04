@@ -43,7 +43,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private PlayerController playerController;
     private BattleRenderer battleRenderer;
     private GameController gameController;
-    public static int playerNum=0;
+    public static int playerNum=2; //전투 순서
 
     /* Controller */
     private BattleScreenController controller;
@@ -76,10 +76,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
-    public void removeQueue(){
-        queue.remove();
-    }
-
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
@@ -101,7 +97,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(this.game,this);
+        this.battle = new Battle(this.game,this,player);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
@@ -136,12 +132,12 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         playerStatus = new StatusBox(skin);
         playerStatus.setText(battle.getP_P().getName());
         playerStatus.setLV("LV"+battle.getP_P().getLV());
-        playerStatus.setHPText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getStat()[2]);
+        playerStatus.setHPText(battle.getP_P().getCurrentChHP() + "/" + battle.getP_P().getChStat()[2]);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
         opponentStatus.setLV("LV"+battle.getO_P().getLV());
-        opponentStatus.setHPText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getStat()[2]);
+        opponentStatus.setHPText(battle.getO_P().getCurrentChHP() + "/" + battle.getO_P().getChStat()[2]);
 
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);
@@ -236,11 +232,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         game.batch.begin();
 
         this.update(delta);
-
         battleRenderer.render(game.batch,elapsed);
         if (currentEvent != null) {
             eventRenderer.render(game.batch, currentEvent);
         }
+
         game.batch.end();
 
         uiStage.draw();

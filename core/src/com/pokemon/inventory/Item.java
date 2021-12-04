@@ -115,7 +115,9 @@ public class Item {
     public String getEffect(){
         return effect;
     }
-    public String getKey(){return key;}
+    public String getKey(){
+            return key;
+    }
     public String getProperty(){
         return property;
     }
@@ -171,76 +173,5 @@ public class Item {
         }
     }
     public int getCNT(){return cnt;}
-
-
-    /*
-     * Adjusts the stats/attributes of an Item based on a given level
-     * Only called once per item's existence
-     *
-     * @param level
-     */
-/*    public void adjust(int level) {
-        // max hp will be scaled by 5-7 parts of original item stat added on each level
-        // dmg is scaled 4-6 parts of original per level
-        int mhpSeed = mhp / MathUtils.random(5, 7);
-        int dmgSeed = dmg / MathUtils.random(4, 6);
-        // set initial enchant cost
-        int enchantSeed = MathUtils.random(50, 100);
-        int sellSeed = sell / MathUtils.random(10, 15);
-
-        for (int i = 0; i < level - 1; i++) {
-            mhp += mhpSeed;
-            dmg += dmgSeed;
-            sell += sellSeed;
-        }
-    }*/
-
-    /*public String getFullDesc() {
-        String ret = "";
-        if (type == 0) {
-            // percentage hp potions
-            if (hp < 0) ret = desc + "\nRECOVER " + -hp + "% OF HP";
-            // exp potions
-            else if (exp > 0) ret = desc + "\nGIVES " + exp + "% EXP";
-            else ret = desc + "\nHEALS FOR " + hp + " HP";
-            ret += "\n\ndouble tap to consume";
-        } else if (type == 1) {
-            ret = desc;
-        } else if (type >= 2 && type <= 9) {
-            ret = desc + "\n";
-            if (mhp != 0) ret += "+" + mhp + " HP\n";
-            if (dmg != 0) ret += "+" + dmg + " DAMAGE\n";
-            if (acc != 0) ret += "+" + acc + "% ACCURACY";
-            if (bonusEnchantChance != 0) ret += "\n+" + bonusEnchantChance + "% BONUS ENCHANT CHANCE";
-        } else if (type == 10) {
-            ret = desc + "\n+" + eChance + "% ENCHANT CHANCE";
-            ret += "\n\ndrag onto an equip to use";
-        }
-        // remove newline from end of string if there is one
-        ret = ret.trim();
-        return ret;
-    }*/
-
-
-/*
-    public String getDialogName() {
-        String ret = "";
-        switch (rarity) {
-            case 0:
-                ret = "[COMMON] " + name;
-                break;
-            case 1:
-                ret = "[RARE] " + name;
-                break;
-            case 2:
-                ret = "[EPIC] " + name;
-                break;
-            case 3:
-                ret = "[LEGENDARY] " + name;
-                break;
-        }
-        return ret;
-    }
-*/
 
 }

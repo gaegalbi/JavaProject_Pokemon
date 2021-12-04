@@ -25,7 +25,7 @@ public class HPAnimationEvent extends BattleEvent {
 		this.hpAfter = hpAfter;
 		this.hpTotal = hpTotal;
 		this.duration = duration;
-		this.timer = 0f;
+		this.timer = 0.5f;
 		this.finished = false;
 
 	}

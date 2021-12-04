@@ -1,5 +1,8 @@
 package com.pokemon.db;
 
+import com.pokemon.inventory.Item;
+import com.pokemon.model.PK;
+
 import java.sql.*;
 
 import static com.pokemon.ui.LoginUi.playerID;
@@ -270,14 +273,14 @@ public class db {
         }
     }
 
-    public static double GET_PM_DA(String id) {
+    public static float GET_PM_DA(String id) {
         String sql = "SELECT PM_SK_DA from PM_SK_INFO WHERE PM_SK_ID = '" + id + "';";
-        double PM_DA = 0;
+        float PM_DA = 0;
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                PM_DA = rs.getDouble("PM_SK_DA");
+                PM_DA = rs.getFloat("PM_SK_DA");
             }
             return PM_DA;
         } catch (SQLException e) {
@@ -549,7 +552,7 @@ public class db {
         }
     }
 
-    public static void UPDATE(String target, int cnt) {
+    public static void ITEM_UPDATE(String target, int cnt) {
         String sql = "SELECT ITEM_ID FROM INVEN WHERE U_ID = '" + playerID + "' AND ITEM_ID = '" + target +"';";
         String item_id = null;
         try {
@@ -612,6 +615,37 @@ public class db {
         }
     }
 
+    public static void PM_LV_UPDATE(PK user,int num) {
+        String sql = "UPDATE PM SET PM_LV= '" + user.getLV() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void PM_EXP_UPDATE(PK user,int num) {
+        String sql = "UPDATE PM SET PM_EXP= '" + user.getEXP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
     public static void DELETE() {
         String sql = "DELETE FROM INVEN WHERE ITEM_CNT <=0 AND U_ID= '" + playerID + "';";
         try {
@@ -629,7 +663,7 @@ public class db {
 
     public static int ITEMEFFECT(String id) {
         int effect = 0;
-        String sql = "select ITEM_E_V from ITEM_INFO WHERE ITEM_PROPERTY = (select ITEM_PROPERTY from item where item_id = 'item_07')";
+        String sql = "select ITEM_E_V from ITEM_INFO WHERE ITEM_PROPERTY = (select ITEM_PROPERTY from item where item_id = '"+id+"')";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -648,4 +682,55 @@ public class db {
             return effect;
         }
     }
+
+   // public static Item GET_CRAFT_RESULT(Item index0, Item index1,Item index2,Item index3,Item index4, Item index5,Item index6,Item index7,Item index8){
+    public static Item GET_CRAFT_RESULT(String index0, String index1,String index2,String index3,String index4, String index5,String index6,String index7,String index8){
+        String item= null;
+
+        String sql = "select result from RECIPE where index0='"+index0+"' AND index1='"+index1+"'AND index2='"+index2+"'AND index3='"+index3+"' AND index4='"+index4+"'AND index5='"+index5+"'AND index6='"+index6+"'AND index7='"+index7+"' AND index8='"+index8+"';";
+//        String sql = "select result from RECIPE where index0='"+index0.getKey()+"' AND index1='"+index1.getKey()+"'AND index2='"+index2.getKey()+"'AND index3='"+index3.getKey()+"' AND index4='"+index4.getKey()+"'AND index5='"+index5.getKey()+"'AND index6='"+index6.getKey()+"'AND index7='"+index7.getKey()+"' AND index8='"+index8.getKey()+"';";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                item = rs.getString("result");
+            }
+            //System.out.println(item);
+            if(item.equals("null"))
+                return null;
+
+            return new Item(item);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+    public static int PM_EXP(PK id) {
+        int NEED_EXP = 0;
+        String sql = "select NEED_EXP from PM_LV_INFO WHERE PM_LV = "+id.getLV() + ";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+               NEED_EXP = rs.getInt("NEED_EXP");
+            }
+            return NEED_EXP;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        }
+    }
+
 }

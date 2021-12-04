@@ -323,7 +323,7 @@ public class useItemUi extends AbstractUi {
                                     battle.useItem(currentItem);
                                     battle.progress(4);
                                     //DB데이터 연동
-                                    db.UPDATE(currentItem.getKey(), -1);
+                                    db.ITEM_UPDATE(currentItem.getKey(), -1);
                                     //DB데이터 중 삭제할 데이터 삭제
                                     db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     //아이템 선택 해제
