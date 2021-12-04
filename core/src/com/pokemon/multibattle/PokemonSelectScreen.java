@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import static com.pokemon.ui.LoginUi.playerID;
 
 public class PokemonSelectScreen implements Screen {
     final Pokemon game;
+    private final GameScreen gameScreen;
     SpriteBatch batch;
     SelectButton selectButton;
     Animation<TextureRegion> character1;
@@ -33,7 +35,7 @@ public class PokemonSelectScreen implements Screen {
     Texture SelectBacground;
     Texture oneP;
     Texture twoP;
-    private Queue<Integer> q1 = new LinkedList<Integer>();
+    private Queue<Integer> q1 = new LinkedList<>();
     private float elapsed;
     private int i;
     private BattleClient battleClient;
@@ -45,8 +47,9 @@ public class PokemonSelectScreen implements Screen {
     String a3;
     String temp;
     String temp2;
-    public PokemonSelectScreen(Pokemon game,final BattleClient bs) {
+    public PokemonSelectScreen(Pokemon game, final BattleClient bs, GameScreen gameScreen) {
         this.game = game;
+        this.gameScreen = gameScreen;
         batch = new SpriteBatch();
         selectButton = new SelectButton(this,game);
         for(int i=0; i<6; i++){
@@ -82,7 +85,7 @@ public class PokemonSelectScreen implements Screen {
 
     }
     public void letsgo(){
-        game.setScreen(new Loading(game,battleClient));
+        game.setScreen(new Loading(game,battleClient,gameScreen));
         dispose();
     }
 

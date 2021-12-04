@@ -27,9 +27,10 @@ public class Loading implements Screen {
     Timer timer = new Timer();
     float elapsed;
     private BattleClient bc;
-    public Loading(Pokemon game,final BattleClient bc) {
+    public Loading(Pokemon game,final BattleClient bc,GameScreen gameScreen) {
         this.game = game;
         this.bc = bc;
+        this.gameScreen = gameScreen;
         batch = new SpriteBatch();
         background2 = new Texture(Gdx.files.internal("multibattle/battlebgField.png"));
         fieldimage1 = new Texture(Gdx.files.internal("multibattle/enemybaseFieldGrass.png"));

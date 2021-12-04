@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.game.Pokemon;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 
 public class BattleLoadingScreen implements Screen {
     final Pokemon game;
+    private final GameScreen gameScreen;
     Animation<TextureRegion> clock;
     private Texture background;
     private float elapsed;
@@ -19,9 +21,10 @@ public class BattleLoadingScreen implements Screen {
     private BattleClient bc;
     int a;
 
-    public BattleLoadingScreen(Pokemon game) {
+    public BattleLoadingScreen(Pokemon game, GameScreen gameScreen) {
         bc = new BattleClient(game);
         this.game = game;
+        this.gameScreen = gameScreen;
         batch = new SpriteBatch();
         background = new Texture(Gdx.files.internal("multibattle/loding.png"));
         clock = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("multibattle/loding4.gif").read());
@@ -32,12 +35,12 @@ public class BattleLoadingScreen implements Screen {
 
     }
     public void startLoading(){
-        game.setScreen(new Loading(game,bc));
+        game.setScreen(new Loading(game,bc,gameScreen));
         dispose();
     }
 
     public void select(){
-       game.setScreen(new PokemonSelectScreen(game,bc));
+       game.setScreen(new PokemonSelectScreen(game,bc,gameScreen));
         dispose();
     }
     @Override

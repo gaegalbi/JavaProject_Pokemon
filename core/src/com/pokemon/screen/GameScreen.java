@@ -198,7 +198,7 @@ public class GameScreen implements Screen {
     }
 
     public void loadingStart(){
-        game.setScreen(new BattleLoadingScreen(game));
+        game.setScreen(new BattleLoadingScreen(game,this));
         //dispose();
     }
 
