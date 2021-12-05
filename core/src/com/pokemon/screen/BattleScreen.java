@@ -16,12 +16,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
-import com.pokemon.battle.Battle;
+import com.pokemon.battle.SingleBattle;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.BattleEventPlayer;
+import com.pokemon.battle.event.SingleSkillEvent;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
-import com.pokemon.controller.BattleScreenController;
+import com.pokemon.controller.SingleBattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
 import com.pokemon.model.Player;
@@ -34,23 +35,22 @@ import java.util.Stack;
 
 public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
-    private final GameScreen gameScreen;
     private AssetManager assetManager;
     private OrthographicCamera camera;
 
     private PlayerController playerController;
     private BattleRenderer battleRenderer;
     private GameController gameController;
-    public static int playerNum=1;
+    public static int playerNum=2; //전투 순서
 
     /* Controller */
-    private BattleScreenController controller;
+    private SingleBattleScreenController controller;
 
     /* View */
     private Viewport gameViewport;
 
     /* Model */
-    private Battle battle;
+    private SingleBattle battle;
 
     /* UI */
     float elapsed;
@@ -59,6 +59,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Table dialogueRoot;
     private DialogueBox dialogueBox;
     private OptionBox optionBox;
+    private Player player;
 
     private Table moveSelectRoot;
     private MoveSelectBox moveSelectBox;
@@ -76,10 +77,15 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private Stack<AbstractUi> uiStack;
     public static boolean useCheck= true;
 
-    public BattleScreen(Pokemon game,GameScreen gameScreen) {
+    private int playercount=0;
+    private int enemycount=0;
+    int skillcount=0;
+    private SingleSkillEvent skillEvent;
+
+    public BattleScreen(Pokemon game, Player player) {
         this.game = game;
         this.uiStack = new Stack<>();
-        this.gameScreen = gameScreen;
+
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,480);
@@ -91,18 +97,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(this.game,false);
+        battle = new SingleBattle(this.game,this,player);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
 
+        skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
 
-
-        battleRenderer = new BattleRenderer(this.game,battle,camera);
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
-        controller = new BattleScreenController(this.game,battle,true, queue, dialogueBox, moveSelectBox, optionBox,uiStack,gameScreen.player);
+        controller = new SingleBattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,player);
+        battleRenderer = new BattleRenderer(this,controller,this.game,battle,camera);
 
 
         battle.beginBattle();
@@ -126,12 +132,12 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         playerStatus = new StatusBox(skin);
         playerStatus.setText(battle.getP_P().getName());
         playerStatus.setLV("LV"+battle.getP_P().getLV());
-        playerStatus.setHPText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getStat()[2]);
+        playerStatus.setHPText(battle.getP_P().getCurrentChHP() + "/" + battle.getP_P().getChStat()[2]);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
         opponentStatus.setLV("LV"+battle.getO_P().getLV());
-        opponentStatus.setHPText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getStat()[2]);
+        opponentStatus.setHPText(battle.getO_P().getCurrentChHP() + "/" + battle.getO_P().getChStat()[2]);
 
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);
@@ -175,22 +181,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;
-
-                if (battle.getState() == Battle.STATE.SELECT_NEW_POKEMON) {
-                    if (controller.getState() != BattleScreenController.STATE.USE_NEXT_POKEMON) {
+                if (battle.getState() == SingleBattle.STATE.SELECT_NEW_POKEMON) {
+                    if (controller.getState() != SingleBattleScreenController.STATE.USE_NEXT_POKEMON) {
                         controller.displayNextDialogue();
                     }
-                } else if (battle.getState() == Battle.STATE.READY_TO_PROGRESS) {
+                } else if (battle.getState() == SingleBattle.STATE.READY_TO_PROGRESS) {
                     controller.restartTurn();
-                } else if (battle.getState() == Battle.STATE.WIN) {
-                    game.setScreen(gameScreen);
-                    dispose();
-                } else if (battle.getState() == Battle.STATE.LOSE) {
-                    game.setScreen(gameScreen);
-                    dispose();
-                } else if (battle.getState() == Battle.STATE.RAN) {
-                    game.setScreen(gameScreen);
-                    dispose();
+                } else if (battle.getState() == SingleBattle.STATE.WIN) {
+                    game.setScreen(new GameScreen(game));
+                } else if (battle.getState() == SingleBattle.STATE.LOSE) {
+                    game.setScreen(new GameScreen(game));
+                } else if (battle.getState() == SingleBattle.STATE.RAN) {
+                    game.setScreen(new GameScreen(game));
                 }
                 break;
             } else {					// event queued up
@@ -204,7 +206,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
-           useCheck = (!useCheck);
+            useCheck = (!useCheck);
             if(uiStack!=null&&useCheck) {
                 AbstractUi popped = uiStack.pop();
                 popped.dispose();
@@ -218,6 +220,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     @Override
     public void render(float delta) {
+
         gameViewport.apply();
         camera.position.x =  Gdx.graphics.getWidth()/2f;
         camera.position.y = Gdx.graphics.getHeight()/2f;
@@ -226,10 +229,18 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         elapsed += Gdx.graphics.getDeltaTime();
 
         game.batch.begin();
+
         this.update(delta);
         battleRenderer.render(game.batch,elapsed);
         if (currentEvent != null) {
             eventRenderer.render(game.batch, currentEvent);
+        }
+        if(game.isOnoff()){
+            skillEvent.effectSkill();
+        }
+        if(skillcount == 1){
+            skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
+            skillcount = 0;
         }
         game.batch.end();
 
@@ -269,9 +280,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     @Override
     public void dispose() {
-        assetManager.dispose();
-        skin.dispose();
-        uiStage.dispose();
+
     }
 
     @Override
@@ -304,4 +313,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     public void queueEvent(BattleEvent event) {
         queue.add(event);
     }
+    public void setSkillcount(int skillcount) {
+        this.skillcount = skillcount;
+    }
+
 }

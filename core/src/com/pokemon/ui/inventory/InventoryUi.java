@@ -196,7 +196,6 @@ public class InventoryUi extends AbstractUi {
                 item.setIndex(i); //아이템 인덱스값 설정
             }
         }
-
     }
     private void addEquips() {
         for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
@@ -288,7 +287,7 @@ public class InventoryUi extends AbstractUi {
                         if(!(CRAFT_AREA.contains(ax,ay) && INVENTORY_AREA.contains(ax,ay) && EQUIPS_AREA.contains(ax,ay))) {
                             item.actor.remove();
                             item.count.remove();
-                            db.UPDATE(item.getKey(), -item.getCNT());
+                            db.ITEM_UPDATE(item.getKey(), -item.getCNT());
                             db.DELETE();
                         }
                         else player.crafts.addCraft(item);
@@ -424,7 +423,7 @@ public class InventoryUi extends AbstractUi {
                     else {
                         item.actor.remove();
                         item.count.remove();
-                        db.UPDATE(item.getKey(), -item.getCNT());
+                        db.ITEM_UPDATE(item.getKey(), -item.getCNT());
                         db.DELETE();
                     }
                 }
@@ -606,7 +605,7 @@ public class InventoryUi extends AbstractUi {
                                         }
                                     }
                                     //DB데이터 연동
-                                    db.UPDATE(currentItem.getKey(), -1);
+                                    db.ITEM_UPDATE(currentItem.getKey(), -1);
                                     //DB데이터 중 삭제할 데이터 삭제
                                     db.DELETE(); //아이템 갯수가 0이하면 삭제
                                     //아이템 선택 해제

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 
@@ -47,7 +48,9 @@ public class PokemonSelectScreen implements Screen {
     String a3;
     String temp;
     String temp2;
-    public PokemonSelectScreen(Pokemon game, final BattleClient bs, GameScreen gameScreen) {
+    private Player player;
+    public PokemonSelectScreen(Pokemon game, final BattleClient bs, GameScreen gameScreen, Player player) {
+        this.player = player;
         this.game = game;
         this.gameScreen = gameScreen;
         batch = new SpriteBatch();
@@ -85,7 +88,7 @@ public class PokemonSelectScreen implements Screen {
 
     }
     public void letsgo(){
-        game.setScreen(new Loading(game,battleClient,gameScreen));
+        game.setScreen(new Loading(game,battleClient,gameScreen,player));
         dispose();
     }
 

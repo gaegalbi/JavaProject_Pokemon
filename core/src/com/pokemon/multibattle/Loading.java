@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 
@@ -27,7 +28,9 @@ public class Loading implements Screen {
     Timer timer = new Timer();
     float elapsed;
     private BattleClient bc;
-    public Loading(Pokemon game,final BattleClient bc,GameScreen gameScreen) {
+    private Player player;
+    public Loading(Pokemon game, final BattleClient bc, GameScreen gameScreen, Player player) {
+        this.player = player;
         this.game = game;
         this.bc = bc;
         this.gameScreen = gameScreen;
@@ -81,7 +84,7 @@ public class Loading implements Screen {
         }
     }
     public void BattleScreenStart(){
-        game.setScreen(new MultiBattleScreen(game,bc, gameScreen));
+        game.setScreen(new MultiBattleScreen(game,bc, gameScreen,player));
         dispose();
     }
     @Override

@@ -24,6 +24,7 @@ import com.pokemon.ui.AbstractUi;
 import com.pokemon.ui.SkillListUi;
 import com.pokemon.ui.inventory.InventoryUi;
 import com.pokemon.transition.*;
+import com.pokemon.ui.pokemonBox.myPokemonUI;
 import com.pokemon.util.Action;
 import com.pokemon.multibattle.BattleLoadingScreen;
 import com.pokemon.ui.ChatButton;
@@ -31,7 +32,6 @@ import com.pokemon.util.AnimationSet;
 import com.pokemon.util.SkinGenerator;
 import com.pokemon.world.World;
 import com.pokemon.world.Home;
-import com.pokemon.ui.pokemonBox.myPokemonUI;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -168,6 +168,11 @@ public class GameScreen implements Screen {
                 popped.dispose();
             }
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+            game.setScreen(new BattleScreen(game,player));
+             //loadingStart();
+            //dispose();
+        }
 
 //        // 전투 페이드 아웃
 //        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
@@ -199,7 +204,7 @@ public class GameScreen implements Screen {
     }
 
     public void loadingStart(){
-        game.setScreen(new BattleLoadingScreen(game,this));
+        game.setScreen(new BattleLoadingScreen(game,this,player));
         //dispose();
     }
 
@@ -250,8 +255,8 @@ public class GameScreen implements Screen {
 //            }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,this));
-//            loadingStart();
+           // game.setScreen(new BattleScreen(game,player));
+           // loadingStart();
             //dispose();
         }
     }

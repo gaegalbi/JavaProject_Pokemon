@@ -30,13 +30,10 @@ import com.pokemon.game.Pokemon;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.util.MultiSkinGenerator;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
 
-import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
 
 public class MultiBattleScreen implements Screen, BattleEventPlayer {
@@ -105,7 +102,9 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     private BattleClient bc;
     private MoveEvent moveEvent;
     private SkillEvent skillEvent;
-    public MultiBattleScreen(final Pokemon game,final BattleClient bc, GameScreen gameScreen) {
+    private Player player;
+    public MultiBattleScreen(final Pokemon game,final BattleClient bc, GameScreen gameScreen, Player player) {
+        this.player = player;
         this.bc = bc;
         this.game = game;
         this.gameScreen = gameScreen;
@@ -141,7 +140,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         assetManager.load("font/han/gul.fnt", BitmapFont.class);
         assetManager.finishLoading();
 
-        this.battle = new Battle(game,true);
+        this.battle = new Battle(game,true,player);
         battle.setEventPlayer(this);
         skillEvent = new SkillEvent(this,batch,game,battle.getPTrainer().getPokemon(battle.getPoket1()).getType(),battle.getOTrainer().getPokemon(battle.getPoket2()).getType(),battle.isSkill());
         skin = MultiSkinGenerator.generateSkin(assetManager);
@@ -294,12 +293,12 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         playerStatus = new StatusBox(skin);
         playerStatus.setText(battle.getP_P().getName());
         playerStatus.setLV("LV"+battle.getP_P().getLV());
-        playerStatus.setHPText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getStat()[2]);
+        playerStatus.setHPText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getChStat()[2]);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
         opponentStatus.setLV("LV"+battle.getO_P().getLV());
-        opponentStatus.setHPText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getStat()[2]);
+        opponentStatus.setHPText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getChStat()[2]);
 
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);

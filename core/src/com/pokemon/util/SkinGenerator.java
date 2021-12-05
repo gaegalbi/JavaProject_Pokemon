@@ -39,13 +39,14 @@ public class SkinGenerator {
         skin.add("skillList", skillList, TextureRegion.class);
 
         //스킬 이미지
-        TextureRegion skill1 = new TextureRegion(new Texture(Gdx.files.internal("inven/채광.png")));
+        //TextureRegion skill1 = new TextureRegion(new Texture(Gdx.files.internal("inven/채광.png")));
+        TextureRegion skill1 = new TextureRegion(new Texture(Gdx.files.internal("inven/채집.png")));
         TextureRegion skill2 = new TextureRegion(new Texture(Gdx.files.internal("inven/제작.png")));
         TextureRegion skill3 = new TextureRegion(new Texture(Gdx.files.internal("inven/공격력증가.png")));
         TextureRegion skill4 = new TextureRegion(new Texture(Gdx.files.internal("inven/방어력증가.png")));
         TextureRegion skill5 = new TextureRegion(new Texture(Gdx.files.internal("inven/체력증가.png")));
         TextureRegion skill6 = new TextureRegion(new Texture(Gdx.files.internal("inven/스피드증가.png")));
-        skin.add("채광", skill1, TextureRegion.class);
+        skin.add("채집", skill1, TextureRegion.class);
         skin.add("제작", skill2, TextureRegion.class);
         skin.add("공격력 증가", skill3, TextureRegion.class);
         skin.add("방어력 증가", skill4, TextureRegion.class);

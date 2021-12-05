@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 
@@ -20,8 +21,9 @@ public class BattleLoadingScreen implements Screen {
     private SpriteBatch batch;
     private BattleClient bc;
     int a;
-
-    public BattleLoadingScreen(Pokemon game, GameScreen gameScreen) {
+    private Player player;
+    public BattleLoadingScreen(Pokemon game, GameScreen gameScreen, Player player) {
+        this.player = player;
         bc = new BattleClient(game);
         this.game = game;
         this.gameScreen = gameScreen;
@@ -35,12 +37,12 @@ public class BattleLoadingScreen implements Screen {
 
     }
     public void startLoading(){
-        game.setScreen(new Loading(game,bc,gameScreen));
+        game.setScreen(new Loading(game,bc,gameScreen,player));
         dispose();
     }
 
     public void select(){
-       game.setScreen(new PokemonSelectScreen(game,bc,gameScreen));
+       game.setScreen(new PokemonSelectScreen(game,bc,gameScreen,player));
         dispose();
     }
     @Override

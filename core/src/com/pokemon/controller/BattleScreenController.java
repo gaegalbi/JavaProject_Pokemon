@@ -2,20 +2,14 @@ package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.maps.MapLayer;
 import com.pokemon.battle.Battle;
-import com.pokemon.battle.event.BattleEventPlayer;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
-import com.pokemon.model.DIRECTION;
 import com.pokemon.ui.DialogueBox;
 import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.ui.OptionBox;
-import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
-import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
@@ -41,7 +35,7 @@ public class BattleScreenController extends InputAdapter {
 
     private DialogueBox dialogue;
     private OptionBox optionBox;
-    public static MoveSelectBox moveSelect;
+    private MoveSelectBox moveSelect;
     private Pokemon game;
     private Stack<AbstractUi> uiStack;
     private BattleScreen battleScreen;
@@ -66,7 +60,7 @@ public class BattleScreenController extends InputAdapter {
         this.battle = battle;
         this.queue = queue;
         this.dialogue = dialogue;
-        moveSelect = options;
+        this.moveSelect = options;
         this.optionBox = optionBox;
         this.turnon = turnon;
         this.uiStack = uiStack;

@@ -17,7 +17,7 @@ public class BattleServer {
             public void run() {
                 while (true) {
                     try {
-                        serverSocket = new ServerSocket(9020);
+                        serverSocket = new ServerSocket(9021);
 
                     } catch (IOException e) {
                         System.out.println("해당포트가 열려있습니다");

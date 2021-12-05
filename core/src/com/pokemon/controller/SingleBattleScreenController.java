@@ -2,7 +2,7 @@ package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.pokemon.battle.Battle;
+import com.pokemon.battle.SingleBattle;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
 import com.pokemon.db.db;
@@ -28,7 +28,7 @@ public class SingleBattleScreenController extends InputAdapter {
 
     private Queue<BattleEvent> queue;
 
-    private Battle battle;
+    private SingleBattle battle;
 
     private DialogueBox dialogue;
     private OptionBox optionBox;
@@ -42,7 +42,7 @@ public class SingleBattleScreenController extends InputAdapter {
         dialogue.setVisible(visible);
     }
 
-    public SingleBattleScreenController(Pokemon game, BattleScreen battleScreen, Battle battle, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox, Stack<AbstractUi> uiStack, Player player) {
+    public SingleBattleScreenController(Pokemon game, BattleScreen battleScreen, SingleBattle battle, Queue<BattleEvent> queue, DialogueBox dialogue, MoveSelectBox options, OptionBox optionBox, Stack<AbstractUi> uiStack, Player player) {
         this.game = game;
         this.battleScreen = battleScreen;
         this.battle = battle;

@@ -53,7 +53,7 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     //private int gold;
     private int RANK;
     public String skill[];
-    private String skillName[] = {"채광","제작","공격력 증가","방어력 증가","체력 증가", "스피드 증가"};
+    private String skillName[] = {"채집","제작","공격력 증가","방어력 증가","체력 증가", "스피드 증가"};
     private int skill_LV[];
     private int skill_EXP[];
 

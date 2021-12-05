@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.pokemon.battle.event.*;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
-import com.pokemon.db.db;
+import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.util.SkinGenerator;
@@ -19,10 +20,9 @@ import com.pokemon.util.SkinGenerator;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.pokemon.controller.BattleScreenController.moveSelect;
+
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
-
 import static com.pokemon.screen.BattleScreen.playerNum;
 import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
@@ -117,8 +117,11 @@ public class Battle implements BattleEventQueuer {
 
     private boolean setChangecharacter;
 
-    public Battle(Pokemon game, boolean multi) {
+    private Player userPlayer;
+
+    public Battle(Pokemon game, boolean multi,Player userPlayer) {
         this.game = game;
+        this.userPlayer = userPlayer;
 //        this.battleScreen = battleScreen;
         this.multi = multi;
 
@@ -133,7 +136,7 @@ public class Battle implements BattleEventQueuer {
             pName = db.sP(playerID, playerNum + 1);
             P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + pName + ".gif").read());
             String[] userKey = {playerID, String.valueOf(playerNum + 1)};
-            this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
+            this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
 
             String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
             String PM_ID = null;
@@ -255,7 +258,7 @@ public class Battle implements BattleEventQueuer {
                 BATTLE_PARTY.PLAYER,
                 pokemon.getCurrentHP(),
                 pokemon.getCurrentHP(),
-                pokemon.getStat()[2],
+                pokemon.getChStat()[2],
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
@@ -270,7 +273,7 @@ public class Battle implements BattleEventQueuer {
                 BATTLE_PARTY.OPPONENT,
                 pokemon.getCurrentHP(),
                 pokemon.getCurrentHP(),
-                pokemon.getStat()[2],
+                pokemon.getChStat()[2],
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.OPPONENT));
@@ -283,16 +286,6 @@ public class Battle implements BattleEventQueuer {
     public void attemptRun() {
         queueEvent(new TextEvent("도망치는데 성공했다..", false));
         this.state = STATE.RAN;
-    }
-
-    public void selectItem() {
-        queueEvent(new TextEvent("무슨 아이템을 사용할까?", 0.5f));
-        moveSelect.setVisible(false);
-    }
-
-    public void useItem(Item item) {
-        this.item = item;
-        queueEvent(new TextEvent(item.getName() + "을 사용했다.", 0.5f));
     }
 
     private void playTurn(BATTLE_PARTY user, int input) {
@@ -309,30 +302,7 @@ public class Battle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
-        if (input == 4) {
-            int hpBefore = pokeUser.getCurrentHP();
-            if (item.getType() == 7) {
-                if (item.getEffect().equals("HP1"))
-                    pokeUser.applyHeal(20);
-                if (item.getEffect().equals("HP2"))
-                    pokeUser.applyHeal(60);
-                if (item.getEffect().equals("HP3"))
-                    pokeUser.applyHeal(120);
-                if (item.getEffect().equals("HP4"))
-                    pokeUser.applyHeal(5000);
-            }
-            if (item.getType() == 0) {
-                //몬스터볼 던지기
-            }
 
-            queueEvent(
-                    new HPAnimationEvent(
-                            user,
-                            hpBefore,
-                            pokeUser.getCurrentHP(),
-                            pokeUser.getStat()[2],
-                            0.5f));
-        } else {
             String move = pokeUser.getSkill()[input];
 
             /* Broadcast the text graphics */
@@ -353,13 +323,9 @@ public class Battle implements BattleEventQueuer {
                             BATTLE_PARTY.getOpposite(user),
                             hpBefore,
                             pokeTarget.getCurrentHP(),
-                            pokeTarget.getStat()[2],
+                            pokeTarget.getChStat()[2],
                             0.5f));
 
-            if (mechanics.hasMessage()) {
-                queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
-            }
-        }
         game.setOnoff(true);
         if (!multi) {
             if (player.isFainted()) {

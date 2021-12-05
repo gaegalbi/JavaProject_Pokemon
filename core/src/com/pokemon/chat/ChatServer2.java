@@ -31,7 +31,7 @@ public class ChatServer2 {
             public void run() {
                 while (true) {
                     try {
-                        serverSocket = new ServerSocket(9021);
+                        serverSocket = new ServerSocket(9022);
                     } catch (IOException e) {
                         System.out.println("해당포트가 열려있습니다");
                     }

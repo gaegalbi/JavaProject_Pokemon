@@ -11,12 +11,17 @@ public class Trainer {
 
 	public Trainer(){}
 
+	public Trainer(PK pokemon) {
+		team = new ArrayList<PK>();
+		team.add(pokemon);
+	}
+
 	public Trainer(PK pokemon,PK pokemon2) {
 		team = new ArrayList<PK>();
 		team.add(pokemon);
 		team.add(pokemon2);
 	}
-	
+
 	public boolean addPokemon(PK pokemon) {
 		if (team.size() >= 6) {
 			return false;

@@ -97,7 +97,7 @@ public class Forest implements World {
                                 @Override
                                 public void action() {
                                     System.out.println("배틀시작");
-                                    game.setScreen(new BattleScreen(game,gameScreen));
+                                    game.setScreen(new BattleScreen(game,player));
 
                                 }
                             }
