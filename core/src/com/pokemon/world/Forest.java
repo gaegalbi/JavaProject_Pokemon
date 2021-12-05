@@ -5,7 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.*;
+import com.pokemon.screen.BattleScreen;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.transition.BattleBlinkTransition;
+import com.pokemon.transition.BattleTransition;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
 import com.pokemon.util.Action;
@@ -24,6 +27,7 @@ public class Forest implements World {
     private Pokemon game;
     private ArrayList<WorldObject> collisionObjects;
     private Portal mainWorldPortal;
+    private ArrayList<BattleArea> battleAreas;
 
     public Forest(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -42,6 +46,10 @@ public class Forest implements World {
         renderList.addAll(ObjectGenerator.generateObject("Forest"));
 
         mainWorldPortal = new Portal(0, 13, 1, 4);
+
+        battleAreas = new ArrayList<>();
+        battleAreas.add(new BattleArea(11,11,9,7));
+        battleAreas.add(new BattleArea(4,2,16,5));
     }
 
     @Override
@@ -77,6 +85,25 @@ public class Forest implements World {
         }
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
+        }
+        for (BattleArea battleArea : battleAreas) {
+            if (player.overlaps(battleArea)) {
+                if (battleArea.battleStarter(delta, player.x, player.y)) {
+                    player.finishMove();
+                    gameScreen.getTransitionScreen().startTransition(
+                            new BattleBlinkTransition(4f, 4 , Color.GRAY, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                            new BattleTransition(1F,  10, true, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                            new Action() {
+                                @Override
+                                public void action() {
+                                    System.out.println("배틀시작");
+                                    game.setScreen(new BattleScreen(game,gameScreen));
+
+                                }
+                            }
+                    );
+                }
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.WEST) {
