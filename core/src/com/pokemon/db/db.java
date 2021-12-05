@@ -738,13 +738,9 @@ public class db {
     }
     public static void PM_HP_UPDATE(PK user,int num) {
         String sql;
-        if(user.getCurrentHP() < user.getCurrentChHP()){
-            sql = "UPDATE PM SET PM_currentHP= '" + user.getCurrentHP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
-            System.out.println("피 적용"+user.getCurrentHP());
-        }else {
-            sql = "UPDATE PM SET PM_currentHP= '" + user.getCurrentChHP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
-            System.out.println("피 적용" + user.getCurrentChHP());
-        }
+        sql = "UPDATE PM SET PM_currentHP= '" + user.getCurrentChHP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
+        System.out.println("피 적용" + user.getCurrentChHP());
+
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);

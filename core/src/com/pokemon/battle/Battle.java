@@ -283,7 +283,7 @@ public class Battle implements BattleEventQueuer {
                                     hpHealBefore,
                                     pokeUser.getCurrentChHP(),
                                     pokeUser.getChStat()[2],
-                                    1f));
+                                    0.8f));
                 }
                 if(damage>0) {
                     //버그 실제 currentHP보다 1작게 표시됨
@@ -296,7 +296,7 @@ public class Battle implements BattleEventQueuer {
                                     hpBefore,
                                     pokeTarget.getCurrentChHP(),
                                     pokeTarget.getChStat()[2],
-                                    1f));
+                                    0.8f));
                 }
                 if(selfDamage>0) {
                     //해당 데미지를 유저가 입음
@@ -308,7 +308,7 @@ public class Battle implements BattleEventQueuer {
                                     hpSelfBefore,
                                     pokeUser.getCurrentChHP(),
                                     pokeUser.getChStat()[2],
-                                    1f));
+                                    0.8f));
                 }
 
             }
