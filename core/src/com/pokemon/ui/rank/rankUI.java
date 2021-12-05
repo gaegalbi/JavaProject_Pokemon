@@ -99,19 +99,13 @@ public class rankUI extends AbstractUi {
     }
 
     public void update() {
-        IDLabel[0].setPosition(ui.getX() + 198, ui.getY() + 322);
-        IDLabel[1].setPosition(ui.getX() + 198, ui.getY() + 266);
-        IDLabel[2].setPosition(ui.getX() + 198, ui.getY() + 210);
-        IDLabel[3].setPosition(ui.getX() + 198, ui.getY() + 154);
-        IDLabel[4].setPosition(ui.getX() + 198, ui.getY() + 98);
-        IDLabel[5].setPosition(ui.getX() + 198, ui.getY() + 42);
+        float w =  ui.getX();
+        float h =  ui.getY();
 
-        rankLabel[0].setPosition(ui.getX() + 385, ui.getY() + 322);
-        rankLabel[1].setPosition(ui.getX() + 385, ui.getY() + 266);
-        rankLabel[2].setPosition(ui.getX() + 385, ui.getY() + 210);
-        rankLabel[3].setPosition(ui.getX() + 385, ui.getY() + 154);
-        rankLabel[4].setPosition(ui.getX() + 385, ui.getY() + 98);
-        rankLabel[5].setPosition(ui.getX() + 385, ui.getY() + 42);
+        for (int i = 0; i < 6; i++) {
+            IDLabel[i].setPosition(w + 198, h  + 322 - i * 56);
+            rankLabel[i].setPosition(w + 385, h + 322 - i * 56);
+        }
 
         myRankLabel.setPosition(ui.getX() + 82, ui.getY() + 42);
 
