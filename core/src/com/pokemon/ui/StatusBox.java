@@ -27,7 +27,7 @@ public class StatusBox extends Table {
 		uiContainer = new Table();
 		this.add(uiContainer).pad(0f).expand().fill();
 
-		text = new Label("namenull", skin, "smallLabel");
+		text = new Label("namenull", skin,"smallLabel");
 		uiContainer.add(text).align(Align.left).padTop(0f);
 
 		lv = new Label("lvnull", skin, "smallLabel");

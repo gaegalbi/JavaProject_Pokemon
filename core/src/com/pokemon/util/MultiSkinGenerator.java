@@ -78,6 +78,7 @@ public class MultiSkinGenerator {
 
         LabelStyle labelStyleSmall = new LabelStyle();
         labelStyleSmall.font = skin.getFont("small_letters_font");
+        labelStyleSmall.fontColor = Color.BLACK;
         skin.add("smallLabel", labelStyleSmall);
         return skin;
     }

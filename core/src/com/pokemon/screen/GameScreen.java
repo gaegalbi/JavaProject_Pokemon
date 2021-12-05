@@ -62,7 +62,6 @@ public class GameScreen implements Screen {
     private TransitionScreen transitionScreen;
     private boolean isTransition;
     private boolean pokemonBoxCheck;
-
     public GameScreen(Pokemon game) {
         this.game = game;
         uiStack1 = new Stack<>();
@@ -135,6 +134,10 @@ public class GameScreen implements Screen {
         player.update(delta);
         world.update();
 
+        for (AbstractUi abstractUi : uiStack1) {
+            abstractUi.update();
+        }
+
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update();
         } else {
@@ -159,6 +162,7 @@ public class GameScreen implements Screen {
                         }
                     });
         }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
             pokemonBoxCheck = (!pokemonBoxCheck);
             if(pokemonBoxCheck) {
@@ -185,6 +189,7 @@ public class GameScreen implements Screen {
 ////                    });
 //        }
         this.update(delta);
+
     }
 
     public void popScreen() {

@@ -1,15 +1,25 @@
 package com.pokemon.multibattle;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.DIRECTION;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.screen.TransitionScreen;
+import com.pokemon.transition.FadeInTransition;
+import com.pokemon.transition.FadeOutTransition;
+import com.pokemon.util.Action;
 import com.pokemon.util.GifDecoder;
+
+import static com.pokemon.screen.GameScreen.getAssetManager;
+import static com.pokemon.screen.GameScreen.getTweenManager;
 
 public class BattleLoadingScreen implements Screen {
     final Pokemon game;
@@ -19,6 +29,7 @@ public class BattleLoadingScreen implements Screen {
     private float elapsed;
     private SpriteBatch batch;
     private BattleClient bc;
+    private TransitionScreen transitionScreen;
     int a;
 
     public BattleLoadingScreen(Pokemon game, GameScreen gameScreen) {
@@ -55,8 +66,23 @@ public class BattleLoadingScreen implements Screen {
         }
         batch.end();
 
-    }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            gameScreen.getTransitionScreen().startTransition(
+                    new FadeOutTransition(0f, Color.BLACK, getTweenManager(), getAssetManager()),
+                    new FadeInTransition(0f, Color.BLACK, getTweenManager(), getAssetManager()),
+                    new Action() {
+                        @Override
+                        public void action() {
 
+                        }
+                    });
+        }
+
+    }
+    public void startGameScreen(){
+        game.setScreen(new GameScreen(game));
+        dispose();
+    }
     @Override
     public void resize(int width, int height) {
 
