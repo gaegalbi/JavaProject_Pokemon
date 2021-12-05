@@ -124,9 +124,6 @@ public class BattleScreenController extends InputAdapter {
                 } else if (keycode == Keys.RIGHT) {
                     moveSelect.moveRight();
                     return true;
-                } else if (keycode == Keys.F9) {
-                    battle.selectItem();
-                    uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
                 }
             }
         } else {

@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.battle.Battle;
 import com.pokemon.controller.BattleScreenController;
+import com.pokemon.controller.SingleBattleScreenController;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Equipment;
@@ -69,10 +70,10 @@ public class useItemUi extends AbstractUi {
     private boolean itemSelected = false;
     //현재 선택 아이템 객체
     private Item currentItem;
-    private BattleScreenController battleScreenController;
+    private SingleBattleScreenController battleScreenController;
     private Battle battle;
 
-    public useItemUi(BattleScreenController battleScreenController,Battle battle, Screen Screen, Pokemon game, Player player) {
+    public useItemUi(SingleBattleScreenController battleScreenController, Battle battle, Screen Screen, Pokemon game, Player player) {
         this.game = game;
         this.Screen = Screen;
         this.player = player;
