@@ -74,6 +74,7 @@ public class Item {
         assetManager.load("texture/수퍼볼.png",Texture.class);
         assetManager.load("texture/나무곡괭이.png",Texture.class);
         assetManager.load("texture/나무괭이.png",Texture.class);
+        assetManager.load("texture/나무도끼.png",Texture.class);
         assetManager.load("texture/상처약.png",Texture.class);
         assetManager.load("texture/좋은상처약.png",Texture.class);
         assetManager.load("texture/고급상처약.png",Texture.class);

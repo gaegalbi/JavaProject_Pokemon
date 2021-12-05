@@ -136,7 +136,7 @@ public class GameScreen implements Screen {
         world.update(delta);
 
         if (uiStack.isEmpty() && !isTransition) {
-            playerController.update();
+            playerController.update(delta);
         } else {
             for (AbstractUi abstractUi : uiStack) {
                 abstractUi.update();

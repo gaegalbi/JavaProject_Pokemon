@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Rectangle;
+import com.pokemon.inventory.Item;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
 import com.pokemon.model.RenderHelper;
@@ -22,7 +23,7 @@ public class PlayerController extends InputAdapter {
         hitRange = new Rectangle(0, 0, 32, 32);
     }
 
-    public void update() {
+    public void update(float delta) {
         player.setState(Player.PLAYER_STATE.STANDING);
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.setFacing(DIRECTION.WEST);
@@ -85,24 +86,23 @@ public class PlayerController extends InputAdapter {
                 if (hitRange.overlaps((Rectangle) object)) {
                     switch (object.getName()) {
                         case "rock":
-                            System.out.println("돌캐기");
+                            if (player.equips.equips[4].name.equals("나무곡괭이")) {
+                                System.out.println("돌캐기");
+                            }
                             break;
                         case "wood":
-                            System.out.println("나무캐기");
+                            if (player.equips.equips[4].name.equals("나무도끼")) {
+                                System.out.println("나무캐기");
+                            }
                             break;
                         case "grass":
-                            System.out.println("풀베기");
+                            if (player.equips.equips[4].name.equals("나무괭이")) {
+                                System.out.println("풀베기");
+                            }
                             break;
                     }
                 }
             }
         }
- /*       if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            GameScreen.setWorld(new Mine(player));
-        }
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {
-            GameScreen.setWorld(new MainWorld(player));
-        }*/
     }
 }
