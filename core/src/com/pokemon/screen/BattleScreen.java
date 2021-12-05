@@ -21,6 +21,7 @@ import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.BattleEventPlayer;
+import com.pokemon.battle.event.SkillEvent;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.BattleScreenController;
@@ -81,6 +82,8 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     private int playercount=0;
     private int enemycount=0;
+    int skillcount=0;
+    private SkillEvent skillEvent;
 
     public BattleScreen(Pokemon game, Player player) {
         this.game = game;
@@ -97,12 +100,12 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         assetManager.finishLoading();
 
         //배틀 생성 및 이벤트 할당
-        this.battle = new Battle(this.game,this,player);
+        battle = new Battle(this.game,this,player);
         battle.setEventPlayer(this);
 
         skin = SkinGenerator.generateSkin(assetManager);
 
-
+        skillEvent = new SkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
 
         eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
@@ -236,7 +239,14 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         if (currentEvent != null) {
             eventRenderer.render(game.batch, currentEvent);
         }
-
+        if(game.isOnoff()){
+            skillEvent.effectSkill();
+            System.out.println("스킬해해해");
+        }
+        if(skillcount == 1){
+            skillEvent = new SkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
+            skillcount = 0;
+        }
         game.batch.end();
 
         uiStage.draw();
@@ -307,6 +317,9 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     @Override
     public void queueEvent(BattleEvent event) {
         queue.add(event);
+    }
+    public void setSkillcount(int skillcount) {
+        this.skillcount = skillcount;
     }
 
 }

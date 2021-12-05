@@ -74,10 +74,15 @@ public class Battle implements BattleEventQueuer {
     private boolean turn;
     private String[] userKey;
     private Player userPlayer;
-   public Battle(Pokemon game, BattleScreen battleScreen,Player player) {
+    private boolean skill;
+    private int input;
+    private int uDamage;
+    private int oDamage;
+
+   public Battle(Pokemon game, BattleScreen battleScreen,Player userPlayer) {
        this.game = game;
        this.battleScreen = battleScreen;
-       this.userPlayer=player;
+       this.userPlayer=userPlayer;
 
        assetManager= new AssetManager();
        assetManager.load("ui/uipack.atlas", TextureAtlas.class);
@@ -122,8 +127,16 @@ public class Battle implements BattleEventQueuer {
        oTrainer = new Trainer(this.opponent);
 
        mechanics = new BattleMechanics();
+       setSkill(mechanics.goesFirst(player, opponent));
        this.state = STATE.READY_TO_PROGRESS;
     }
+    public boolean isSkill() {
+        return skill;
+    }
+    public void setSkill(boolean skill) {
+        this.skill = skill;
+    }
+
     public void progress(int input) {
         if (state != STATE.READY_TO_PROGRESS) {
             return;
@@ -137,12 +150,14 @@ public class Battle implements BattleEventQueuer {
         }
 
         if (mechanics.goesFirst(player, opponent)) {
+            setSkill(true);
             playTurn(BATTLE_PARTY.PLAYER, input);
             if (state == STATE.READY_TO_PROGRESS) {
                 playTurn(BATTLE_PARTY.OPPONENT, oppo);
             }
         } else {
             playTurn(BATTLE_PARTY.OPPONENT, oppo);
+            setSkill(false);
             if (state == STATE.READY_TO_PROGRESS) {
                 playTurn(BATTLE_PARTY.PLAYER, input);
             }
@@ -193,6 +208,7 @@ public class Battle implements BattleEventQueuer {
             pokeTarget = player;
         }
         if(input==4) {
+            this.input = input;
             int hpBefore = pokeUser.getCurrentChHP();
             //회복아이템
             if(item.getType()==7&&(item.getProperty().equals("HP1")||item.getProperty().equals("HP2")
@@ -230,6 +246,12 @@ public class Battle implements BattleEventQueuer {
                 pokeUser.applyCNT(input);
 
                 int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
+                if(pokeUser==getP_P()) {
+                    this.uDamage = damage;
+                }
+                if(pokeUser==getO_P()) {
+                    this.oDamage = damage;
+                }
                 int heal = mechanics.calculateHeal(pokeUser,input,damage);
                 int selfDamage = mechanics.calculateSelfDamage(pokeUser,input,damage);
 
@@ -276,6 +298,7 @@ public class Battle implements BattleEventQueuer {
 
             }
         }
+        game.setOnoff(true);
             if (player.isFainted()) {
                 boolean anyoneAlive = false;
                 for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
@@ -323,6 +346,15 @@ public class Battle implements BattleEventQueuer {
     @Override
     public void queueEvent(BattleEvent event) {
         eventPlayer.queueEvent(event);
+    }
+    public int getInput(){
+       return input;
+    }
+    public int getUDamage(){
+        return uDamage;
+    }
+    public int getODamage(){
+        return oDamage;
     }
 
     public PK getP_P() {

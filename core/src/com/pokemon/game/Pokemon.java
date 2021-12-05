@@ -13,6 +13,7 @@ public class Pokemon extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
     private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
+	private boolean onoff;
 
 	@Override
 	public void create () {
@@ -22,6 +23,14 @@ public class Pokemon extends Game {
 		this.setScreen(new MainMenuScreen(this));
 		//this.setScreen(new BattleScreen(this));
 
+	}
+
+
+	public void setOnoff(boolean onoff) {
+		this.onoff = onoff;
+	}
+	public boolean isOnoff() {
+		return onoff;
 	}
 
 	@Override
@@ -50,4 +59,5 @@ public class Pokemon extends Game {
 
 		return false;
 	}
+
 }
