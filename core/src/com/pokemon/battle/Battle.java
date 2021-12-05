@@ -91,15 +91,25 @@ public class Battle implements BattleEventQueuer {
 
        skin = SkinGenerator.generateSkin(assetManager);
 
-       pName = db.sP(playerID,playerNum);
 
 
-       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
        open= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/open.gif").read());
        close= GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/close.gif").read());
+       pName = db.sP(playerID,playerNum);
 
        userKey = new String[]{playerID, String.valueOf(playerNum)};
+
+       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+
        this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
+
+       if(player.getCurrentHP()<=0){
+           userKey = new String[]{playerID, String.valueOf(playerNum+=1)};
+           pName = db.sP(playerID,playerNum);
+           P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
+           this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
+       }
+
 
   /*
            String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
@@ -118,7 +128,6 @@ public class Battle implements BattleEventQueuer {
            O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
            //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
            this.opponent = new PK("PM_02", O_T); //야생 포켓몬
-
 
          /*   oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
             this.opponent = new PK(oppoKey, O_T); //상대 포켓몬*/
@@ -165,6 +174,12 @@ public class Battle implements BattleEventQueuer {
     }
 
     public void beginBattle() {
+        queueEvent(new HPAnimationEvent(
+                BATTLE_PARTY.PLAYER,
+                player.getCurrentChHP(),
+                player.getCurrentChHP(),
+                player.getChStat()[2],
+                0.5f));
         //queueEvent(new PokeSpriteEvent(opponent.getSprite(), BATTLE_PARTY.OPPONENT));
         queueEvent(new TextEvent("가랏! "+player.getName()+"!", 1f));
         //queueEvent(new PokeSpriteEvent(player.getSprite(), BATTLE_PARTY.PLAYER));
@@ -177,7 +192,7 @@ public class Battle implements BattleEventQueuer {
                 pokemon.getCurrentChHP(),
                 pokemon.getCurrentChHP(),
                 pokemon.getChStat()[2],
-                0f));
+                0.5f));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
         queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!"));
         this.state = STATE.READY_TO_PROGRESS;
@@ -220,7 +235,7 @@ public class Battle implements BattleEventQueuer {
                                 hpBefore,
                                 pokeUser.getCurrentChHP(),
                                 pokeUser.getChStat()[2],
-                                0.5f));
+                                1f));
             }
             //PP아이템
             if(item.getType()==7&&(item.getProperty().equals("PP1")||item.getProperty().equals("PP2"))){
@@ -309,9 +324,11 @@ public class Battle implements BattleEventQueuer {
                 }
                 if (anyoneAlive) {
                     queueEvent(new TextEvent(player.getName() + "은(는) 기절했다!", true));
+                    db.PM_HP_UPDATE(pokeUser,playerNum);
                     this.state = STATE.SELECT_NEW_POKEMON;
                 } else {
                     queueEvent(new TextEvent("배틀에서 패배했습니다..", true));
+                    db.PM_HP_UPDATE(pokeUser,playerNum);
                     this.state = STATE.LOSE;
                 }
             } else if (opponent.isFainted()) {
@@ -321,6 +338,7 @@ public class Battle implements BattleEventQueuer {
                     pokeUser.setLV(pokeUser.getLV()+1);
                 db.PM_LV_UPDATE(pokeUser,playerNum);
                 db.PM_EXP_UPDATE(pokeUser,playerNum);
+                db.PM_HP_UPDATE(pokeUser,playerNum);
                 this.state = STATE.WIN;
             }
     }

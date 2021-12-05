@@ -42,11 +42,11 @@ public class SkillEvent {
     public void effectSkill(){
         //elapsed += Gdx.graphics.getDeltaTime();
         if(turn){
-            if(count == 1&&battle.getInput()!=4&&battle.getUDamage()!=0) {
+            if(count == 1&&battle.getInput()!=4&&battle.getUDamage()!=0&&!battle.getP_P().isFainted()) {
                 elapsed += Gdx.graphics.getDeltaTime();
                 batch.draw(playeranimation.getKeyFrame(elapsed), 480.0f, 280.0f);
             }
-            if(enemyCount == 1&&!battle.getO_P().isCapture()&&battle.getODamage()!=0) {
+            if(enemyCount == 1&&!battle.getO_P().isCapture()&&battle.getODamage()!=0&&!battle.getO_P().isFainted()) {
                 elapsed2 += Gdx.graphics.getDeltaTime();
                 batch.draw(enemyanimation.getKeyFrame(elapsed2), 150.0f, 180.0f);
             }
@@ -70,9 +70,6 @@ public class SkillEvent {
                     }
                 }, time3);
             }
-            System.out.println(count + ", "+enemyCount);
-            System.out.println(BATTLE_PARTY.PLAYER + " " +battle.getInput());
-
         }else{
             if(enemyCount == 1) {
                 elapsed += Gdx.graphics.getDeltaTime();

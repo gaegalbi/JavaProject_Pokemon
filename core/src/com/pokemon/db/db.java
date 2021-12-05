@@ -70,10 +70,11 @@ public class db {
         int battleNum=1;
         //이상해씨 01, 파이리 04 , 꼬부기 07
         for(int i=1;i<=7;i+=3) {
-            sql = "INSERT INTO PM(U_ID,PM_ID,PM_NUM,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04) VALUES ('"
+            sql = "INSERT INTO PM(U_ID,PM_ID,PM_NUM,PM_ATT,PM_DEF,PM_HP,PM_currentHP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04) VALUES ('"
                     +id+"', 'PM_0" + i +"', 1, (select PM_ATT FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
                     "(select PM_DEF FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
                     "(select PM_HP FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
+                    "(select PM_HP + sk_lv+10 AS currentHP FROM PM_INFO,sk b WHERE PM_ID = 'PM_0" + i +"' AND b.SK_ID = 'SK_05'), " +
                     "(select PM_SPEED FROM PM_INFO WHERE PM_ID = 'PM_0" + i +"'), " +
                     "1,0," + battleNum + ", (select PM_SK_S_01 from PM_INFO where PM_ID='PM_0" + i + "'), " +
                     "(select PM_SK_S_02 from PM_INFO where PM_ID='PM_0" + i + "'), " +
@@ -100,7 +101,7 @@ public class db {
 
     public static void insert_basic_item(String id) {
         String sql = null;
-        for(int i=0;i<4;i++) {
+        for(int i=0;i<5;i++) {
             switch (i) {
                 case 0:
                     sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_03',5)";
@@ -113,6 +114,9 @@ public class db {
                     break;
                 case 3:
                     sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_07',5)";
+                    break;
+                case 4:
+                    sql = "insert into INVEN(U_ID,ITEM_ID,ITEM_CNt) VALUES ('" + id + "','ITEM_13',1)";
                     break;
                 default:
                     break;
@@ -730,6 +734,27 @@ public class db {
             System.out.println("Exception:" + e);
             e.printStackTrace();
             return NEED_EXP;
+        }
+    }
+    public static void PM_HP_UPDATE(PK user,int num) {
+        String sql;
+        if(user.getCurrentHP() < user.getCurrentChHP()){
+            sql = "UPDATE PM SET PM_currentHP= '" + user.getCurrentHP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
+            System.out.println("피 적용"+user.getCurrentHP());
+        }else {
+            sql = "UPDATE PM SET PM_currentHP= '" + user.getCurrentChHP() + "' WHERE PM_BATTLE = " + num + " AND U_ID='" + playerID + "';";
+            System.out.println("피 적용" + user.getCurrentChHP());
+        }
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
         }
     }
 

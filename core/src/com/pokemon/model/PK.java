@@ -76,7 +76,7 @@ public class PK {
 
     //유저 포켓몬
     public PK(Player player,String[] key,Animation<TextureRegion> image) {
-        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
+        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_currentHP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -85,10 +85,10 @@ public class PK {
                this.LV = rs.getInt("PM_LV");
                this.battleNum = rs.getInt("PM_BATTLE");
                 this.EXP = rs.getInt("PM_EXP");
-                //System.out.println(battleNum);
                this.stat[0] = rs.getInt("PM_ATT");
                this.stat[1] = rs.getInt("PM_DEF");
                this.stat[2] = rs.getInt("PM_HP");
+               this.currentChHP = rs.getInt("PM_currentHP");
                this.stat[3] = rs.getInt("PM_SPEED");
 
                this.skill[0] = rs.getString("PM_SK_S_01");
@@ -111,8 +111,6 @@ public class PK {
                 chStat[i]= stat[i]+ player.getSKLV(i+2)*5;
 
         }
-        this.currentChHP = chStat[2];
-
         this.currentHP = stat[2];
         this.type = db.GET_PMType(name);
         /* 스킬 횟수 넣기 */
@@ -127,6 +125,7 @@ public class PK {
     }
     public int getCurrentHP(){ return currentHP;}
     public int getCurrentChHP(){ return currentChHP;}
+    public void setCurrentChHP(int hp){ this.currentChHP = hp;}
 
     public int getEXP(){
         return EXP;

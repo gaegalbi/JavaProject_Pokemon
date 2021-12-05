@@ -28,7 +28,7 @@ public class BattleMechanics {
 				if(tType.equals("불"))
 					return 0.8;
 				else if(tType.equals("풀"))
-					return 2;
+					return 5;
 				else if(tType.equals("전기"))
 					return 1;
 				else if(tType.equals("물"))
