@@ -8,7 +8,7 @@ public enum DIRECTION {
 
     private int dx, dy;
 
-    private DIRECTION(int dx, int dy) {
+    DIRECTION(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
     }

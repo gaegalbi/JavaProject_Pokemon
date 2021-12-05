@@ -35,6 +35,11 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
         return playerSizeY * SCALE;
     }
 
+    @Override
+    public String getName() {
+        return "Player";
+    }
+
     private float ANIM_TIME = 0.6f;
     private float animTimer;
 
@@ -76,7 +81,7 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
             e.printStackTrace();
         }
 
-        this.width = 32;
+        this.width = 30;
         this.height = 24;
         this.x = x;
         this.y = y;

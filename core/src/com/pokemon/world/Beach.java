@@ -55,12 +55,17 @@ public class Beach implements World {
     }
 
     @Override
+    public ArrayList<RenderHelper> getObjects() {
+        return renderList;
+    }
+
+    @Override
     public String getBackground() {
         return "Beach";
     }
 
     @Override
-    public void update() {
+    public void update(float delta) {
         if (player.x < 0) {
             player.x = 0;
         }

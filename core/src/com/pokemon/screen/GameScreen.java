@@ -133,7 +133,7 @@ public class GameScreen implements Screen {
         game.batch.end();
         gameController.update();
         player.update(delta);
-        world.update();
+        world.update(delta);
 
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update();
@@ -185,6 +185,7 @@ public class GameScreen implements Screen {
 ////                    });
 //        }
         this.update(delta);
+//        game.batch.draw(new Texture(Gdx.files.internal("logo.png")), playerController.hitRange.x, playerController.hitRange.y, playerController.hitRange.width, playerController.hitRange.height);
     }
 
     public void popScreen() {

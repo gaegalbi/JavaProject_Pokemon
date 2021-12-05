@@ -16,7 +16,9 @@ public interface World {
 
     ArrayList<WorldObject> getCollisionObjects();
 
+    ArrayList<RenderHelper> getObjects();
+
     String getBackground();
 
-    void update();
+    void update(float delta);
 }

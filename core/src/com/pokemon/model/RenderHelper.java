@@ -12,4 +12,6 @@ public interface RenderHelper {
     float getSizeX();
 
     float getSizeY();
+
+    String getName();
 }

@@ -53,13 +53,19 @@ public class Mine implements World {
     }
 
     @Override
+    public ArrayList<RenderHelper> getObjects() {
+        return renderList;
+    }
+
+    @Override
     public String getBackground() {
         return "Mine";
     }
 
     @Override
-    public void update() {
-        if (player.x < 0) {
+    public void update(float delta) {
+        // 광산은 막혀있어서 해당 요소 불필요
+        /*if (player.x < 0) {
             player.x = 0;
         }
         if (player.y < 0) {
@@ -70,7 +76,8 @@ public class Mine implements World {
         }
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
-        }
+        }*/
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.SOUTH) {
                 player.finishMove();

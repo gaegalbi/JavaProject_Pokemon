@@ -8,14 +8,16 @@ import static com.pokemon.world.World.atlas;
 
 public class WorldObject extends Rectangle implements RenderHelper, Comparable<RenderHelper> {
     private TextureAtlas.AtlasRegion texture;
-
+    private String name;
     public WorldObject(float x, float y, float width, float height, String texture) {
         super(x, y, width, height);
+        this.name = texture;
         this.texture = atlas.findRegion(texture);
     }
 
     public WorldObject(float x, float y, float width, float height) {
         super(x, y, width, height);
+        this.name = "null";
         this.texture = atlas.findRegion("null");
     }
 
@@ -32,6 +34,11 @@ public class WorldObject extends Rectangle implements RenderHelper, Comparable<R
     @Override
     public float getSizeY() {
         return height;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

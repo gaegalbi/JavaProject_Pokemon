@@ -3,8 +3,10 @@ package com.pokemon.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
+import com.pokemon.model.RenderHelper;
 import com.pokemon.model.WorldObject;
 import com.pokemon.screen.GameScreen;
 
@@ -13,10 +15,11 @@ import static com.pokemon.game.Settings.PLAYER_MOVE_SPEED;
 public class PlayerController extends InputAdapter {
     private final Player player;
     private float tempX,tempY;
-
+    public Rectangle hitRange;
 
     public PlayerController(Player player) {
         this.player = player;
+        hitRange = new Rectangle(0, 0, 32, 32);
     }
 
     public void update() {
@@ -76,6 +79,24 @@ public class PlayerController extends InputAdapter {
             System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            hitRange.setPosition(player.x + player.getFacing().getDx() * 32, player.y + player.getFacing().getDy() * 32);
+            for (RenderHelper object : GameScreen.getWorld().getObjects()) {
+                if (hitRange.overlaps((Rectangle) object)) {
+                    switch (object.getName()) {
+                        case "rock":
+                            System.out.println("돌캐기");
+                            break;
+                        case "wood":
+                            System.out.println("나무캐기");
+                            break;
+                        case "grass":
+                            System.out.println("풀베기");
+                            break;
+                    }
+                }
+            }
+        }
  /*       if(Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             GameScreen.setWorld(new Mine(player));
         }
