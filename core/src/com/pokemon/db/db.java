@@ -362,7 +362,7 @@ public class db {
     }
     // 랭크 점수에 대한 ID
     public static String rank_GET_U_ID(int num) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";
         String U_ID = null;
         try {
             stmt = con.createStatement();
@@ -385,7 +385,7 @@ public class db {
 
     // ID에 대한 랭크 점수
     public static int rank_GET_U_RANK(String ID) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
         int U_RANK = 0;
         try {
             stmt = con.createStatement();
@@ -408,7 +408,7 @@ public class db {
 
     // ID에 대한 랭킹
     public static int rank_GET_RANKINKG(String ID) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
         int RANKING = 0;
         try {
             stmt = con.createStatement();
