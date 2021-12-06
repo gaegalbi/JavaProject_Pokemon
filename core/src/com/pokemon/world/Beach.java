@@ -5,7 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.*;
+import com.pokemon.screen.BattleScreen;
 import com.pokemon.screen.GameScreen;
+import com.pokemon.transition.BattleBlinkTransition;
+import com.pokemon.transition.BattleTransition;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
 import com.pokemon.util.Action;
@@ -24,6 +27,7 @@ public class Beach implements World {
     private Pokemon game;
     private ArrayList<WorldObject> collisionObjects;
     private Portal mainWorldPortal;
+    private BattleArea battleArea;
 
     public Beach(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -42,6 +46,8 @@ public class Beach implements World {
         renderList.addAll(ObjectGenerator.generateObject("Beach"));
 
         mainWorldPortal = new Portal(26, 9, 1, 4);
+
+        battleArea = new BattleArea(6, 6, 12, 6);
     }
 
     @Override
@@ -77,6 +83,23 @@ public class Beach implements World {
         }
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
+        }
+        if (player.overlaps(battleArea)) {
+            if (battleArea.battleStarter(delta, player.x, player.y)) {
+                player.finishMove();
+                gameScreen.getTransitionScreen().startTransition(
+                        new BattleBlinkTransition(4f, 4 , Color.GRAY, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                        new BattleTransition(1F,  10, true, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                        new Action() {
+                            @Override
+                            public void action() {
+                                System.out.println("배틀시작");
+                                game.setScreen(new BattleScreen(game,player));
+
+                            }
+                        }
+                );
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             if (mainWorldPortal.overlaps(player) && player.getFacing() == DIRECTION.EAST) {
