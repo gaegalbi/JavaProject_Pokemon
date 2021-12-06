@@ -358,7 +358,7 @@ public class useItemUi extends AbstractUi {
     private void toggleInventoryButtons(boolean toggle) {
         if (toggle) {
             //몬스터볼과 소비아이템만 사용가능
-            if(itemSelected&&(currentItem.getType()==7||currentItem.getType()==0)) {
+            if(itemSelected&&(currentItem.getType()==7||currentItem.getType()==0 &&db.PM_COUNT()>6)) {
                 useButtons.setTouchable(Touchable.enabled);
                 useButtons.setStyle(enabled);
             }else {
