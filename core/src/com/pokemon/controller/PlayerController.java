@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Rectangle;
+import com.pokemon.battle.event.HitEffect;
+import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.DIRECTION;
 import com.pokemon.model.Player;
@@ -17,10 +19,12 @@ public class PlayerController extends InputAdapter {
     private final Player player;
     private float tempX,tempY;
     public Rectangle hitRange;
+    private HitEffect hitEffect;
 
-    public PlayerController(Player player) {
+    public PlayerController(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
         hitRange = new Rectangle(0, 0, 32, 32);
+        hitEffect = new HitEffect(game, gameScreen);
     }
 
     public void update(float delta) {
@@ -82,24 +86,27 @@ public class PlayerController extends InputAdapter {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             hitRange.setPosition(player.x + player.getFacing().getDx() * 32, player.y + player.getFacing().getDy() * 32);
-            for (RenderHelper object : GameScreen.getWorld().getObjects()) {
-                if (hitRange.overlaps((Rectangle) object)) {
-                    switch (object.getName()) {
-                        case "rock":
-                            if (player.equips.equips[4].name.equals("나무곡괭이")) {
-                                System.out.println("돌캐기");
-                            }
-                            break;
-                        case "wood":
-                            if (player.equips.equips[4].name.equals("나무도끼")) {
-                                System.out.println("나무캐기");
-                            }
-                            break;
-                        case "grass":
-                            if (player.equips.equips[4].name.equals("나무괭이")) {
-                                System.out.println("풀베기");
-                            }
-                            break;
+            if (player.equips.equips[4] != null) {
+                hitEffect.hitEffect(hitRange.getX(), hitRange.getY());
+                for (RenderHelper object : GameScreen.getWorld().getObjects()) {
+                    if (hitRange.overlaps((Rectangle) object)) {
+                        switch (object.getName()) {
+                            case "rock":
+                                if (player.equips.equips[4].name.equals("나무곡괭이")) {
+                                    System.out.println("돌캐기");
+                                }
+                                break;
+                            case "wood":
+                                if (player.equips.equips[4].name.equals("나무도끼")) {
+                                    System.out.println("나무캐기");
+                                }
+                                break;
+                            case "grass":
+                                if (player.equips.equips[4].name.equals("나무괭이")) {
+                                    System.out.println("풀베기");
+                                }
+                                break;
+                        }
                     }
                 }
             }

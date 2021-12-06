@@ -109,7 +109,7 @@ public class GameScreen implements Screen {
         player = new Player(2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE, animations);
         world = new Home(player,game,this);
         worldRenderer = new WorldRenderer(player);
-        playerController = new PlayerController(player);
+        playerController = new PlayerController(player,game,this);
         gameController = new GameController(game);
         transitionScreen = new TransitionScreen(game,this);
         uiStack = new Stack<>();
@@ -128,13 +128,10 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-
         worldRenderer.render(game.batch);
-        game.batch.end();
         gameController.update();
         player.update(delta);
         world.update(delta);
-
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update(delta);
         } else {
@@ -145,7 +142,7 @@ public class GameScreen implements Screen {
                 popUi();
             }
         }
-
+        game.batch.end();
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
