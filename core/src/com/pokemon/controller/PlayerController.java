@@ -19,12 +19,10 @@ public class PlayerController extends InputAdapter {
     private final Player player;
     private float tempX,tempY;
     public Rectangle hitRange;
-    private HitEffect hitEffect;
 
     public PlayerController(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
         hitRange = new Rectangle(0, 0, 32, 32);
-        hitEffect = new HitEffect(game, gameScreen);
     }
 
     public void update(float delta) {
@@ -87,7 +85,6 @@ public class PlayerController extends InputAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             hitRange.setPosition(player.x + player.getFacing().getDx() * 32, player.y + player.getFacing().getDy() * 32);
             if (player.equips.equips[4] != null) {
-                hitEffect.hitEffect(hitRange.getX(), hitRange.getY());
                 for (RenderHelper object : GameScreen.getWorld().getObjects()) {
                     if (hitRange.overlaps((Rectangle) object)) {
                         switch (object.getName()) {
