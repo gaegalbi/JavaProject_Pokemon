@@ -69,6 +69,7 @@ public class SingleBattle implements BattleEventQueuer {
        this.game = game;
        this.battleScreen = battleScreen;
        this.userPlayer=userPlayer;
+       playerNum = 1;
 
        assetManager= new AssetManager();
        assetManager.load("ui/uipack.atlas", TextureAtlas.class);
@@ -137,6 +138,7 @@ public class SingleBattle implements BattleEventQueuer {
 
     public void chooseNewPokemon (PK pokemon){
         this.player = pokemon;
+        playerNum++;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.PLAYER,
                 pokemon.getCurrentChHP(),
