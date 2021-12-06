@@ -1,6 +1,8 @@
 package com.pokemon.inventory;
 
 import com.badlogic.gdx.math.Vector2;
+import com.pokemon.db.db;
+import com.pokemon.ui.inventory.InventoryUi;
 
 public class Crafting {
     public static final int NUM_SLOTS = 10;
@@ -67,19 +69,40 @@ public class Crafting {
         return true;
     }
     public Item craftCheck(){
-        if(crafts[0]!=null &&crafts[1]!=null &&crafts[2]!=null &&crafts[3]!=null &&crafts[4]!=null  &&crafts[5]!=null )
-            if ((crafts[0].getKey().equals("ITEM_01")) &&
-                    (crafts[1].getKey().equals("ITEM_01")) &&
-                    (crafts[2].getKey().equals("ITEM_01")) &&
-                    (crafts[3].getKey().equals("ITEM_01")) &&
-                    (crafts[4].getKey().equals("ITEM_01")) &&
-                    (crafts[5].getKey().equals("ITEM_01"))) {
-                crafts[9] = new Item("ITEM_03");;
-                return crafts[9];
+        String[] index = new String[NUM_SLOTS-1];
+        for(int i = 0;i<NUM_SLOTS-1;i++){
+            if(crafts[i]!=null)
+                index[i] = crafts[i].getKey();
+        }
+        Item item = db.GET_CRAFT_RESULT(index[0], index[1], index[2], index[3], index[4], index[5], index[6], index[7], index[8]);
+        if (item != null) {
+            for (int i = 0; i < NUM_SLOTS - 1; i++) {
+
+                if (crafts[i] != null) {
+                    //DB데이터 연동
+                    db.ITEM_UPDATE(crafts[i].getKey(), -1);
+
+                    int current = crafts[i].getCNT() - 1;
+                    if (current > 0) {
+                        crafts[i].setCNT(current);
+                        crafts[i].setCurrentCNT();
+                    }
+                    //0보다 작으면 객체 삭제
+                    else {
+                        crafts[i].actor.remove();
+                        crafts[i].count.remove();
+                        removeCraft(crafts[i].getCIndex());
+                    }
+                    //DB데이터 중 삭제할 데이터 삭제
+                    db.DELETE(); //아이템 갯수가 0이하면 삭제
+                }
             }
+            return item;
+        }
+
+
         return null;
     }
-
 
     public boolean addItemAtIndex(Item item, int index) {
         if (isFreeSlot(index)) {
@@ -89,5 +112,4 @@ public class Crafting {
         }
         return false;
     }
-
 }

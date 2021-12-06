@@ -68,7 +68,6 @@ public class GameScreen implements Screen {
     private boolean skillCheck=false;
     private TransitionScreen transitionScreen;
     private boolean isTransition;
-    private boolean pokemonBoxCheck;
 
     public GameScreen(Pokemon game) {
         this.game = game;
@@ -140,7 +139,7 @@ public class GameScreen implements Screen {
             if (effects.get(i).update(delta)) {
                 effects.remove(i);
             } else {
-                game.batch.draw(effects.get(i).getEffect().getKeyFrame(effects.get(i).getTimer()),playerController.hitRange.x,playerController.hitRange.y,SCALED_TILE_SIZE,SCALED_TILE_SIZE);
+                game.batch.draw(effects.get(i).getEffect().getKeyFrame(effects.get(i).getTimer()),playerController.getHitRange().x,playerController.getHitRange().y,SCALED_TILE_SIZE,SCALED_TILE_SIZE);
             }
         }
         game.batch.end();
@@ -177,18 +176,10 @@ public class GameScreen implements Screen {
                         }
                     });
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
-            pokemonBoxCheck = (!pokemonBoxCheck);
-            if(pokemonBoxCheck) {
-                this.pushUi(new myPokemonUI(this, game,player));
-            }else {
-                AbstractUi popped = uiStack.pop();
-                popped.dispose();
-            }
-        }
+
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-           /* game.setScreen(new BattleScreen(game,player));*/
-             loadingStart();
+            game.setScreen(new BattleScreen(game,player));
+             //loadingStart();
             //dispose();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
@@ -244,7 +235,6 @@ public class GameScreen implements Screen {
     public void update(float delta){
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
-
             if (uiStack.isEmpty()) {
                 pushUi(new InventoryUi(this, game, player));
             } else {
@@ -261,6 +251,13 @@ public class GameScreen implements Screen {
 //                AbstractUi popped = uiStack.pop();
 //                popped.dispose();
 //            }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
+            if(uiStack.isEmpty()) {
+                pushUi(new myPokemonUI(this, game,player));
+            }else {
+                popUi();
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
             if (uiStack.isEmpty()) {
