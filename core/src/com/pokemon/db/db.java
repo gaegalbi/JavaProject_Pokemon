@@ -746,7 +746,7 @@ public class db {
     // 유저 레벨 확인
     public static int user_LV_get() {
         int U_LV = 0;
-        String sql = "select U_LV from user WHERE U_ID = "+ playerID + ";";
+        String sql = "select U_LV from user WHERE U_ID = '"+ playerID + "';";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -769,7 +769,7 @@ public class db {
     // 유저 경험치 확인
     public static int user_EXP_get() {
         int U_EXP = 0;
-        String sql = "select U_EXP from user WHERE U_ID = "+ playerID + ";";
+        String sql = "select U_EXP from user WHERE U_ID = '"+ playerID + "';";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
