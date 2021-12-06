@@ -129,6 +129,7 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         worldRenderer.render(game.batch);
+        game.batch.end();
         gameController.update();
         player.update(delta);
         world.update(delta);
@@ -142,7 +143,6 @@ public class GameScreen implements Screen {
                 popUi();
             }
         }
-        game.batch.end();
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
