@@ -2,7 +2,6 @@ package com.pokemon.ui.pokemonBox;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,7 +17,7 @@ import static com.pokemon.ui.LoginUi.playerID;
 
 
 public class pokemonData {
-    private String[] nameStr = {"가디","강챙이","고라파덕","고오스","거북왕", "갸라도스"};
+    public static String[] nameStr = {"메가니움","강챙이","고라파덕","딱구리","거북왕", "리자몽"};
 
     private int key;
     public String name;
@@ -43,7 +42,6 @@ public class pokemonData {
 
     public pokemonData(int key) {
 //        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE FROM ITEM WHERE ITEM_ID ='"+key+"';";
-//        this.key = key; //배틀 순서
 //
 //        try {
 //            Statement stmt = con.createStatement();
@@ -125,13 +123,15 @@ public class pokemonData {
         }
     }
 
-    public void pokemonDelete(int key) {
-        this.key = -1;
-        nameStr[key] = null;
+    public void pokemonDelete() {
         nameLabel.remove();
         LVLabel.remove();
         myPokemon.remove();
         selectedSlot.remove();
+        bar.remove();
+        barEXP_green.remove();
+        barEXP_yellow.remove();
+        barEXP_red.remove();
     }
 
     public String getNameStr(int num) {
