@@ -33,7 +33,6 @@ public class SkillListUi extends AbstractUi{
     private Label[] skillLV;
     private Label[] skillEXP_C;
     private Label[] skillEXP_M;
-    private Label[] dash;
     private Image[] skillImage;
     private Image[] bar;
     private Image[] barEXP;
@@ -69,15 +68,14 @@ public class SkillListUi extends AbstractUi{
         barEXP = new Image[6];
         int[] currentEXP = db.GET_SK_EXP(playerID);
         float barWidth;
-        dash = new Label[6];
         //스킬 목록
         for(int i=0;i<player.skill.length;i++){
             skillName[i] = new Label(""+player.getSkillName(i),labelColors[0]);
             skillImage[i] = new Image(skin.getRegion(player.getSkillName(i)+""));
             skillImage[i].setSize(30,30);
+
             skillLV[i] = new Label("LV."+player.getSkillLV(i),labelColors[0]);
-            skillEXP_C[i] = new Label(""+player.getSkillEXP(i),labelColors[0]);
-            dash[i]=new Label("/",labelColors[0]);
+            skillEXP_C[i] = new Label(player.getSkillEXP(i)+" / ",labelColors[0]);
             skillEXP_M[i] = new Label(""+ db.GET_SK_NEED_EXP(player.getSkillLV(i)),labelColors[0]);
             bar[i] = new Image(skin.getRegion("hpbar_bar"));
             barEXP[i] = new Image(skin.getRegion("green"));
@@ -94,7 +92,6 @@ public class SkillListUi extends AbstractUi{
             stage.addActor(skillName[i]);
             stage.addActor(skillLV[i]);
             stage.addActor(skillEXP_C[i]);
-            stage.addActor(dash[i]);
             stage.addActor(skillEXP_M[i]);
             stage.addActor(skillImage[i]);
             stage.addActor(bar[i]);
@@ -118,9 +115,8 @@ public class SkillListUi extends AbstractUi{
             skillImage[i].setPosition(headers.getX(), headers.getY()-50-i*50);
             skillName[i].setPosition(headers.getX()+50, headers.getY()-30-i*50);
             skillLV[i].setPosition(headers.getX()+75 + (skillName[i].getText().length*10), headers.getY()-30-i*50);
-            skillEXP_C[i].setPosition(headers.getX() + 110+(3-skillEXP_C[i].getText().length)*2,headers.getY()-45-i*50);
-            dash[i].setPosition(headers.getX() + 113+(skillEXP_M[i].getX() -skillEXP_C[i].getX())/2,headers.getY()-45-i*50);
-            skillEXP_M[i].setPosition(headers.getX() + 125+(skillEXP_C.length-1)*2, headers.getY()-45-i*50);
+            skillEXP_C[i].setPosition(headers.getX() + 120+(4-skillEXP_C.length)*2,headers.getY()-45-i*50);
+            skillEXP_M[i].setPosition(headers.getX() + 135+(skillEXP_C.length-1)*2, headers.getY()-45-i*50);
             bar[i].setPosition(headers.getX() + 50, headers.getY()-45-i*50);
             barEXP[i].setPosition(headers.getX() + 50, headers.getY()-43-i*50);
 
@@ -131,7 +127,6 @@ public class SkillListUi extends AbstractUi{
             skillImage[i].toFront();
             bar[i].toFront();
             barEXP[i].toFront();
-            dash[i].toFront();
         }
 
         stage.draw();

@@ -3,10 +3,13 @@ package com.pokemon.ui.rank;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pokemon.db.db;
@@ -15,7 +18,6 @@ import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
 import com.pokemon.util.SkinGenerator;
-
 import static com.pokemon.ui.LoginUi.playerID;
 
 public class rankUI extends AbstractUi {
@@ -76,8 +78,8 @@ public class rankUI extends AbstractUi {
 
         //ui 및 슬롯, 버튼들 추가(init)
         stage.addActor(ui);
-        for (int i = 0; i < IDLabel.length; i++) stage.addActor(IDLabel[i]);
-        for (int i = 0; i < rankLabel.length; i++) stage.addActor(rankLabel[i]);
+        for (Label label : IDLabel) stage.addActor(label);
+        for (Label label : rankLabel) stage.addActor(label);
         stage.addActor(myRankLabel);
 
         updateText();
@@ -97,19 +99,13 @@ public class rankUI extends AbstractUi {
     }
 
     public void update() {
-        IDLabel[0].setPosition(ui.getX() + 198, ui.getY() + 322);
-        IDLabel[1].setPosition(ui.getX() + 198, ui.getY() + 266);
-        IDLabel[2].setPosition(ui.getX() + 198, ui.getY() + 210);
-        IDLabel[3].setPosition(ui.getX() + 198, ui.getY() + 154);
-        IDLabel[4].setPosition(ui.getX() + 198, ui.getY() + 98);
-        IDLabel[5].setPosition(ui.getX() + 198, ui.getY() + 42);
+        float w =  ui.getX();
+        float h =  ui.getY();
 
-        rankLabel[0].setPosition(ui.getX() + 385, ui.getY() + 322);
-        rankLabel[1].setPosition(ui.getX() + 385, ui.getY() + 266);
-        rankLabel[2].setPosition(ui.getX() + 385, ui.getY() + 210);
-        rankLabel[3].setPosition(ui.getX() + 385, ui.getY() + 154);
-        rankLabel[4].setPosition(ui.getX() + 385, ui.getY() + 98);
-        rankLabel[5].setPosition(ui.getX() + 385, ui.getY() + 42);
+        for (int i = 0; i < 6; i++) {
+            IDLabel[i].setPosition(w + 198, h  + 322 - i * 56);
+            rankLabel[i].setPosition(w + 385, h + 322 - i * 56);
+        }
 
         myRankLabel.setPosition(ui.getX() + 82, ui.getY() + 42);
 

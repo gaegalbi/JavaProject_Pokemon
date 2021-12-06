@@ -39,8 +39,6 @@ public class myPokemonUI extends AbstractUi {
     private ImageButton.ImageButtonStyle disabled;
     private ImageButton invButtons;
     private Label invButtonLabels;
-    private ImageButton craftButton;
-    private Label craftLabel;
 
 
     //이벤트 핸들링(드래그)
@@ -157,7 +155,7 @@ public class myPokemonUI extends AbstractUi {
                         protected void result(Object object) {
                             if (object.equals("yes")) {
                                 unselectItem();
-                                pokemon[selectNum].pokemonDelete(selectNum);
+                                updatePokemon(selectNum);
                             }
                         }
                     }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -168,6 +166,15 @@ public class myPokemonUI extends AbstractUi {
 
     //인벤 버튼 토글
     private void updatePokemon(int selectNum) {
+        pokemonData temp = pokemon[selectNum];
+
+        int i;
+        for (i = selectNum; i < 5; i++) {
+            pokemon[i] = pokemon[i+1];
+        }
+        pokemon[i] = temp;
+        pokemon[i].pokemonDelete();
+        pokemon[i] = null;
     }
 
     private void addInventoryEvent (final Image item){
@@ -184,8 +191,6 @@ public class myPokemonUI extends AbstractUi {
                 prevY = (int) (item.getY() + item.getHeight() / 2);
 
                 //포켓몬 이미지
-                //selectNum  = Integer.parseInt(item.getName());
-
                 selectNum = getCHoveredIndex(prevX,prevY);
                 pokemon[selectNum].selectedSlot.toFront();
 
@@ -198,7 +203,7 @@ public class myPokemonUI extends AbstractUi {
             public void drag(InputEvent event, float x, float y, int pointer) {
                 pokemon[selectNum].selectedSlot.moveBy(x -item.getWidth() / 2, y - item.getHeight() / 2);
                 item.moveBy( x -item.getWidth() / 2, y - item.getHeight() / 2);
-                System.out.println("얘를 가짐" + pokemon[selectNum].getName());
+                //  System.out.println("얘를 가짐" + pokemon[selectNum].getName());
             }
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -211,20 +216,17 @@ public class myPokemonUI extends AbstractUi {
                 ay = (int) (item.getY() + item.getHeight() / 2);
 
                 int h = getCHoveredIndex(ax,ay);
-                System.out.println(h);
+                //     System.out.println(h);
 
 
                 if (h != -1){
                     pokemonData swap = pokemon[h];
                     pokemon[h] = pokemon[selectNum];
                     pokemon[selectNum] = swap;
-/*
-                    item.setX(ax - item.getWidth() / 2);
-                    item.setY(ay - item.getHeight() / 2);*/
                 }
-                for(int i=0;i<6;i++){
-                    System.out.println(i + "번째 "+pokemon[i].getName());
-                }
+//                for(int i=0;i<6;i++){
+//                    System.out.println(i + "번째 "+pokemon[i].getName());
+//                }
             }
         });
 
@@ -236,6 +238,7 @@ public class myPokemonUI extends AbstractUi {
                 prevX = (int) (item.getX() + item.getWidth() / 2);
                 prevY = (int) (item.getY() + item.getHeight() / 2);
 
+                selectNum = getCHoveredIndex(prevX,prevY);
                 return true;
             }
 
@@ -245,10 +248,6 @@ public class myPokemonUI extends AbstractUi {
                 ax = (int) (item.getX() + item.getWidth() / 2);
                 ay = (int) (item.getY() + item.getHeight() / 2);
 
-                selectNum  = Integer.parseInt(item.getName());
-                System.out.println("선택 " + selectNum);
-                selectNum = getCHoveredIndex(ax,ay);
-                System.out.println("선택 변경 " + selectNum);
 
                 if (prevX == ax && prevY == ay) {
                     itemSelected = true;
@@ -257,9 +256,9 @@ public class myPokemonUI extends AbstractUi {
                     selectItem(selectNum);
                     showSelectedSlot(selectNum);
                 }
-                for(int i=0;i<6;i++){
-                    System.out.println(i + "번째 "+pokemon[i].getName());
-                }
+//                for(int i=0;i<6;i++){
+//                    System.out.println(i + "번째 "+pokemon[i].getName());
+//                }
             }
         });
     }
@@ -282,23 +281,6 @@ public class myPokemonUI extends AbstractUi {
             if (x >= 485 && x <= 625)
                 return 5;
         }
-     /*   if (y >= 270 && y <= 440){
-            if (x >= 185 && x <= 315)
-                return 0;
-            if (x >= 335 && x <= 465)
-                return 1;
-            if (x >= 485 && x <= 625)
-                return 2;
-        }
-        else if (y >= 80 && y <= 250){
-            if (x >= 185 && x <= 315)
-                return 3;
-            if (x >= 335 && x <= 465)
-                return 4;
-            if (x >= 485 && x <= 625)
-                return 5;
-        }*/
-
         return -1;
     }
 
@@ -306,7 +288,7 @@ public class myPokemonUI extends AbstractUi {
     private void unselectItem() {
         itemSelected = false;
         currentItem = null;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6 && pokemon[i] != null; i++) {
             pokemon[i].selectedSlot.setVisible(false);
             pokemon[i].myPokemon.setVisible(true);
         }
@@ -316,7 +298,7 @@ public class myPokemonUI extends AbstractUi {
     //포켓몬 선택
     private void selectItem(int num) {
         itemSelected = false;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6 && pokemon[i] != null; i++) {
             pokemon[i].selectedSlot.setVisible(false);
             pokemon[i].myPokemon.setVisible(true);
         }
@@ -353,36 +335,34 @@ public class myPokemonUI extends AbstractUi {
 
         if(!dragging){
             for (int i = 0; i < 6; i++) {
-                if (i < 3){
-                    pokemon[i].nameLabel.setPosition(w + i * 153 + 97, h + 412);
-                    pokemon[i].LVLabel.setPosition(w + i * 153 + 45, h + 380);
-                    pokemon[i].myPokemon.setPosition(w + i * 153 + 30, h + 245);
-                    pokemon[i].selectedSlot.setPosition(w + i * 153 + 30, h + 245);
-                    pokemon[i].bar.setPosition(w + i * 153 + 95, h + 394);
-                    if (pokemon[i].barColor == 1)
-                        pokemon[i].barEXP_green.setPosition(w + i * 153 + 96, h + 397);
-                    if (pokemon[i].barColor == 2)
-                        pokemon[i].barEXP_yellow.setPosition(w + i * 153 + 96, h + 397);
-                    if (pokemon[i].barColor == 3)
-                        pokemon[i].barEXP_red.setPosition(w + i * 153 + 96, h + 397);
+                if (pokemon[i] != null){
+                    if (i < 3){
+                        pokemon[i].nameLabel.setPosition(w + i * 153 + 97, h + 412);
+                        pokemon[i].LVLabel.setPosition(w + i * 153 + 45, h + 380);
+                        pokemon[i].myPokemon.setPosition(w + i * 153 + 30, h + 245);
+                        pokemon[i].selectedSlot.setPosition(w + i * 153 + 30, h + 245);
+                        pokemon[i].bar.setPosition(w + i * 153 + 95, h + 394);
+                        if (pokemon[i].barColor == 1)
+                            pokemon[i].barEXP_green.setPosition(w + i * 153 + 96, h + 397);
+                        if (pokemon[i].barColor == 2)
+                            pokemon[i].barEXP_yellow.setPosition(w + i * 153 + 96, h + 397);
+                        if (pokemon[i].barColor == 3)
+                            pokemon[i].barEXP_red.setPosition(w + i * 153 + 96, h + 397);
+                    }
+                    else{
+                        pokemon[i].nameLabel.setPosition(w + (i - 3) * 153 + 97, h + 222);
+                        pokemon[i].LVLabel.setPosition(w + (i - 3) * 153 + 45, h + 190);
+                        pokemon[i].myPokemon.setPosition(w + (i - 3) * 153 + 30, h + 55);
+                        pokemon[i].selectedSlot.setPosition(w + (i - 3) * 153 + 30, h + 55);
+                        pokemon[i].bar.setPosition(w + (i - 3) * 153 + 95, h + 205);
+                        if (pokemon[i].barColor == 1)
+                            pokemon[i].barEXP_green.setPosition(w + (i - 3) * 153 + 96, h + 208);
+                        if (pokemon[i].barColor == 2)
+                            pokemon[i].barEXP_yellow.setPosition(w + (i - 3) * 153 + 96, h + 208);
+                        if (pokemon[i].barColor == 3)
+                            pokemon[i].barEXP_red.setPosition(w + (i - 3) * 153 + 96, h + 208);
+                    }
                 }
-                else{
-                    pokemon[i].nameLabel.setPosition(w + (i - 3) * 153 + 97, h + 222);
-                    pokemon[i].LVLabel.setPosition(w + (i - 3) * 153 + 45, h + 190);
-                    pokemon[i].myPokemon.setPosition(w + (i - 3) * 153 + 30, h + 55);
-                    pokemon[i].selectedSlot.setPosition(w + (i - 3) * 153 + 30, h + 55);
-                    pokemon[i].bar.setPosition(w + (i - 3) * 153 + 95, h + 205);
-                    if (pokemon[i].barColor == 1)
-                        pokemon[i].barEXP_green.setPosition(w + (i - 3) * 153 + 96, h + 208);
-                    if (pokemon[i].barColor == 2)
-                        pokemon[i].barEXP_yellow.setPosition(w + (i - 3) * 153 + 96, h + 208);
-                    if (pokemon[i].barColor == 3)
-                        pokemon[i].barEXP_red.setPosition(w + (i - 3) * 153 + 96, h + 208);
-                }
-                pokemon[i].bar.toFront();
-                pokemon[i].barEXP_green.toFront();
-                pokemon[i].barEXP_yellow.toFront();
-                pokemon[i].barEXP_red.toFront();
             }
         }
 

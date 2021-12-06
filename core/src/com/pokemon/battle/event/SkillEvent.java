@@ -64,7 +64,6 @@ public class SkillEvent{
                     }
                 }, time3);
             }
-            System.out.println(count + ", "+enemyCount);
 
         }else{
             if(enemyCount == 1) {
@@ -88,7 +87,6 @@ public class SkillEvent{
                         count = 1;
                     }
                 }, time2);
-                System.out.println(count + ", "+enemyCount);
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {

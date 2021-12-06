@@ -18,6 +18,7 @@ import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.Effect;
 import com.pokemon.model.Player;
 import com.pokemon.ui.AbstractUi;
 //import com.pokemon.ui.inventory.InventoryRenderer;
@@ -37,6 +38,7 @@ import com.pokemon.world.Home;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
@@ -58,6 +60,8 @@ public class GameScreen implements Screen {
     private Stack<AbstractUi> uiStack1;
    // private InventoryRenderer inventoryRenderer;
     private Stack<AbstractUi> uiStack;
+    private ArrayList<Effect> effects;
+
     Stage stage;
     private boolean invenCheck=false;
     private boolean skillCheck=false;
@@ -68,6 +72,7 @@ public class GameScreen implements Screen {
     public GameScreen(Pokemon game) {
         this.game = game;
         uiStack1 = new Stack<>();
+        effects = new ArrayList<>();
         assetManager = new AssetManager();
         assetManager.load("players/players.atlas", TextureAtlas.class);
         assetManager.load("transitions/white.png", Texture.class);
@@ -88,7 +93,6 @@ public class GameScreen implements Screen {
             System.out.println(transitionShader.getLog());
         }
         isTransition = false;
-
 
         TextureAtlas playerTexture = assetManager.get("players/players.atlas", TextureAtlas.class);
         //TextureAtlas Texture = assetManager.get("texture/texture.atlas", TextureAtlas.class);
@@ -111,7 +115,7 @@ public class GameScreen implements Screen {
         player = new Player(2*SCALED_TILE_SIZE, 3*SCALED_TILE_SIZE, animations);
         world = new Home(player,game,this);
         worldRenderer = new WorldRenderer(player);
-        playerController = new PlayerController(player);
+        playerController = new PlayerController(player,this);
         gameController = new GameController(game);
         transitionScreen = new TransitionScreen(game,this);
         uiStack = new Stack<>();
@@ -130,8 +134,14 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-
         worldRenderer.render(game.batch);
+        for (int i = 0; i < effects.size(); i++) {
+            if (effects.get(i).update(delta)) {
+                effects.remove(i);
+            } else {
+                game.batch.draw(effects.get(i).getEffect().getKeyFrame(effects.get(i).getTimer()),playerController.hitRange.x,playerController.hitRange.y,SCALED_TILE_SIZE,SCALED_TILE_SIZE);
+            }
+        }
         game.batch.end();
         gameController.update();
         player.update(delta);
@@ -327,5 +337,9 @@ public class GameScreen implements Screen {
             popped.dispose();
             //Gdx.input.setInputProcessor(uiStack.peek().getStage());
         }
+    }
+
+    public ArrayList<Effect> getEffects() {
+        return effects;
     }
 }
