@@ -770,4 +770,60 @@ public class db {
         }
     }
 
+    public static int PM_COUNT() {
+        String sql;
+        sql = "SELECT COUNT(*) count FROM pm WHERE U_ID = '" + playerID + "';";
+
+        int count = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            return count;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public static void PM_BATTLE_UPDATE(String PM_ID, int change) {
+        String sql;
+        sql = "UPDATE pm SET PM_BATTLE = "+ change +" WHERE PM_ID = '" + PM_ID + "' AND U_ID = '" + playerID + "';";
+
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+    public static void PM_DELETE(String PM_ID) {
+        String sql;
+        sql = "DELETE FROM pm  WHERE PM_ID = '" + PM_ID + "' AND U_ID = '" + playerID + "';";
+
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
 }
