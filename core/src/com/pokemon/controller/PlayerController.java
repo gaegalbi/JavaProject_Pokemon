@@ -3,6 +3,7 @@ package com.pokemon.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
@@ -14,13 +15,96 @@ import static com.pokemon.game.Settings.PLAYER_MOVE_SPEED;
 public class PlayerController extends InputAdapter {
     private final Player player;
     private float tempX,tempY;
-    public Rectangle hitRange;
-    public GameScreen gameScreen;
+    private Rectangle hitRange;
+    private GameScreen gameScreen;
+    private float percent;
+
+    public Rectangle getHitRange() {
+        return hitRange;
+    }
 
     public PlayerController(Player player, GameScreen gameScreen) {
         this.player = player;
         this.gameScreen = gameScreen;
         hitRange = new Rectangle(0, 0, 32, 32);
+    }
+
+    public void pickRock() {
+        int playerLevel = player.getLV();
+        float percent = MathUtils.random();
+        if (playerLevel < 10) {
+            if (percent < 0.2f) {
+                System.out.println("철 획득");
+            } else {
+                System.out.println("돌 획득");
+            }
+        } else if (playerLevel < 20){
+            if (percent < 0.2f) {
+                System.out.println("금 획득");
+            } else if (percent < 0.5f) {
+                System.out.println("철 획득");
+            } else {
+                System.out.println("돌 획득");
+            }
+        } else if (playerLevel < 30){
+            if (percent < 0.3f) {
+                System.out.println("금 획득");
+            } else {
+                System.out.println("철 획득");
+            }
+        }
+    }
+
+    public void pickGrass() {
+        int playerLevel = player.getLV();
+        float percent = MathUtils.random();
+        if (playerLevel < 10) {
+            if (percent < 0.2f) {
+                System.out.println("허브 획득");
+            } else {
+                System.out.println("잡초 획득");
+            }
+        } else if (playerLevel < 20){
+            if (percent < 0.2f) {
+                System.out.println("산삼 획득");
+            } else if (percent < 0.5f) {
+                System.out.println("허브 획득");
+            } else {
+                System.out.println("잡초 획득");
+            }
+        } else if (playerLevel < 30){
+            if (percent < 0.3f) {
+                System.out.println("산삼 획득");
+            } else {
+                System.out.println("허브 획득");
+            }
+        }
+    }
+
+    public void pickWood() {
+        int playerLevel = player.getLV();
+        float percent = MathUtils.random();
+        if (playerLevel < 10) {
+            if (percent < 0.2f) {
+                System.out.println("목재 획득");
+            } else {
+                System.out.println("나뭇가지 획득");
+            }
+        } else if (playerLevel < 20){
+            if (percent < 0.2f) {
+                System.out.println("단단한목재 획득");
+            } else if (percent < 0.5f) {
+                System.out.println("목재 획득");
+            } else {
+                System.out.println("나뭇가지 획득");
+            }
+        } else if (playerLevel < 30){
+            if (percent < 0.3f) {
+                System.out.println("단단한목재 획득");
+            } else {
+                System.out.println("목재 획득");
+            }
+        }
     }
 
     public void update(float delta) {
@@ -85,23 +169,36 @@ public class PlayerController extends InputAdapter {
             if (player.equips.equips[4] != null && gameScreen.getEffects().isEmpty() && player.getState() == Player.PLAYER_STATE.STANDING) {
                 for (RenderHelper object : GameScreen.getWorld().getObjects()) {
                     if (hitRange.overlaps((Rectangle) object)) {
+                        percent = MathUtils.random();
                         switch (object.getName()) {
                             case "rock":
                                 if (player.equips.equips[4].name.equals("나무곡괭이")) {
-                                    gameScreen.getEffects().add(new Effect(0.2f));
-                                    System.out.println("돌캐기");
+                                    if (percent < 0.8f) {
+                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                    } else {
+                                        gameScreen.getEffects().add(new Effect(0.35f, true));
+                                        pickRock();
+                                    }
                                 }
                                 break;
                             case "wood":
                                 if (player.equips.equips[4].name.equals("나무도끼")) {
-                                    gameScreen.getEffects().add(new Effect(0.2f));
-                                    System.out.println("나무캐기");
+                                    if (percent < 0.8f) {
+                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                    } else {
+                                        gameScreen.getEffects().add(new Effect(0.35f, true));
+                                        System.out.println("나무캐기");
+                                    }
                                 }
                                 break;
                             case "grass":
                                 if (player.equips.equips[4].name.equals("나무괭이")) {
-                                    gameScreen.getEffects().add(new Effect(0.2f));
-                                    System.out.println("풀베기");
+                                    if (percent < 0.8f) {
+                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                    } else {
+                                        gameScreen.getEffects().add(new Effect(0.35f, true));
+                                        System.out.println("풀베기");
+                                    }
                                 }
                                 break;
                         }

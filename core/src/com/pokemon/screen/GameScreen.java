@@ -137,7 +137,7 @@ public class GameScreen implements Screen {
             if (effects.get(i).update(delta)) {
                 effects.remove(i);
             } else {
-                game.batch.draw(effects.get(i).getEffect().getKeyFrame(effects.get(i).getTimer()),playerController.hitRange.x,playerController.hitRange.y,SCALED_TILE_SIZE,SCALED_TILE_SIZE);
+                game.batch.draw(effects.get(i).getEffect().getKeyFrame(effects.get(i).getTimer()),playerController.getHitRange().x,playerController.getHitRange().y,SCALED_TILE_SIZE,SCALED_TILE_SIZE);
             }
         }
         game.batch.end();
