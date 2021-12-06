@@ -244,6 +244,12 @@ public class BattleScreen implements Screen, BattleEventPlayer {
         if(game.isOnoff()){
             skillEvent.effectSkill();
         }
+        //싱글스킬
+        if(SingleBattle.STATE.READY_TO_PROGRESS==battle.getState()){
+            skillcount=1;
+            skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
+            skillcount = 0;
+        }
         if(skillcount == 1){
             skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
             skillcount = 0;
