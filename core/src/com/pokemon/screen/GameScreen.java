@@ -154,7 +154,6 @@ public class GameScreen implements Screen {
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update(delta);
         } else {
-            pushScreen(new ChatButton(this,game));
             for (AbstractUi abstractUi : uiStack) {
                 abstractUi.update();
             }

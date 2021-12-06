@@ -826,4 +826,50 @@ public class db {
             e.printStackTrace();
         }
     }
+
+    public static int PM_HP_GET(int num) {
+        String sql;
+        sql = "SELECT PM_HP FROM pm WHERE U_ID = '" + playerID + "' AND PM_BATTLE = " + num +";";
+
+        int hp = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                hp = rs.getInt("PM_HP");
+            }
+            return hp;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+        return hp;
+    }
+
+
+    public static void PM_HEAL(int num) {
+        num += 1;
+        int skill_LV[] = db.GET_SK_LV(playerID);
+        int HP = PM_HP_GET(num) + skill_LV[4]+10;
+        System.out.println(PM_HP_GET(num));
+
+        String sql;
+        sql = "UPDATE pm SET PM_currentHP = "+ HP +" WHERE PM_BATTLE = " + num + " AND U_ID = '" + playerID + "';";
+
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
 }

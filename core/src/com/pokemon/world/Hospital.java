@@ -3,6 +3,7 @@ package com.pokemon.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
@@ -98,6 +99,8 @@ public class Hospital implements World{
             if (heal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
                 System.out.println("HEAL");
+                for (int i = 0; i < db.PM_COUNT(); i++)
+                    db.PM_HEAL(i);
             }
         }
     }
