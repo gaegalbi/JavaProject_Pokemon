@@ -87,6 +87,8 @@ public class Item {
         assetManager.load("texture/풀회복약.png",Texture.class);
         assetManager.load("texture/PP에이더.png",Texture.class);
         assetManager.load("texture/PP맥스.png",Texture.class);
+
+        assetManager.load("texture/나무도끼.png",Texture.class);
         assetManager.finishLoading();
 
         Skin skin = SkinGenerator.generateSkin(assetManager);
