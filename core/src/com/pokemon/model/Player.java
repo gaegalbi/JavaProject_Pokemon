@@ -157,13 +157,28 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     public int getLV(){
         return LV;
     }
+
+    public void setLV(int num){
+        LV += num;
+    }
+
     public int getRANK(){return RANK;}
+
+    public void setRANK(int num){
+        RANK += num;
+    }
+
     public int getEXP(){
         return EXP;
+    }
+
+    public void setEXP(int num){
+        EXP += num;
     }
     public int getMaxEXP(){
         return db.GET_MAX_EXP(LV);
     }
+
     public int getSKLV(int index){return skill_LV[index];}
     public void setSKLV(int index, int count){skill_LV[index] = count;}
 

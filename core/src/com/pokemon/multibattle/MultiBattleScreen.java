@@ -402,6 +402,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                     controller.restartTurn();
                 } else if (battle.getState() == Battle.STATE.WIN) {
                     db.RANK_SET_RANK(playerID,10);
+                    player.setRANK(10);
                     game.setScreen(new GameScreen(game));
                 } else if (battle.getState() == Battle.STATE.LOSE) {
                     game.setScreen(new GameScreen(game));
