@@ -25,6 +25,8 @@ public class PK {
     private boolean capture;
     private String type;
     private int EXP;
+
+
     private int currentChHP;
     private int skill_LV[];
     private Player player;
@@ -211,6 +213,7 @@ public class PK {
         if (currentChHP < 0) {
             currentChHP = 0;
         }
+        System.out.println(currentChHP);
     }
     public void applyHeal(int amount) {
         currentChHP += amount;

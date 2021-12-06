@@ -20,7 +20,7 @@ public class BattleClient extends Thread{
     int b=0;
     public BattleClient(final Pokemon game) {
         try {
-            socket = new Socket("localhost", 9021);
+            socket = new Socket("localhost", 9032);
 
             this.game = game;
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

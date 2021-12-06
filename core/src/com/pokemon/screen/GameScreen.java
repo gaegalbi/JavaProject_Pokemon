@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.ui.AbstractUi;
@@ -39,6 +40,7 @@ import aurelienribon.tweenengine.TweenManager;
 import java.util.Stack;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
+import static com.pokemon.ui.LoginUi.playerID;
 
 public class GameScreen implements Screen {
     final Pokemon game;
@@ -169,8 +171,13 @@ public class GameScreen implements Screen {
             }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,player));
-             //loadingStart();
+           /* game.setScreen(new BattleScreen(game,player));*/
+             loadingStart();
+            //dispose();
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
+            /* game.setScreen(new BattleScreen(game,player));*/
+            db.RANK_SET_RANK(playerID,10);
             //dispose();
         }
 

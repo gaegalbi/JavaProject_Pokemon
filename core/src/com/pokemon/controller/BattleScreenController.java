@@ -2,14 +2,20 @@ package com.pokemon.controller;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.pokemon.battle.Battle;
+import com.pokemon.battle.event.BattleEventPlayer;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.model.DIRECTION;
 import com.pokemon.ui.DialogueBox;
 import com.pokemon.ui.MoveSelectBox;
 import com.pokemon.ui.OptionBox;
+import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.*;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.TextEvent;
@@ -35,7 +41,7 @@ public class BattleScreenController extends InputAdapter {
 
     private DialogueBox dialogue;
     private OptionBox optionBox;
-    private MoveSelectBox moveSelect;
+    public static MoveSelectBox moveSelect;
     private Pokemon game;
     private Stack<AbstractUi> uiStack;
     private BattleScreen battleScreen;
@@ -60,7 +66,7 @@ public class BattleScreenController extends InputAdapter {
         this.battle = battle;
         this.queue = queue;
         this.dialogue = dialogue;
-        this.moveSelect = options;
+        moveSelect = options;
         this.optionBox = optionBox;
         this.turnon = turnon;
         this.uiStack = uiStack;
@@ -118,7 +124,10 @@ public class BattleScreenController extends InputAdapter {
                 } else if (keycode == Keys.RIGHT) {
                     moveSelect.moveRight();
                     return true;
-                }
+                } /*else if (keycode == Keys.F9) {
+                    battle.selectItem();
+                *//*    uiStack.add(new useItemUi(this, battle, battleScreen, game, player));*//*
+                }*/
             }
         } else {
             if (moveSelect.isVisible()) {
@@ -223,7 +232,7 @@ public class BattleScreenController extends InputAdapter {
                     System.out.println(a);
 
                     *//* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*//*
-					*//*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
+     *//*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
 						queue.add(new TextEvent("No such move...", 0.5f));
 					} else {
 						battle.progress(moveSelect.getSelection());

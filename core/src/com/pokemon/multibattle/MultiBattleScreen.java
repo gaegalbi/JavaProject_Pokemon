@@ -34,6 +34,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
 
+import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
 
 public class MultiBattleScreen implements Screen, BattleEventPlayer {
@@ -225,7 +226,6 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         }
         if(game.isOnoff()){
             skillEvent.effectSkill();
-            System.out.println("스킬해해해");
         }
         if(skillcount == 1){
             skillEvent = new SkillEvent(this,batch,game,battle.getPTrainer().getPokemon(battle.getPoket1()).getType(),battle.getOTrainer().getPokemon(battle.getPoket2()).getType(),battle.isSkill());
@@ -394,6 +394,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                 } else if (battle.getState() == Battle.STATE.READY_TO_PROGRESS) {
                     controller.restartTurn();
                 } else if (battle.getState() == Battle.STATE.WIN) {
+                    db.RANK_SET_RANK(playerID,10);
                     game.setScreen(new GameScreen(game));
                 } else if (battle.getState() == Battle.STATE.LOSE) {
                     game.setScreen(new GameScreen(game));
