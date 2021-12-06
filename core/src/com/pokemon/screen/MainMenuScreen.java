@@ -2,7 +2,6 @@ package com.pokemon.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -24,7 +23,6 @@ public class MainMenuScreen implements Screen {
     private Animation<TextureRegion> pikachu = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pikachu.gif").read());
     private float timer;
     private int pikachuX = -225;
-    private Music rainMusic;
 
     public MainMenuScreen(Pokemon game) {
         VisUI.load(VisUI.SkinScale.X1);
@@ -35,15 +33,10 @@ public class MainMenuScreen implements Screen {
         camera.setToOrtho(false,800,480);
 
         uiStack.add(new LoginUi(this,game));
-
-       // Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music/title.ogg"));
-        rainMusic.setLooping(true);
     }
 
     @Override
     public void show() {
-        rainMusic.play();
     }
 
     @Override
