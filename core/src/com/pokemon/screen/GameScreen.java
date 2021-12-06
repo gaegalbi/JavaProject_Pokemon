@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.pokemon.chat.ChatClient;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
 import com.pokemon.db.db;
@@ -81,7 +82,6 @@ public class GameScreen implements Screen {
         }
         assetManager.load("texture/texture.atlas", TextureAtlas.class);
         assetManager.finishLoading();
-        uiStack1.add(new ChatButton(this,game));
 
         tweenManager = new TweenManager();
         Tween.registerAccessor(BattleBlinkTransition.class, new BattleBlinkTransitionAccessor());
@@ -119,6 +119,7 @@ public class GameScreen implements Screen {
         gameController = new GameController(game);
         transitionScreen = new TransitionScreen(game,this);
         uiStack = new Stack<>();
+        uiStack1.add(new ChatButton(this,game));
     }
 
     @Override
@@ -154,6 +155,7 @@ public class GameScreen implements Screen {
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update(delta);
         } else {
+            pushScreen(new ChatButton(this,game));
             for (AbstractUi abstractUi : uiStack) {
                 abstractUi.update();
             }
