@@ -139,12 +139,7 @@ public class BattleScreenController extends InputAdapter {
                     System.out.println(a);
 
                     /* 해당 스킬이 null이 아니고 Current SK CNT가 1이상일때만 동작*/
-					/*if (battle.getP_P().getSkill()[selection] == null && battle.getP_P().getCurrent_SK_CNT()[selection] > 0) {
-						queue.add(new TextEvent("No such move...", 0.5f));
-					} else {
-						battle.progress(moveSelect.getSelection());
-						endTurn();
-					}*/
+
                 } else if (keycode == Keys.UP) {
                     moveSelect.moveUp();
                     return true;

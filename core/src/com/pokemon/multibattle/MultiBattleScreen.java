@@ -210,10 +210,17 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
 
         if(controller.getCount()==1){
             String s = String.valueOf(controller.X());
-            bc.setSendMessage(s);
-            controller.endTurn();
-            queue.add(new TextEvent("상대가 선택 중 입니다.", true));
+            if (battle.getP_P().getSkill()[controller.X()] == null || battle.getP_P().getCurrent_SK_CNT()[controller.X()] <= 0)  {
+                controller.endTurn();
+                queue.add(new TextEvent("사용할수 없습니다...", 0.5f));
+
+            } else {
+                bc.setSendMessage(s);
+                controller.endTurn();
+                queue.add(new TextEvent("상대가 선택 중 입니다.", true));
+            }
             controller.setCount(0);
+
         }
         if(game.getI()==1 && game.getJ()==1){
             currentEvent = null;
