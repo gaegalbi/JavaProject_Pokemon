@@ -15,10 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.LoginUi;
 import com.pokemon.ui.rank.ImageUI;
 import com.pokemon.util.SkinGenerator;
 
@@ -30,6 +32,7 @@ public class myPokemonUI extends AbstractUi {
     private AssetManager assetManager;
     private Skin skin;
     private ImageUI ui;
+    private String playerid;
 
     //버튼
     private TextureRegion[][] invbuttons92x28;
@@ -39,7 +42,6 @@ public class myPokemonUI extends AbstractUi {
     private ImageButton.ImageButtonStyle disabled;
     private ImageButton invButtons;
     private Label invButtonLabels;
-
 
     //이벤트 핸들링(드래그)
     private boolean dragging = false;
@@ -53,6 +55,9 @@ public class myPokemonUI extends AbstractUi {
     //현재 선택 아이템 이름
     private int selectNum;
 
+    //몬스터 갯수
+    private int PM_COUNT;
+
     public static Label.LabelStyle[] labelColors;
 
     private pokemonData[] pokemon;
@@ -61,6 +66,7 @@ public class myPokemonUI extends AbstractUi {
         this.game = game;
         this.gameScreen = gameScreen;
         this.player = player;
+        playerid = LoginUi.playerID;
         stage = new Stage(new ScreenViewport());
 
         skin = SkinGenerator.generateSkin(assetManager);
@@ -78,6 +84,7 @@ public class myPokemonUI extends AbstractUi {
                 new Label.LabelStyle(skin.getFont("font"), new Color(255 / 255.f, 255 / 255.f, 255 / 255.f, 1)), // white
                 new Label.LabelStyle(skin.getFont("font"), new Color(0, 0, 0, 1)), // black
         };
+        PM_COUNT = db.PM_COUNT();
 
         pokemon = new pokemonData[6];
 
@@ -108,9 +115,9 @@ public class myPokemonUI extends AbstractUi {
     }
 
     private void addPokemon() {
-        for (int i = 0; i < 6; i++) {
-            pokemon[i] = new pokemonData(i);
-            if (pokemon[i] != null) {
+        for (int i = 0; i < PM_COUNT; i++) {
+            pokemon[i] = new pokemonData(i + 1, playerid);
+            if (pokemon[i].nameLabel != null) {
                 stage.addActor(pokemon[i].nameLabel);
                 stage.addActor(pokemon[i].LVLabel);
                 stage.addActor(pokemon[i].myPokemon);
@@ -128,9 +135,11 @@ public class myPokemonUI extends AbstractUi {
     }
 
     private void handleInventoryEvents() {
-        for (int i = 0; i < 6; i++) {
-            addInventoryEvent(pokemon[i].myPokemon);
-            pokemon[i].myPokemon.setName(i + "");
+        for (int i = 0; i < PM_COUNT; i++) {
+            if (pokemon[i].nameLabel != null) {
+                addInventoryEvent(pokemon[i].myPokemon);
+                pokemon[i].myPokemon.setName(i + "");
+            }
         }
     }
 
@@ -169,12 +178,17 @@ public class myPokemonUI extends AbstractUi {
         pokemonData temp = pokemon[selectNum];
 
         int i;
-        for (i = selectNum; i < 5; i++) {
+        for (i = selectNum; i < PM_COUNT - 1; i++) {
+            int num = pokemon[i].key;
+
+
+            db.PM_BATTLE_UPDATE(pokemon[i+1].keyID, num);
             pokemon[i] = pokemon[i+1];
         }
         pokemon[i] = temp;
+        db.PM_DELETE(pokemon[i].keyID);
         pokemon[i].pokemonDelete();
-        pokemon[i] = null;
+        pokemon[i].nameLabel = null;
     }
 
     private void addInventoryEvent (final Image item){
@@ -216,17 +230,24 @@ public class myPokemonUI extends AbstractUi {
                 ay = (int) (item.getY() + item.getHeight() / 2);
 
                 int h = getCHoveredIndex(ax,ay);
-                //     System.out.println(h);
 
-
+                // 스왑
                 if (h != -1){
+                    int num1 = pokemon[selectNum].key;
+                    int num2 = pokemon[h].key;
+
+                    db.PM_BATTLE_UPDATE(pokemon[h].keyID, num1);
+                    db.PM_BATTLE_UPDATE(pokemon[selectNum].keyID, num2);
+
+                    pokemon[h].key = num1;
+                    pokemon[selectNum].key = num2;
+
                     pokemonData swap = pokemon[h];
                     pokemon[h] = pokemon[selectNum];
                     pokemon[selectNum] = swap;
+
+                    System.out.println(pokemon[selectNum].key + " " + pokemon[h].key);
                 }
-//                for(int i=0;i<6;i++){
-//                    System.out.println(i + "번째 "+pokemon[i].getName());
-//                }
             }
         });
 
@@ -266,19 +287,19 @@ public class myPokemonUI extends AbstractUi {
     //마우스 포켓몬 위치
     private int getCHoveredIndex(int x, int y) {
         if (y >= 270 && y <= 440){
-            if (x >= 185 && x <= 315)
+            if (x >= 185 && x <= 315 && PM_COUNT >= 1)
                 return 0;
-            if (x >= 335 && x <= 465)
+            if (x >= 335 && x <= 465 && PM_COUNT >= 2)
                 return 1;
-            if (x >= 485 && x <= 625)
+            if (x >= 485 && x <= 625 && PM_COUNT >= 3)
                 return 2;
         }
         else if (y >= 80 && y <= 250){
-            if (x >= 185 && x <= 315)
+            if (x >= 185 && x <= 315 && PM_COUNT >= 4)
                 return 3;
-            if (x >= 335 && x <= 465)
+            if (x >= 335 && x <= 465 && PM_COUNT >= 5)
                 return 4;
-            if (x >= 485 && x <= 625)
+            if (x >= 485 && x <= 625 && PM_COUNT >= 6)
                 return 5;
         }
         return -1;
@@ -288,7 +309,7 @@ public class myPokemonUI extends AbstractUi {
     private void unselectItem() {
         itemSelected = false;
         currentItem = null;
-        for (int i = 0; i < 6 && pokemon[i] != null; i++) {
+        for (int i = 0; i < PM_COUNT && pokemon[i].nameLabel != null; i++) {
             pokemon[i].selectedSlot.setVisible(false);
             pokemon[i].myPokemon.setVisible(true);
         }
@@ -298,7 +319,7 @@ public class myPokemonUI extends AbstractUi {
     //포켓몬 선택
     private void selectItem(int num) {
         itemSelected = false;
-        for (int i = 0; i < 6 && pokemon[i] != null; i++) {
+        for (int i = 0; i < PM_COUNT && pokemon[i].nameLabel != null; i++) {
             pokemon[i].selectedSlot.setVisible(false);
             pokemon[i].myPokemon.setVisible(true);
         }
@@ -333,8 +354,10 @@ public class myPokemonUI extends AbstractUi {
         float w =  ui.getX();
         float h =  ui.getY();
 
+        PM_COUNT = db.PM_COUNT();
+
         if(!dragging){
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < PM_COUNT && pokemon[i].nameLabel != null; i++) {
                 if (pokemon[i] != null){
                     if (i < 3){
                         pokemon[i].nameLabel.setPosition(w + i * 153 + 97, h + 412);

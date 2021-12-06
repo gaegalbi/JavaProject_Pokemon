@@ -18,6 +18,8 @@ public class PlayerController extends InputAdapter {
     private Rectangle hitRange;
     private GameScreen gameScreen;
     private float percent;
+    private float ready;
+    private boolean isReady;
 
     public Rectangle getHitRange() {
         return hitRange;
@@ -27,6 +29,14 @@ public class PlayerController extends InputAdapter {
         this.player = player;
         this.gameScreen = gameScreen;
         hitRange = new Rectangle(0, 0, 32, 32);
+    }
+
+    public void isReadyPick(float delta) {
+        if (ready >= 0.5f) {
+            ready = 0;
+            isReady = true;
+        }
+        ready += delta;
     }
 
     public void pickRock() {
@@ -163,10 +173,13 @@ public class PlayerController extends InputAdapter {
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+        if (!isReady) {
+            isReadyPick(delta);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X) && isReady) {
             hitRange.setPosition(player.x + player.getFacing().getDx() * 32, player.y + player.getFacing().getDy() * 32);
-            if (player.equips.equips[4] != null && gameScreen.getEffects().isEmpty() && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (player.equips.equips[4] != null && player.getState() == Player.PLAYER_STATE.STANDING) {
+                isReady = false;
                 for (RenderHelper object : GameScreen.getWorld().getObjects()) {
                     if (hitRange.overlaps((Rectangle) object)) {
                         percent = MathUtils.random();
@@ -174,9 +187,9 @@ public class PlayerController extends InputAdapter {
                             case "rock":
                                 if (player.equips.equips[4].name.equals("나무곡괭이")) {
                                     if (percent < 0.8f) {
-                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                        gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
-                                        gameScreen.getEffects().add(new Effect(0.35f, true));
+                                        gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickRock();
                                     }
                                 }
@@ -184,20 +197,20 @@ public class PlayerController extends InputAdapter {
                             case "wood":
                                 if (player.equips.equips[4].name.equals("나무도끼")) {
                                     if (percent < 0.8f) {
-                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                        gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
-                                        gameScreen.getEffects().add(new Effect(0.35f, true));
-                                        System.out.println("나무캐기");
+                                        gameScreen.getEffects().add(new Effect(0.3f, true));
+                                        pickWood();
                                     }
                                 }
                                 break;
                             case "grass":
                                 if (player.equips.equips[4].name.equals("나무괭이")) {
                                     if (percent < 0.8f) {
-                                        gameScreen.getEffects().add(new Effect(0.2f, false));
+                                        gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
-                                        gameScreen.getEffects().add(new Effect(0.35f, true));
-                                        System.out.println("풀베기");
+                                        gameScreen.getEffects().add(new Effect(0.3f, true));
+                                        pickGrass();
                                     }
                                 }
                                 break;

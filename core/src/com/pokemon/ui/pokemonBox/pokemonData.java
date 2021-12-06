@@ -12,16 +12,19 @@ import com.pokemon.db.db;
 import com.pokemon.util.SkinGenerator;
 
 import java.security.Key;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import static com.pokemon.db.db.con;
+import static com.pokemon.db.db.rs;
 import static com.pokemon.ui.LoginUi.playerID;
 
 
 public class pokemonData {
-    public static String[] nameStr = {"메가니움","강챙이","고라파덕","딱구리","거북왕", "리자몽"};
-
-    private int key;
+    public int key;
+    public String keyID;
     public String name;
-    private String LV;
+    private int LV;
     private int HP;
     private int myHP;
     public Image myPokemon;
@@ -40,32 +43,31 @@ public class pokemonData {
     private int[] HPs = {100,120,140,160,180,200};
     private int[] myHPs = {100,100,80,80,60,0};
 
-    public pokemonData(int key) {
-//        String sql = "SELECT ITEM_NAME, ITEM_INFO,ITEM_PROPERTY,ITEM_EFFECT, ITEM_TYPE FROM ITEM WHERE ITEM_ID ='"+key+"';";
-//
-//        try {
-//            Statement stmt = con.createStatement();
-//            rs = stmt.executeQuery(sql);
-//            while (rs.next()) {
-//                this.name = rs.getString("ITEM_NAME"); //몬스터 명
-//                this.LV = rs.getString("ITEM_INFO"); //몬스터 레벨
-//                this.HP = rs.getString("ITEM_PROPERTY"); //HP
-//                this.myHP = rs.getString("ITEM_EFFECT"); //나의 현재 HP
-//
-//                selectedSlot = new Image(new Texture(Gdx.files.internal("pokemon/ball/" + name + "-.png")));
-//                myPokemon = new Image(new Texture(Gdx.files.internal("pokemon/ball/" + name + ".png")));
-//            }
-//        }catch(SQLException e){
-//            System.out.println("SQLException" + e);
-//            e.printStackTrace();
-//        }
-
+    public pokemonData(int key, String name) {
         this.key = key;
-        this.name = nameStr[key];
-        this.LV = "LV.5";
-        this.HP = 100;
-        this.myHP = 50;
-        pokemonCreat();
+
+        String sql = "SELECT I.pm_name, P.PM_ID, P.PM_LV, P.PM_HP, P.PM_BATTLE, P.PM_currentHP FROM pm_info AS I, pm AS P WHERE I.PM_ID = P.PM_ID AND P.U_ID = '" + name + "' AND P.PM_BATTLE = " + key + ";";
+
+        try {
+            Statement stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while(rs.next()) {
+                this.keyID = rs.getString("PM_ID");
+                this.name = rs.getString("pm_name");
+                this.LV = rs.getInt("PM_LV");
+                this.HP = rs.getInt("PM_HP");
+                this.myHP  = rs.getInt("PM_currentHP");
+
+                int skill_LV[] = db.GET_SK_LV(name);
+                HP += skill_LV[4]+10;
+
+                pokemonCreat();
+            }
+        }catch(SQLException e){
+            System.out.println("SQLException" + e);
+            e.printStackTrace();
+        }
+
     }
 
     public void pokemonCreat() {
@@ -77,7 +79,7 @@ public class pokemonData {
         nameLabel.setAlignment(Align.left);
         nameLabel.setScale(1.5f);
 
-        LVLabel = new Label(LV, myPokemonUI.labelColors[1]);
+        LVLabel = new Label("LV : " + LV , myPokemonUI.labelColors[1]);
         LVLabel.setTouchable(Touchable.disabled);
         LVLabel.setAlignment(Align.left);
         LVLabel.setScale(1.2f);
@@ -134,10 +136,6 @@ public class pokemonData {
         barEXP_red.remove();
     }
 
-    public String getNameStr(int num) {
-        return nameStr[num];
-    }
-
     public int getKey() {
         return key;
     }
@@ -146,7 +144,7 @@ public class pokemonData {
         return name;
     }
 
-    public String getLV() {
+    public int getLV() {
         return LV;
     }
 
@@ -158,7 +156,7 @@ public class pokemonData {
         this.name = name;
     }
 
-    public void setLV(String LV) {
+    public void setLV(int LV) {
         this.LV = LV;
     }
 }
