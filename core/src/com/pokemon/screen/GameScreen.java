@@ -154,12 +154,12 @@ public class GameScreen implements Screen {
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update(delta);
         } else {
-            pushScreen(new ChatButton(this,game));
             for (AbstractUi abstractUi : uiStack) {
                 abstractUi.update();
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 popUi();
+                pushScreen(new ChatButton(this,game));
             }
         }
 
@@ -239,6 +239,7 @@ public class GameScreen implements Screen {
                 pushUi(new InventoryUi(this, game, player));
             } else {
                 popUi();
+                pushScreen(new ChatButton(this,game));
             }
 
 //            invenCheck = (!invenCheck);
@@ -257,6 +258,7 @@ public class GameScreen implements Screen {
                 pushUi(new myPokemonUI(this, game,player));
             }else {
                 popUi();
+                pushScreen(new ChatButton(this,game));
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
@@ -264,6 +266,7 @@ public class GameScreen implements Screen {
                 pushUi(new SkillListUi(this, game,player));
             } else {
                 popUi();
+                pushScreen(new ChatButton(this,game));
             }
 
 //            skillCheck = (!skillCheck);

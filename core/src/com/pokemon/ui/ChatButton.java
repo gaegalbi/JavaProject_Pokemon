@@ -54,7 +54,7 @@ public class ChatButton extends AbstractUi{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("눌림");
-                gameScreen.pushScreen(new ChatClient(gameScreen,game));
+                gameScreen.pushUi(new ChatClient(gameScreen,game));
             }
         });
     }

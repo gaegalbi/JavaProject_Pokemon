@@ -143,7 +143,7 @@ public class ChatClient extends AbstractUi {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameScreen.popScreen();
+                gameScreen.popUi();
                 gameScreen.pushScreen(new ChatButton(gameScreen,game));
             }
         });
