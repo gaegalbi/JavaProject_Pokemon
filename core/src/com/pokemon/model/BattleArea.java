@@ -16,9 +16,7 @@ public class BattleArea extends Rectangle {
         this.y *= SCALED_TILE_SIZE;
         this.width *= SCALED_TILE_SIZE;
         this.height *= SCALED_TILE_SIZE;
-        if (battleChance == 0) {
-            resetChance();
-        }
+        resetChance();
     }
 
     public void resetChance() {
