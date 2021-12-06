@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.pokemon.game.Pokemon;
+import com.pokemon.game.Sound;
 import com.pokemon.model.*;
 import com.pokemon.screen.BattleScreen;
 import com.pokemon.screen.GameScreen;
@@ -90,6 +91,8 @@ public class Forest implements World {
             if (player.overlaps(battleArea)) {
                 if (battleArea.battleStarter(delta, player.x, player.y)) {
                     player.finishMove();
+                    gameScreen.getGameMusic().stop();
+                    game.getBattleMusic().play();
                     gameScreen.getTransitionScreen().startTransition(
                             new BattleBlinkTransition(4f, 4 , Color.GRAY, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
                             new BattleTransition(1F,  10, true, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
@@ -98,7 +101,6 @@ public class Forest implements World {
                                 public void action() {
                                     System.out.println("배틀시작");
                                     game.setScreen(new BattleScreen(game,player,gameScreen));
-
                                 }
                             }
                     );

@@ -81,7 +81,7 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
             e.printStackTrace();
         }
 
-        this.width = 30;
+        this.width = 29;
         this.height = 24;
         this.x = x;
         this.y = y;

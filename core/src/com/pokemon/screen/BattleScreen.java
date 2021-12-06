@@ -25,6 +25,7 @@ import com.pokemon.controller.PlayerController;
 import com.pokemon.controller.SingleBattleScreenController;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Settings;
+import com.pokemon.game.Sound;
 import com.pokemon.model.Player;
 import com.pokemon.ui.*;
 import com.pokemon.util.SkinGenerator;
@@ -60,6 +61,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private DialogueBox dialogueBox;
     private OptionBox optionBox;
     private Player player;
+    private boolean battleFinish;
 
     private Table moveSelectRoot;
     private MoveSelectBox moveSelectBox;
@@ -181,6 +183,27 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     }
 
     public void update(float delta) {
+        if (queue.isEmpty()) {
+            if (battle.getState() == SingleBattle.STATE.WIN) {
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.win.play(0.05f);
+                }
+                battleFinish = true;
+            } else if (battle.getState() == SingleBattle.STATE.LOSE){
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.lose.play(0.05f);
+                }
+                battleFinish = true;
+            } else if (battle.getState() == SingleBattle.STATE.RAN) {
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.lose.play(0.05f);
+                }
+                battleFinish = true;
+            }
+        }
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;

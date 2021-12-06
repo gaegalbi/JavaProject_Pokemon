@@ -1,6 +1,8 @@
 package com.pokemon.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,6 +23,7 @@ public class Pokemon extends Game {
 	public BitmapFont font;
     private HashMap<String, String> accounts = new HashMap<>(); // 임시 로그인 기능용
 	private String str;
+	private Music battleMusic;
 	private int i;
 	private int j;
 	private boolean onoff;
@@ -89,6 +92,9 @@ public class Pokemon extends Game {
 		//this.setScreen(new window(this));
 		this.setScreen(new MainMenuScreen(this));
 		//this.setScreen(new BattleScreen(this));
+		battleMusic = Gdx.audio.newMusic(Gdx.files.internal("music/battleMusic.ogg"));
+		battleMusic.setVolume(0.05f);
+		battleMusic.setLooping(true);
 
 	}
 
@@ -117,5 +123,9 @@ public class Pokemon extends Game {
 		} catch (NullPointerException ignored) {}
 
 		return false;
+	}
+
+	public Music getBattleMusic() {
+		return battleMusic;
 	}
 }

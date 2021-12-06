@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -62,6 +63,7 @@ public class GameScreen implements Screen {
    // private InventoryRenderer inventoryRenderer;
     private Stack<AbstractUi> uiStack;
     private ArrayList<Effect> effects;
+    private Music gameMusic;
 
     Stage stage;
     private boolean invenCheck=false;
@@ -71,6 +73,9 @@ public class GameScreen implements Screen {
 
     public GameScreen(Pokemon game) {
         this.game = game;
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music/gameMusic.ogg"));
+        gameMusic.setVolume(0.05f);
+        gameMusic.setLooping(true);
         uiStack1 = new Stack<>();
         effects = new ArrayList<>();
         assetManager = new AssetManager();
@@ -123,7 +128,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        gameMusic.play();
     }
 
     @Override
@@ -257,7 +262,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-
     }
 
     @Override
@@ -305,6 +309,10 @@ public class GameScreen implements Screen {
             popped.dispose();
             //Gdx.input.setInputProcessor(uiStack.peek().getStage());
         }
+    }
+
+    public Music getGameMusic() {
+        return gameMusic;
     }
 
     public ArrayList<Effect> getEffects() {
