@@ -30,7 +30,7 @@ public class MainWorld implements World {
     private Pokemon game;
     private ArrayList<WorldObject> collisionObjects;
     private GameScreen gameScreen;
-    private Portal homePortal, minePortal, forestPortal, rankBoard, beachPortal, hospitalPortal;
+    private Portal homePortal, minePortal, forestPortal, rankBoard, beachPortal, multiBattlePortal, hospitalPortal;
 
     public MainWorld(Player player, Pokemon game, GameScreen gameScreen) {
         this.player = player;
@@ -52,6 +52,7 @@ public class MainWorld implements World {
         minePortal = new Portal(11, 19, 1, 1);
         forestPortal = new Portal(28, 9, 1, 4);
         beachPortal = new Portal(0, 10, 1, 3);
+        multiBattlePortal = new Portal(7,13,1,1);
         hospitalPortal = new Portal(19, 17, 1, 1);
     }
 
@@ -170,6 +171,10 @@ public class MainWorld implements World {
                 } else {
                     gameScreen.popUi();
                 }
+            }
+            if (multiBattlePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
+                player.finishMove();
+                gameScreen.loadingStart();
             }
         }
     }

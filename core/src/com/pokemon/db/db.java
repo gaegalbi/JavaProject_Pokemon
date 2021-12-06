@@ -323,7 +323,20 @@ public class db {
             return PM_TYPE;
         }
     }
-
+    public static  void RANK_SET_RANK(String ID, int num){
+        String sql = "UPDATE USER SET U_RANK =  U_RANK+" + num + " WHERE U_ID='"+playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
     // 랭크 점수에 대한 ID
     public static String rank_GET_U_ID(int num) {
         String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";

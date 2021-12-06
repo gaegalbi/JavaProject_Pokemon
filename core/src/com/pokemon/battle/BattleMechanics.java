@@ -95,7 +95,7 @@ public class BattleMechanics {
 			int i = user.getSK_CNT()[SK_NUM] - user.getCurrent_SK_CNT()[SK_NUM];
 			skillDamage = (float) (db.GET_PM_DA(user.getSkill()[SK_NUM])*(0.3*i));
 		}else
-			skillDamage = db.GET_PM_DA(user.getSkill()[SK_NUM]);
+			skillDamage = (float) db.GET_PM_DA(user.getSkill()[SK_NUM]);
 
 		float base = skillDamage * user.getChStat()[0];
 

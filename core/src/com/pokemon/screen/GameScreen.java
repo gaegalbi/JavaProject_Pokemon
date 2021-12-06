@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.pokemon.controller.GameController;
 import com.pokemon.controller.PlayerController;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Effect;
 import com.pokemon.model.Player;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import static com.pokemon.game.Settings.SCALED_TILE_SIZE;
+import static com.pokemon.ui.LoginUi.playerID;
 
 public class GameScreen implements Screen {
     final Pokemon game;
@@ -144,6 +146,11 @@ public class GameScreen implements Screen {
         gameController.update();
         player.update(delta);
         world.update(delta);
+
+        for(AbstractUi abstractUi : uiStack1){
+            abstractUi.update();
+        }
+
         if (uiStack.isEmpty() && !isTransition) {
             playerController.update(delta);
         } else {
@@ -154,6 +161,7 @@ public class GameScreen implements Screen {
                 popUi();
             }
         }
+
         // 맵 페이드 아웃
         if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
             transitionScreen.startTransition(
@@ -177,8 +185,13 @@ public class GameScreen implements Screen {
             }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,player));
-             //loadingStart();
+           /* game.setScreen(new BattleScreen(game,player));*/
+             loadingStart();
+            //dispose();
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
+            /* game.setScreen(new BattleScreen(game,player));*/
+            db.RANK_SET_RANK(playerID,10);
             //dispose();
         }
 

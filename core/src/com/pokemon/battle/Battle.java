@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.pokemon.battle.event.*;
-import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
+import com.pokemon.db.db;
 import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
 import com.pokemon.util.GifDecoder;
@@ -20,9 +20,10 @@ import com.pokemon.util.SkinGenerator;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+import static com.pokemon.controller.BattleScreenController.moveSelect;
 import static com.pokemon.db.db.con;
 import static com.pokemon.db.db.rs;
+
 import static com.pokemon.screen.BattleScreen.playerNum;
 import static com.pokemon.ui.LoginUi.playerID;
 import static java.lang.Integer.parseInt;
@@ -117,11 +118,8 @@ public class Battle implements BattleEventQueuer {
 
     private boolean setChangecharacter;
 
-    private Player userPlayer;
-
-    public Battle(Pokemon game, boolean multi,Player userPlayer) {
+    public Battle(Pokemon game, boolean multi, Player player) {
         this.game = game;
-        this.userPlayer = userPlayer;
 //        this.battleScreen = battleScreen;
         this.multi = multi;
 
@@ -136,7 +134,7 @@ public class Battle implements BattleEventQueuer {
             pName = db.sP(playerID, playerNum + 1);
             P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + pName + ".gif").read());
             String[] userKey = {playerID, String.valueOf(playerNum + 1)};
-            this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
+            this.player = new PK(userKey, P_T); //유저 포켓몬 가져오기
 
             String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
             String PM_ID = null;
@@ -182,7 +180,7 @@ public class Battle implements BattleEventQueuer {
             String[] userKey1 = {game.getSelectedPokemon(0), game.getSelectedPokemon(1)};
             player2 = new PK(userKey1, P_T); //유저 포켓몬 가져오기
             String[] userKey2 = {game.getSelectedPokemon(2), game.getSelectedPokemon(3)};
-            player = new PK(userKey2, P_T2); //유저 포켓몬 가져오기
+            this.player = new PK(userKey2, P_T2); //유저 포켓몬 가져오기
             pTrainer = new Trainer(this.player, this.player2);
 
             selectedPokemon = game.getrecieveMessage().split(" ");
@@ -200,7 +198,7 @@ public class Battle implements BattleEventQueuer {
         }
 
         mechanics = new BattleMechanics();
-        setSkill(mechanics.goesFirst(player, opponent));
+        setSkill(mechanics.goesFirst(this.player, opponent));
         this.state = STATE.READY_TO_PROGRESS;
     }
 
@@ -256,8 +254,8 @@ public class Battle implements BattleEventQueuer {
         this.player = pokemon;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.PLAYER,
-                pokemon.getCurrentHP(),
-                pokemon.getCurrentHP(),
+                pokemon.getCurrentChHP(),
+                pokemon.getCurrentChHP(),
                 pokemon.getChStat()[2],
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
@@ -271,8 +269,8 @@ public class Battle implements BattleEventQueuer {
         this.opponent = pokemon;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.OPPONENT,
-                pokemon.getCurrentHP(),
-                pokemon.getCurrentHP(),
+                pokemon.getCurrentChHP(),
+                pokemon.getCurrentChHP(),
                 pokemon.getChStat()[2],
                 0.5f));
         //queueEvent(new PokeSpriteEvent(pokemon.getSprite(), BATTLE_PARTY.PLAYER));
@@ -288,9 +286,19 @@ public class Battle implements BattleEventQueuer {
         this.state = STATE.RAN;
     }
 
+    public void selectItem() {
+        queueEvent(new TextEvent("무슨 아이템을 사용할까?", 0.5f));
+        moveSelect.setVisible(false);
+    }
+
+    public void useItem(Item item) {
+        this.item = item;
+        queueEvent(new TextEvent(item.getName() + "을 사용했다.", 0.5f));
+    }
+
     private void playTurn(BATTLE_PARTY user, int input) {
         //상대 포켓몬 공격 랜덤
-        oppo = (int) (Math.random() * 4);
+       /* oppo = (int) (Math.random() * 4);*/
         BATTLE_PARTY target = BATTLE_PARTY.getOpposite(user);
 
         PK pokeUser = null;
@@ -302,7 +310,6 @@ public class Battle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
-
             String move = pokeUser.getSkill()[input];
 
             /* Broadcast the text graphics */
@@ -313,8 +320,9 @@ public class Battle implements BattleEventQueuer {
 
             int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
 
-            int hpBefore = pokeTarget.getCurrentHP();
+            int hpBefore = pokeTarget.getCurrentChHP();
 
+        System.out.println(damage+","+hpBefore);
             //해당 데미지 입음
             pokeTarget.applyDamage(damage);
             /* Broadcast HP change */
@@ -322,10 +330,13 @@ public class Battle implements BattleEventQueuer {
                     new HPAnimationEvent(
                             BATTLE_PARTY.getOpposite(user),
                             hpBefore,
-                            pokeTarget.getCurrentHP(),
+                            pokeTarget.getCurrentChHP(),
                             pokeTarget.getChStat()[2],
                             0.5f));
 
+           /* if (mechanics.hasMessage()) {
+                queueEvent(new TextEvent(mechanics.getMessage(), 0.5f));
+            }*/
         game.setOnoff(true);
         if (!multi) {
             if (player.isFainted()) {
