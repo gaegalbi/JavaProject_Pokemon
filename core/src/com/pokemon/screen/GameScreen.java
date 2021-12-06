@@ -185,8 +185,8 @@ public class GameScreen implements Screen {
             }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-           /* game.setScreen(new BattleScreen(game,player));*/
-             loadingStart();
+            game.setScreen(new BattleScreen(game,player));
+             //loadingStart();
             //dispose();
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
