@@ -152,7 +152,7 @@ public class Battle implements BattleEventQueuer {
 
             O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey + ".gif").read());
             //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
-            this.opponent = new PK("PM_02", O_T); //야생 포켓몬
+            //this.opponent = new PK("PM_02", O_T); //야생 포켓몬
         }
         /*멀티 일때 실행*/
         else {

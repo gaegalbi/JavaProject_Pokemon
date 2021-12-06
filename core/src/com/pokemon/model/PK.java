@@ -1,14 +1,15 @@
 package com.pokemon.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pokemon.db.db;
+import com.pokemon.util.GifDecoder;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.pokemon.db.db.con;
-import static com.pokemon.db.db.rs;
+import static com.pokemon.db.db.*;
 import static com.pokemon.ui.LoginUi.playerID;
 
 public class PK {
@@ -25,6 +26,7 @@ public class PK {
     private boolean capture;
     private String type;
     private int EXP;
+    private String RealName;
 
 
     private int currentChHP;
@@ -32,14 +34,13 @@ public class PK {
     private Player player;
 
     //야생 포켓몬
-    public PK(String key, Animation<TextureRegion> image){
-        String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM_INFO WHERE PM_ID ='"+key+"';";
+    public PK(String key[]){
+        String sql = "SELECT PM_ATT,PM_DEF,PM_HP,PM_SPEED,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM_INFO WHERE PM_ID ='"+key[0]+"';";
         try {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             while(rs.next()) {
-                this.name = rs.getString("PM_ID");
-                this.LV = 5; //맵에서 유저 레벨에따라 랜덤으로 가져옴
+
                 //System.out.println(battleNum);
                 this.chStat[0] = rs.getInt("PM_ATT");
                 this.chStat[1] = rs.getInt("PM_DEF");
@@ -51,15 +52,16 @@ public class PK {
                 this.skill[2] = rs.getString("PM_SK_S_03");
                 this.skill[3] = rs.getString("PM_SK_S_04");
             }
-          /*  rs = stmt.executeQuery(sql);
-            while(rs.next()) {
-                this.LV = (int) (rs.getInt("PM_LV")*(((int)(Math.random()*12)+8)/10.0)); //=> 맵 정보 테이블에서 해당 맵의 LV 가져오기
-            }*/
+            this.LV = Integer.parseInt(key[1]); //맵에서 유저 레벨에따라 랜덤으로 가져옴
         }catch(SQLException e){
             System.out.println("SQLException" + e);
             e.printStackTrace();
         }
-        this.image = image;
+        //상대포켓몬은 앞모습으로 받아옴
+        this.RealName =sP(key[0]);
+        this.name = key[0];
+        this.image = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + RealName+".gif").read());
+
         this.currentChHP = chStat[2];
         this.type = db.GET_PMType(name);
         /* 스킬 횟수 넣기 */
@@ -122,6 +124,57 @@ public class PK {
         this.current_SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
         this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
     }
+        //이미지 필요없게
+        public PK(Player player, String[] key) {
+            String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_currentHP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
+            try {
+                Statement stmt = con.createStatement();
+                rs = stmt.executeQuery(sql);
+                while(rs.next()) {
+                    this.name = rs.getString("PM_ID");
+                    this.LV = rs.getInt("PM_LV");
+                    this.battleNum = rs.getInt("PM_BATTLE");
+                    this.EXP = rs.getInt("PM_EXP");
+                    this.stat[0] = rs.getInt("PM_ATT");
+                    this.stat[1] = rs.getInt("PM_DEF");
+                    this.stat[2] = rs.getInt("PM_HP");
+                    this.currentChHP = rs.getInt("PM_currentHP");
+                    this.stat[3] = rs.getInt("PM_SPEED");
+
+                    this.skill[0] = rs.getString("PM_SK_S_01");
+                    this.skill[1] = rs.getString("PM_SK_S_02");
+                    this.skill[2] = rs.getString("PM_SK_S_03");
+                    this.skill[3] = rs.getString("PM_SK_S_04");
+
+
+                }
+
+            }catch(SQLException e){
+                System.out.println("SQLException" + e);
+                e.printStackTrace();
+            }
+            this.RealName =sP(key[0],Integer.parseInt(key[1]));
+            this.image = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + RealName+".gif").read());
+            //스킬로 변경된 스텟
+            for(int i=0;i<stat.length;i++){
+                if(i==2)
+                    chStat[i]= stat[i]+ player.getSKLV(i+2)+10; //체력
+                else
+                    chStat[i]= stat[i]+ player.getSKLV(i+2)*5;
+
+            }
+            this.currentHP = stat[2];
+            this.type = db.GET_PMType(name);
+            /* 스킬 횟수 넣기 */
+            this.SK_CNT[0] = db.GET_PM_SK_CNT(this.skill[0]);
+            this.SK_CNT[1] = db.GET_PM_SK_CNT(this.skill[1]);
+            this.SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
+            this.SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
+            this.current_SK_CNT[0] = db.GET_PM_SK_CNT(this.skill[0]);
+            this.current_SK_CNT[1] = db.GET_PM_SK_CNT(this.skill[1]);
+            this.current_SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
+            this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
+        }
 
     //유저 포켓몬
     public PK(Player player, String[] key, Animation<TextureRegion> image) {

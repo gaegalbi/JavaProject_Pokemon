@@ -93,7 +93,7 @@ public class Mine implements World {
                             @Override
                             public void action() {
                                 System.out.println("배틀시작");
-                                game.setScreen(new BattleScreen(game,player));
+                                game.setScreen(new BattleScreen(game,player,gameScreen));
                             }
                         }
                 );

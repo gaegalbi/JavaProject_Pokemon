@@ -3,6 +3,7 @@ package com.pokemon.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.pokemon.chat.ChatClient;
 import com.pokemon.game.Pokemon;
 import com.pokemon.model.Player;
 import com.pokemon.model.Tile;
@@ -14,6 +15,7 @@ import com.pokemon.screen.TransitionScreen;
 import com.pokemon.transition.FadeInTransition;
 import com.pokemon.transition.FadeOutTransition;
 import com.pokemon.ui.AbstractUi;
+import com.pokemon.ui.ChatButton;
 import com.pokemon.ui.rank.rankUI;
 import com.pokemon.util.Action;
 import com.pokemon.util.ObjectGenerator;
@@ -170,6 +172,7 @@ public class MainWorld implements World {
                     gameScreen.pushUi(new rankUI(gameScreen, game, player));
                 } else {
                     gameScreen.popUi();
+                    gameScreen.pushScreen(new ChatButton(gameScreen,game));
                 }
             }
             if (multiBattlePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {

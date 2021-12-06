@@ -66,7 +66,7 @@ public class SingleBattleScreenController extends InputAdapter {
                 optionBox.moveDown();
             } else if (keycode == Keys.X) {
                 if (optionBox.getIndex() == 0) { // YES selected
-                    for (int i = 0; i < battle.getPTrainer().getTeamSize(); i++) {
+                    for (int i = 1; i < battle.getPTrainer().getTeamSize(); i++) {
                         if (!battle.getPTrainer().getPokemon(i).isFainted()) {
                             battle.chooseNewPokemon(battle.getPTrainer().getPokemon(i));
                             optionBox.setVisible(false);
