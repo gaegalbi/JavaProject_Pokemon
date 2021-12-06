@@ -2,6 +2,7 @@ package com.pokemon.db;
 
 import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
+import com.pokemon.model.Player;
 
 import java.sql.*;
 
@@ -189,6 +190,28 @@ public class db {
             System.out.println("Exception:" + e);
             e.printStackTrace();
             return true;
+        }
+    }
+    public static String[] sP(String MAP_ID, Player player) {
+        String sql = "select PM_ID,PM_LV from MAP_INFO WHERE PM_LV<= " +player.getLV()+" AND MAP_ID= '"+MAP_ID +"'order by rand() limit 1;";
+        String[] key = new String[2];
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                key[0] = rs.getString("PM_ID");
+                key[1] = String.valueOf(rs.getInt("PM_LV"));
+            }
+            return key;
+        } catch (SQLException e) {
+            System.out.println("불러오는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -769,5 +792,26 @@ public class db {
             e.printStackTrace();
         }
     }
+    public static int PM_COUNT() {
+        String sql;
+        sql = "SELECT COUNT(*) count FROM pm WHERE U_ID = '" + playerID + "';";
 
+        int count = 0;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                count = rs.getInt("count");
+            }
+            return count;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+        return count;
+    }
 }

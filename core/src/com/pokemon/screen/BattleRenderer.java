@@ -61,10 +61,6 @@ public class BattleRenderer {
         assetManager.load("battle/battlepack.atlas", TextureAtlas.class);
         assetManager.finishLoading();
 
-        //배틀에서 이미지 가져옴
-        P_T = battle.getP_P().getImage();
-        O_T = battle.getO_P().getImage();
-
         TextureAtlas atlas = assetManager.get("battle/battlepack.atlas", TextureAtlas.class);
         background = atlas.findRegion("background");
         platform = atlas.findRegion("platform");
@@ -80,6 +76,13 @@ public class BattleRenderer {
 
 
     public void render(Batch batch,float elapsed) {
+        //배틀에서 이미지 가져옴
+        if(P_T != battle.getP_P().getImage()) {
+            i=1;
+            P_T = battle.getP_P().getImage();
+        }
+        O_T = battle.getO_P().getImage();
+
         //플레이어 플랫폼위치
         playerSquareMiddleX = Gdx.graphics.getWidth() / 2 - (squareSize + Gdx.graphics.getWidth() / 15);
         playerSquareMiddleY = Gdx.graphics.getHeight() / 2 + (25 * Settings.SCALE);

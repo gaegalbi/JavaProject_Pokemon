@@ -1,15 +1,31 @@
 package com.pokemon.battle;
 
+import com.pokemon.db.db;
 import com.pokemon.model.PK;
+import com.pokemon.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.pokemon.ui.LoginUi.playerID;
 
 public class Trainer {
 	
 	private List<PK> team;
 
-	public Trainer(){}
+	public Trainer(Player player,String id){
+		team = new ArrayList<PK>();
+		String[] key;
+		//이거 i 최대값을 db의 배틀넘 최대값 받아오기
+		for(int i=1;i<=db.PM_COUNT();i++) {
+			key = new String[]{id, String.valueOf(i)};
+			PK pokemon = new PK(player,key);
+			if(pokemon!=null)
+				team.add(new PK(player, key));
+			else
+				break;
+		}
+	}
 
 	public Trainer(PK pokemon) {
 		team = new ArrayList<PK>();

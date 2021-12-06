@@ -14,6 +14,7 @@ import com.pokemon.inventory.Item;
 import com.pokemon.model.PK;
 import com.pokemon.model.Player;
 import com.pokemon.screen.BattleScreen;
+import com.pokemon.screen.GameScreen;
 import com.pokemon.util.GifDecoder;
 import com.pokemon.util.SkinGenerator;
 
@@ -46,7 +47,7 @@ public class SingleBattle implements BattleEventQueuer {
 
     public static String OppoID;
     private String[] oppoKey;
-    private String wildKey;
+    private String[] wildKey;
     private Skin skin;
     private Pokemon game;
     private BattleScreen battleScreen;
@@ -75,45 +76,13 @@ public class SingleBattle implements BattleEventQueuer {
        assetManager.finishLoading();
 
        skin = SkinGenerator.generateSkin(assetManager);
+       //현재 맵 정보를 바탕으로 포켓몬 가져옴
+       wildKey = db.sP(GameScreen.getWorld().getBackground(),userPlayer);
+       this.opponent = new PK(wildKey);
 
-       pName = db.sP(playerID,playerNum);
-
-       userKey = new String[]{playerID, String.valueOf(playerNum)};
-
-       P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
-
-       this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
-
-       if(player.getCurrentHP()<=0){
-           userKey = new String[]{playerID, String.valueOf(playerNum+=1)};
-           pName = db.sP(playerID,playerNum);
-           P_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/"+pName +".gif").read());
-           this.player = new PK(userPlayer,userKey, P_T); //유저 포켓몬 가져오기
-       }
-
-
-  /*
-           String sql = "SELECT PM_ID FROM MAP_INFO WHERE LIVE = 'MAP01' ORDER BY RAND() LIMIT 1;"; //MAP_INFO 테이블에서 해당 맵의 랜덤 포켓몬 한개 가져오기
-           String PM_ID = null;
-           try {
-               Statement stmt = con.createStatement();
-               rs = stmt.executeQuery(sql);
-               while(rs.next()) {
-                   PM_ID = rs.getString("PM_ID");
-               }
-           }catch(SQLException e){};*/
-
-           //일단 이상해풀로 가져옴
-           wildKey = db.sP("PM_02");
-
-           O_T = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/front/" + wildKey+".gif").read());
-           //this.opponent = new PK(wildKey, O_T); //야생 포켓몬
-           this.opponent = new PK("PM_02", O_T); //야생 포켓몬
-
-         /*   oppoKey = new String[]{OppoID, String.valueOf(playerNum)};
-            this.opponent = new PK(oppoKey, O_T); //상대 포켓몬*/
-
-       pTrainer = new Trainer(this.player);
+        //유저가 가진 모든 포켓몬 가져옴
+       pTrainer = new Trainer(userPlayer,playerID);
+       this.player = pTrainer.getPokemon(0);
        oTrainer = new Trainer(this.opponent);
 
        mechanics = new BattleMechanics();
@@ -175,7 +144,7 @@ public class SingleBattle implements BattleEventQueuer {
                 pokemon.getChStat()[2],
                 0.5f));
         queueEvent(new NameChangeEvent(pokemon.getName(), BATTLE_PARTY.PLAYER));
-        queueEvent(new TextEvent("가랏! " + pokemon.getName() + "!"));
+        queueEvent(new TextEvent("가랏! "+pokemon.getName()+"!", 1f));
         this.state = STATE.READY_TO_PROGRESS;
     }
     public void attemptRun () {
@@ -203,6 +172,7 @@ public class SingleBattle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
+        System.out.println(pokeUser.getName() + "   " + pokeUser.getCurrentChHP() + "  / " + pokeUser.getChStat()[2]);
         if(input==4) {
             this.input = input;
             int hpBefore = pokeUser.getCurrentChHP();
@@ -270,8 +240,6 @@ public class SingleBattle implements BattleEventQueuer {
                     //해당 데미지를 상대가 입음
 
                     pokeTarget.applyDamage(damage);
-                    System.out.println("데미지" + damage);
-                    System.out.println("현재 체력" + pokeTarget.getCurrentChHP());
                     /* Broadcast HP change */
                     queueEvent(
                             new HPAnimationEvent(
@@ -310,11 +278,11 @@ public class SingleBattle implements BattleEventQueuer {
                 }
                 if (anyoneAlive) {
                     queueEvent(new TextEvent(player.getName() + "은(는) 기절했다!", true));
-                    db.PM_HP_UPDATE(pokeUser,playerNum);
+                    db.PM_HP_UPDATE(player,playerNum);
                     this.state = STATE.SELECT_NEW_POKEMON;
                 } else {
                     queueEvent(new TextEvent("배틀에서 패배했습니다..", true));
-                    db.PM_HP_UPDATE(pokeUser,playerNum);
+                    db.PM_HP_UPDATE(player,playerNum);
                     this.state = STATE.LOSE;
                 }
             } else if (opponent.isFainted()) {
