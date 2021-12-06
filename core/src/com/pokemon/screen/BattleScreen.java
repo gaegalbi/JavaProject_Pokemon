@@ -41,7 +41,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private PlayerController playerController;
     private BattleRenderer battleRenderer;
     private GameController gameController;
-    public static int playerNum=2; //전투 순서
+    public static int playerNum=1; //전투 순서
 
     /* Controller */
     private SingleBattleScreenController controller;
@@ -80,6 +80,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
     private int playercount=0;
     private int enemycount=0;
     int skillcount=0;
+
     private SingleSkillEvent skillEvent;
 
     public BattleScreen(Pokemon game, Player player) {
