@@ -362,7 +362,7 @@ public class db {
     }
     // 랭크 점수에 대한 ID
     public static String rank_GET_U_ID(int num) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.RANKING = '"+num+"';";
         String U_ID = null;
         try {
             stmt = con.createStatement();
@@ -385,7 +385,7 @@ public class db {
 
     // ID에 대한 랭크 점수
     public static int rank_GET_U_RANK(String ID) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
         int U_RANK = 0;
         try {
             stmt = con.createStatement();
@@ -408,7 +408,7 @@ public class db {
 
     // ID에 대한 랭킹
     public static int rank_GET_RANKINKG(String ID) {
-        String sql = "SELECT * FROM (SELECT *, rank() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
+        String sql = "SELECT * FROM (SELECT *, ROW_NUMBER() over(order by U_RANK DESC) AS RANKING FROM user) AS R WHERE R.U_ID = '"+ID+"';";
         int RANKING = 0;
         try {
             stmt = con.createStatement();
@@ -686,6 +686,106 @@ public class db {
         } catch (Exception e) {
             System.out.println("Exception:" + e);
             e.printStackTrace();
+        }
+    }
+
+    // 유저 경험치 +1
+    public static void user_EXP_UP() {
+        String sql = "UPDATE user SET U_EXP= U_EXP + 1 WHERE U_ID='" + playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+    // 유저 레벨 +1, 경험치 = 0
+    public static void user_LV_UP() {
+        String sql = "UPDATE user SET U_LV = U_LV + 1, U_EXP = 0 WHERE U_ID='" + playerID + "';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
+    public static int user_EXP_need() {
+        int NEED_EXP = 0;
+        String sql = "select NEED_EXP from u_LV_INFO WHERE U_LV = "+ user_LV_get() + ";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                NEED_EXP = rs.getInt("NEED_EXP");
+            }
+            return NEED_EXP;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        }
+    }
+
+    // 유저 레벨 확인
+    public static int user_LV_get() {
+        int U_LV = 0;
+        String sql = "select U_LV from user WHERE U_ID = "+ playerID + ";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_LV = rs.getInt("U_LV");
+            }
+            return U_LV;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_LV;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_LV;
+        }
+    }
+
+    // 유저 경험치 확인
+    public static int user_EXP_get() {
+        int U_EXP = 0;
+        String sql = "select U_EXP from user WHERE U_ID = "+ playerID + ";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_EXP = rs.getInt("U_EXP");
+            }
+            return U_EXP;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_EXP;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_EXP;
         }
     }
 

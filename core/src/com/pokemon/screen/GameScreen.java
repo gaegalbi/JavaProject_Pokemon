@@ -168,16 +168,16 @@ public class GameScreen implements Screen {
             }
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-            game.setScreen(new BattleScreen(game,player,this));
-             //loadingStart();
-            //dispose();
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
-            /* game.setScreen(new BattleScreen(game,player));*/
-            db.RANK_SET_RANK(playerID,10);
-            //dispose();
-        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
+//            game.setScreen(new BattleScreen(game,player,this));
+//             //loadingStart();
+//            //dispose();
+//        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.A)){
+//            /* game.setScreen(new BattleScreen(game,player));*/
+//            db.RANK_SET_RANK(playerID,10);
+//            //dispose();
+//        }
 
         this.update(delta);
 //        game.batch.draw(new Texture(Gdx.files.internal("logo.png")), playerController.hitRange.x, playerController.hitRange.y, playerController.hitRange.width, playerController.hitRange.height);

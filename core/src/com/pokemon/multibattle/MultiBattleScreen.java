@@ -300,12 +300,12 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         playerStatus = new StatusBox(skin);
         playerStatus.setText(battle.getP_P().getName());
         playerStatus.setLV("LV"+battle.getP_P().getLV());
-        playerStatus.setHPText(battle.getP_P().getCurrentHP() + "/" + battle.getP_P().getChStat()[2]);
+        playerStatus.setHPText(battle.getP_P().getCurrentChHP() + "/" + battle.getP_P().getChStat()[2]);
 
         opponentStatus = new StatusBox(skin);
         opponentStatus.setText(battle.getO_P().getName());
         opponentStatus.setLV("LV"+battle.getO_P().getLV());
-        opponentStatus.setHPText(battle.getO_P().getCurrentHP() + "/" + battle.getO_P().getChStat()[2]);
+        opponentStatus.setHPText(battle.getO_P().getCurrentChHP() + "/" + battle.getO_P().getChStat()[2]);
 
 
         statusBoxRoot.add(playerStatus).expand().align(Align.left);
@@ -402,6 +402,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                     controller.restartTurn();
                 } else if (battle.getState() == Battle.STATE.WIN) {
                     db.RANK_SET_RANK(playerID,10);
+                    player.setRANK(10);
                     game.setScreen(new GameScreen(game));
                 } else if (battle.getState() == Battle.STATE.LOSE) {
                     game.setScreen(new GameScreen(game));

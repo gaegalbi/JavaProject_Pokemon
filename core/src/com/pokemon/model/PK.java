@@ -74,7 +74,7 @@ public class PK {
         this.current_SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
         this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
     }
-    //상대 포켓몬인데
+    //멀티 배틀용
     public PK(String[] key,Animation<TextureRegion> image) {
         skill = db.GET_SK(key[0]);
         skill_LV = db.GET_SK_LV(key[0]);
@@ -112,7 +112,7 @@ public class PK {
             else
                 chStat[i]= stat[i]+ skill_LV[i+2]*5;
         }
-        this.currentHP = stat[2];
+        this.currentChHP = chStat[2];
         this.type = db.GET_PMType(name);
         /* 스킬 횟수 넣기 */
         this.SK_CNT[0] = db.GET_PM_SK_CNT(this.skill[0]);
@@ -176,7 +176,7 @@ public class PK {
             this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
         }
 
-    //유저 포켓몬
+   /* //유저 포켓몬
     public PK(Player player, String[] key, Animation<TextureRegion> image) {
         String sql = "SELECT PM_ID,PM_ATT,PM_DEF,PM_HP,PM_currentHP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04 FROM PM WHERE U_ID='"+key[0]+"' and PM_BATTLE="+Integer.parseInt(key[1])+";";
         try {
@@ -214,7 +214,7 @@ public class PK {
         }
         this.currentHP = stat[2];
         this.type = db.GET_PMType(name);
-        /* 스킬 횟수 넣기 */
+        *//* 스킬 횟수 넣기 *//*
         this.SK_CNT[0] = db.GET_PM_SK_CNT(this.skill[0]);
         this.SK_CNT[1] = db.GET_PM_SK_CNT(this.skill[1]);
         this.SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
@@ -223,7 +223,7 @@ public class PK {
         this.current_SK_CNT[1] = db.GET_PM_SK_CNT(this.skill[1]);
         this.current_SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
         this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
-    }
+    }*/
     public int getCurrentHP(){ return currentHP;}
     public int getCurrentChHP(){ return currentChHP;}
     public void setCurrentChHP(int hp){ this.currentChHP = hp;}

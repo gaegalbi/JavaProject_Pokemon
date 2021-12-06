@@ -355,38 +355,38 @@ public class Battle implements BattleEventQueuer {
                     }
                 }
                 if (anyoneAlive) {
-                    queueEvent(new TextEvent(player.getName() + " fainted!", true));
+                    queueEvent(new TextEvent(player.getName() + "은(는) 기절했다!", true));
                     this.state = STATE.SELECT_NEW_POKEMON;
                 } else {
-                    queueEvent(new TextEvent("Unfortunately, you've lost...", true));
+                    queueEvent(new TextEvent("배틀에서 패배했습니다..", true));
                     this.state = STATE.LOSE;
                 }
             } else if (opponent.isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.OPPONENT, new FaintingAnimation()));
-                queueEvent(new TextEvent("Congratulations! You Win!", true));
+                queueEvent(new TextEvent("배틀에서 승리했습니다!", true));
                 this.state = STATE.WIN;
             }
         } else {
             if (getPTrainer().getPokemon(poket1).isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
-                queueEvent(new TextEvent(getPTrainer().getPokemon(poket1).getName() + " fainted!", 1));
+                queueEvent(new TextEvent(getPTrainer().getPokemon(poket1).getName() + "은(는) 기절했다!", 1));
                 setChangecharacter(true);
                 setPoket1(1);
                 this.state = STATE.SELECT_NEW_POKEMON;
             }
             if (getOTrainer().getPokemon(poket2).isFainted()) {
                 //queueEvent(new AnimationBattleEvent(BATTLE_PARTY.PLAYER, new FaintingAnimation()));
-                queueEvent(new TextEvent(getOTrainer().getPokemon(poket2).getName() + " fainted!", 1));
+                queueEvent(new TextEvent(getOTrainer().getPokemon(poket2).getName() + "은(는) 기절했다!", 1));
                 setChangecharacter(false);
                 setPoket2(1);
                 this.state = STATE.SELECT_NEW_POKEMON;
             }
             if (getPTrainer().getPokemon(1).isFainted()) {
-                queueEvent(new TextEvent("Unfortunately, you've lost...", true));
+                queueEvent(new TextEvent("배틀에서 패배했습니다..", true));
                 this.state = STATE.LOSE;
             }
             if (getOTrainer().getPokemon(1).isFainted()) {
-                queueEvent(new TextEvent("Congratulations! You Win!", true));
+                queueEvent(new TextEvent("배틀에서 승리했습니다!", true));
                 this.state = STATE.WIN;
             }
         }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
 import com.pokemon.game.Sound;
 import com.pokemon.inventory.Item;
@@ -194,6 +195,15 @@ public class PlayerController extends InputAdapter {
                                         Sound.getStone.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickRock();
+                                        // 경험치 +1
+                                        db.user_EXP_UP();
+                                        player.setEXP(1);
+
+                                        // 경험치 도달하면 레벨업
+                                        if(db.user_EXP_get() == db.user_EXP_need()) {
+                                            db.user_LV_UP();
+                                            player.setLV(1);
+                                        }
                                     }
                                 }
                                 break;
@@ -206,6 +216,15 @@ public class PlayerController extends InputAdapter {
                                         Sound.getWood.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickWood();
+                                        // 경험치 +1
+                                        db.user_EXP_UP();
+                                        player.setEXP(1);
+
+                                        // 경험치 도달하면 레벨업
+                                        if(db.user_EXP_get() == db.user_EXP_need()) {
+                                            db.user_LV_UP();
+                                            player.setLV(1);
+                                        }
                                     }
                                 }
                                 break;
@@ -218,6 +237,15 @@ public class PlayerController extends InputAdapter {
                                         Sound.getGrass.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickGrass();
+                                        // 경험치 +1
+                                        db.user_EXP_UP();
+                                        player.setEXP(1);
+
+                                        // 경험치 도달하면 레벨업
+                                        if(db.user_EXP_get() == db.user_EXP_need()) {
+                                            db.user_LV_UP();
+                                            player.setLV(1);
+                                        }
                                     }
                                 }
                                 break;

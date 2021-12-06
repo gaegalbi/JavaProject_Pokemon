@@ -69,6 +69,7 @@ public class SingleBattle implements BattleEventQueuer {
        this.game = game;
        this.battleScreen = battleScreen;
        this.userPlayer=userPlayer;
+       playerNum = 1;
 
        assetManager= new AssetManager();
        assetManager.load("ui/uipack.atlas", TextureAtlas.class);
@@ -82,7 +83,15 @@ public class SingleBattle implements BattleEventQueuer {
 
         //유저가 가진 모든 포켓몬 가져옴
        pTrainer = new Trainer(userPlayer,playerID);
-       this.player = pTrainer.getPokemon(0);
+
+       for (int i = 0; i < getPTrainer().getTeamSize(); i++) {
+           if (!getPTrainer().getPokemon(i).isFainted()) {
+                this.player = pTrainer.getPokemon(i);
+               break;
+           }
+           playerNum++;
+       }
+
        oTrainer = new Trainer(this.opponent);
 
        mechanics = new BattleMechanics();
@@ -137,6 +146,7 @@ public class SingleBattle implements BattleEventQueuer {
 
     public void chooseNewPokemon (PK pokemon){
         this.player = pokemon;
+        playerNum++;
         queueEvent(new HPAnimationEvent(
                 BATTLE_PARTY.PLAYER,
                 pokemon.getCurrentChHP(),
