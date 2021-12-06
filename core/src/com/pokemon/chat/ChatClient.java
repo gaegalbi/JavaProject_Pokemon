@@ -140,10 +140,11 @@ public class ChatClient extends AbstractUi {
             }
         });
         Gdx.input.setInputProcessor(stage);
+
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameScreen.popUi();
+                gameScreen.popScreen();
                 gameScreen.pushScreen(new ChatButton(gameScreen,game));
             }
         });
