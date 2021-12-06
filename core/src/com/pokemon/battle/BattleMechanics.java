@@ -88,14 +88,14 @@ public class BattleMechanics {
 		if(level<=0)
 			level=0;
 
-		int skillDamage = 0;
+		float skillDamage = 0;
 
 		String name = db.GET_PM_SK_NAME(user.getSkill()[SK_NUM]);
 		if(name.equals("마지막수단")){
 			int i = user.getSK_CNT()[SK_NUM] - user.getCurrent_SK_CNT()[SK_NUM];
-			skillDamage = (int) (db.GET_PM_DA(user.getSkill()[SK_NUM])*(0.3*i));
+			skillDamage = (float) (db.GET_PM_DA(user.getSkill()[SK_NUM])*(0.3*i));
 		}else
-			skillDamage = (int) db.GET_PM_DA(user.getSkill()[SK_NUM]);
+			skillDamage = db.GET_PM_DA(user.getSkill()[SK_NUM]);
 
 		float base = skillDamage * user.getChStat()[0];
 
