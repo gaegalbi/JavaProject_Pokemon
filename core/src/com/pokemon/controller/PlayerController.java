@@ -176,9 +176,9 @@ public class PlayerController extends InputAdapter {
         if (!isReady) {
             isReadyPick(delta);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X) && isReady) {
             hitRange.setPosition(player.x + player.getFacing().getDx() * 32, player.y + player.getFacing().getDy() * 32);
-            if (player.equips.equips[4] != null && isReady && player.getState() == Player.PLAYER_STATE.STANDING) {
+            if (player.equips.equips[4] != null && player.getState() == Player.PLAYER_STATE.STANDING) {
                 isReady = false;
                 for (RenderHelper object : GameScreen.getWorld().getObjects()) {
                     if (hitRange.overlaps((Rectangle) object)) {
