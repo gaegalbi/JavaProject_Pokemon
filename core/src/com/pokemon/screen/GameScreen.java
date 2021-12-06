@@ -163,20 +163,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        // 맵 페이드 아웃
-        if (Gdx.input.isKeyPressed(Input.Keys.F1)) {
-            transitionScreen.startTransition(
-                    new FadeOutTransition(0.8f, Color.BLACK, getTweenManager(), getAssetManager()),
-                    new FadeInTransition(0.8f,  Color.BLACK, getTweenManager(), getAssetManager()),
-                    new Action() {
-                        @Override
-                        public void action() {
-                            player.setX(13);
-                            player.setY(6);
-                        }
-                    });
-        }
-
         if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
             game.setScreen(new BattleScreen(game,player,this));
              //loadingStart();
@@ -188,21 +174,6 @@ public class GameScreen implements Screen {
             //dispose();
         }
 
-//        // 전투 페이드 아웃
-//        if (Gdx.input.isKeyPressed(Input.Keys.F2)) {
-//            transitionScreen.startTransition(
-//                    this,
-//                    this,
-//                    new BattleBlinkTransition(4f, 4 , Color.GRAY, getTransitionShader(), getTweenManager(), getAssetManager()),
-//                    new BattleTransition(1F,  10, true, getTransitionShader(), getTweenManager(), getAssetManager())
-//            );
-////                    new Action() {
-////                        @Override
-////                        public void action() {
-////                           // game.setScreen(new BattleScreen(game));
-////                        }
-////                    });
-//        }
         this.update(delta);
 //        game.batch.draw(new Texture(Gdx.files.internal("logo.png")), playerController.hitRange.x, playerController.hitRange.y, playerController.hitRange.width, playerController.hitRange.height);
     }
