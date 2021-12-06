@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.pokemon.game.Pokemon;
+import com.pokemon.game.Sound;
 import com.pokemon.inventory.Item;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
@@ -187,8 +188,10 @@ public class PlayerController extends InputAdapter {
                             case "rock":
                                 if (player.equips.equips[4].name.equals("나무곡괭이")) {
                                     if (percent < 0.8f) {
+                                        Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
+                                        Sound.getStone.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickRock();
                                     }
@@ -197,8 +200,10 @@ public class PlayerController extends InputAdapter {
                             case "wood":
                                 if (player.equips.equips[4].name.equals("나무도끼")) {
                                     if (percent < 0.8f) {
+                                        Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
+                                        Sound.getWood.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickWood();
                                     }
@@ -207,8 +212,10 @@ public class PlayerController extends InputAdapter {
                             case "grass":
                                 if (player.equips.equips[4].name.equals("나무괭이")) {
                                     if (percent < 0.8f) {
+                                        Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
                                     } else {
+                                        Sound.getGrass.play();
                                         gameScreen.getEffects().add(new Effect(0.3f, true));
                                         pickGrass();
                                     }
