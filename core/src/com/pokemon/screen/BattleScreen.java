@@ -79,13 +79,15 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     private int playercount=0;
     private int enemycount=0;
+    private GameScreen gameScreen;
     int skillcount=0;
 
     private SingleSkillEvent skillEvent;
 
-    public BattleScreen(Pokemon game, Player player) {
+    public BattleScreen(Pokemon game, Player player, GameScreen gameScreen) {
         this.game = game;
         this.uiStack = new Stack<>();
+        this.gameScreen = gameScreen;
 
         gameViewport = new ScreenViewport();
         camera = new OrthographicCamera();
@@ -189,11 +191,14 @@ public class BattleScreen implements Screen, BattleEventPlayer {
                 } else if (battle.getState() == SingleBattle.STATE.READY_TO_PROGRESS) {
                     controller.restartTurn();
                 } else if (battle.getState() == SingleBattle.STATE.WIN) {
-                    game.setScreen(new GameScreen(game));
+                    gameScreen.setTransition(false);
+                    game.setScreen(gameScreen);
                 } else if (battle.getState() == SingleBattle.STATE.LOSE) {
-                    game.setScreen(new GameScreen(game));
+                    gameScreen.setTransition(false);
+                    game.setScreen(gameScreen);
                 } else if (battle.getState() == SingleBattle.STATE.RAN) {
-                    game.setScreen(new GameScreen(game));
+                    gameScreen.setTransition(false);
+                    game.setScreen(gameScreen);
                 }
                 break;
             } else {					// event queued up
