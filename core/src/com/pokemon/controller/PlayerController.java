@@ -165,14 +165,14 @@ public class PlayerController extends InputAdapter {
             }
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            System.out.println("player.x = " + player.x);
-            System.out.println("player.y = " + player.y);
-        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+//            System.out.println("player.x = " + player.x);
+//            System.out.println("player.y = " + player.y);
+//        }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
-        }
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+//            System.out.println(GameScreen.getWorld().getMap().getTile((int)(player.x/32),(int)(player.y/32)));
+//        }
         if (!isReady) {
             isReadyPick(delta);
         }

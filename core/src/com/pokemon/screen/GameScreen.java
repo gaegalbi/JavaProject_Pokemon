@@ -143,7 +143,7 @@ public class GameScreen implements Screen {
             }
         }
         game.batch.end();
-        gameController.update();
+//        gameController.update();
         player.update(delta);
         world.update(delta);
 
@@ -234,7 +234,7 @@ public class GameScreen implements Screen {
 
     public void update(float delta){
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.I)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)){
             if (uiStack.isEmpty()) {
                 pushUi(new InventoryUi(this, game, player));
             } else {
@@ -253,7 +253,7 @@ public class GameScreen implements Screen {
 //                popped.dispose();
 //            }
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
             if(uiStack.isEmpty()) {
                 pushUi(new myPokemonUI(this, game,player));
             }else {
@@ -261,7 +261,7 @@ public class GameScreen implements Screen {
                 pushScreen(new ChatButton(this,game));
             }
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F2)){
             if (uiStack.isEmpty()) {
                 pushUi(new SkillListUi(this, game,player));
             } else {
@@ -276,11 +276,6 @@ public class GameScreen implements Screen {
 //                AbstractUi popped = uiStack.pop();
 //                popped.dispose();
 //            }
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B)){
-           // game.setScreen(new BattleScreen(game,player));
-           // loadingStart();
-            //dispose();
         }
     }
 
