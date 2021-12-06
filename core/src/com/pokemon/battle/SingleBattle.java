@@ -64,6 +64,7 @@ public class SingleBattle implements BattleEventQueuer {
     private int input;
     private int uDamage;
     private int oDamage;
+    public static boolean check;
 
    public SingleBattle(Pokemon game, BattleScreen battleScreen, Player userPlayer) {
        this.game = game;
@@ -145,6 +146,7 @@ public class SingleBattle implements BattleEventQueuer {
     }
 
     public void chooseNewPokemon (PK pokemon){
+       check = true; //교체시 Type 이펙트 변경
         this.player = pokemon;
         playerNum++;
         queueEvent(new HPAnimationEvent(

@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
+import com.pokemon.battle.Battle;
+import com.pokemon.battle.BattleMechanics;
 import com.pokemon.battle.SingleBattle;
 import com.pokemon.battle.event.BattleEvent;
 import com.pokemon.battle.event.BattleEventPlayer;
@@ -33,6 +35,8 @@ import com.pokemon.util.SkinGenerator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Stack;
+
+import static com.pokemon.battle.SingleBattle.check;
 
 public class BattleScreen implements Screen, BattleEventPlayer {
     final Pokemon game;
@@ -268,10 +272,11 @@ public class BattleScreen implements Screen, BattleEventPlayer {
             skillEvent.effectSkill();
         }
         //싱글스킬
-        if(SingleBattle.STATE.READY_TO_PROGRESS==battle.getState()){
+        if(check){
             skillcount=1;
-            skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
+            skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(), new BattleMechanics().goesFirst(battle.getP_P(),battle.getO_P()));
             skillcount = 0;
+            check = false;
         }
         if(skillcount == 1){
             skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());

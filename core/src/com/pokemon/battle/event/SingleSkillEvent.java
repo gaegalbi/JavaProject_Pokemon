@@ -38,6 +38,7 @@ public class SingleSkillEvent {
         enemyanimation = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("battle/"+oppentType+".gif").read());
         //playeranimation.isAnimationFinished(3);
     }
+
     public void effectSkill(){
         //elapsed += Gdx.graphics.getDeltaTime();
         if(turn){
