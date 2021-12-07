@@ -1076,7 +1076,6 @@ public class db {
         num += 1;
         int skill_LV[] = db.GET_SK_LV(playerID);
         int HP = PM_HP_GET(num) + skill_LV[4]+10;
-        System.out.println(PM_HP_GET(num));
 
         String sql;
         sql = "UPDATE pm SET PM_currentHP = "+ HP +" WHERE PM_BATTLE = " + num + " AND U_ID = '" + playerID + "';";
