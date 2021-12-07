@@ -46,23 +46,47 @@ public class PlayerController extends InputAdapter {
         float percent = MathUtils.random();
         if (playerLevel < 10) {
             if (percent < 0.2f) {
-                System.out.println("철 획득");
+                System.out.println("철 1개 획득");
+                db.ITEM_UPDATE("ITEM_04",1);
+                player.inventory.addItem("ITEM_04",1);
             } else {
-                System.out.println("돌 획득");
+                System.out.println("돌 1개 획득");
+                db.ITEM_UPDATE("ITEM_02",1);
+                player.inventory.addItem("ITEM_02",1);
             }
         } else if (playerLevel < 20){
             if (percent < 0.2f) {
-                System.out.println("금 획득");
+                System.out.println("금 1개 획득");
+                db.ITEM_UPDATE("ITEM_05",1);
+                player.inventory.addItem("ITEM_05",1);
             } else if (percent < 0.5f) {
-                System.out.println("철 획득");
+                System.out.println("철 5개 획득");
+                db.ITEM_UPDATE("ITEM_04",5);
+                player.inventory.addItem("ITEM_04",5);
             } else {
-                System.out.println("돌 획득");
+                System.out.println("돌 10개 획득");
+                db.ITEM_UPDATE("ITEM_02",10);
+                player.inventory.addItem("ITEM_02",10);
             }
         } else if (playerLevel < 30){
-            if (percent < 0.3f) {
-                System.out.println("금 획득");
-            } else {
-                System.out.println("철 획득");
+            if (percent < 0.1f) {
+                System.out.println("다이아 1개 획득");
+                db.ITEM_UPDATE("ITEM_06",1);
+                player.inventory.addItem("ITEM_06",1);
+            } else if(percent < 0.3f){
+                System.out.println("금 5개 획득");
+                db.ITEM_UPDATE("ITEM_05",5);
+                player.inventory.addItem("ITEM_05",5);
+            }
+            else if(percent < 0.3f){
+                System.out.println("철 10개 획득");
+                db.ITEM_UPDATE("ITEM_04",10);
+                player.inventory.addItem("ITEM_04",10);
+            }
+            else {
+                System.out.println("돌 20개 획득");
+                db.ITEM_UPDATE("ITEM_02",20);
+                player.inventory.addItem("ITEM_02",20);
             }
         }
     }
@@ -71,24 +95,64 @@ public class PlayerController extends InputAdapter {
         int playerLevel = player.getLV();
         float percent = MathUtils.random();
         if (playerLevel < 10) {
-            if (percent < 0.2f) {
-                System.out.println("허브 획득");
-            } else {
-                System.out.println("잡초 획득");
+            if (percent < 0.1f) {
+                System.out.println("상처약 1개 획득");
+                db.ITEM_UPDATE("ITEM_35",1);
+                player.inventory.addItem("ITEM_35",1);
+            }else if (percent < 0.3f) {
+                System.out.println("풀 1개, 나무 1개 획득");
+                db.ITEM_UPDATE("ITEM_01",1);
+                db.ITEM_UPDATE("ITEM_03",1);
+                player.inventory.addItem("ITEM_01",1);
+                player.inventory.addItem("ITEM_03",1);
+            } else{
+                System.out.println("풀 1개 획득");
+                db.ITEM_UPDATE("ITEM_01",1);
+                player.inventory.addItem("ITEM_01",1);
             }
         } else if (playerLevel < 20){
-            if (percent < 0.2f) {
-                System.out.println("산삼 획득");
-            } else if (percent < 0.5f) {
-                System.out.println("허브 획득");
+            if (percent < 0.1f) {
+                System.out.println("좋은상처약 1개 획득");
+                db.ITEM_UPDATE("ITEM_36",1);
+                player.inventory.addItem("ITEM_36",1);
+            }else if (percent < 0.3f) {
+                System.out.println("풀 5개, 나무 5개 획득");
+                db.ITEM_UPDATE("ITEM_01",5);
+                db.ITEM_UPDATE("ITEM_03",5);
+                player.inventory.addItem("ITEM_01",5);
+                player.inventory.addItem("ITEM_03",5);
+            }  else if (percent < 0.5f) {
+                System.out.println("풀 3개, 나무 3개 획득");
+                db.ITEM_UPDATE("ITEM_01",3);
+                db.ITEM_UPDATE("ITEM_03",3);
+                player.inventory.addItem("ITEM_01",3);
+                player.inventory.addItem("ITEM_03",3);
             } else {
-                System.out.println("잡초 획득");
+                System.out.println("풀 1개 획득");
+                db.ITEM_UPDATE("ITEM_01",5);
+                player.inventory.addItem("ITEM_01",5);
             }
         } else if (playerLevel < 30){
-            if (percent < 0.3f) {
-                System.out.println("산삼 획득");
-            } else {
-                System.out.println("허브 획득");
+            if (percent < 0.1f) {
+                System.out.println("풀회복약 1개 획득");
+                db.ITEM_UPDATE("ITEM_38",1);
+                player.inventory.addItem("ITEM_38",1);
+            } else if(percent < 0.3f){
+                System.out.println("고급상처약 1개 획득");
+                db.ITEM_UPDATE("ITEM_37",1);
+                player.inventory.addItem("ITEM_37",1);
+            }
+            else if(percent < 0.3f){
+                System.out.println("좋은상처약 1개 획득");
+                db.ITEM_UPDATE("ITEM_36",1);
+                player.inventory.addItem("ITEM_36",1);
+            }
+            else {
+                System.out.println("풀 20개, 나무 10개 획득");
+                db.ITEM_UPDATE("ITEM_01",20);
+                db.ITEM_UPDATE("ITEM_03",10);
+                player.inventory.addItem("ITEM_01",20);
+                player.inventory.addItem("ITEM_03",3);
             }
         }
     }
@@ -97,24 +161,56 @@ public class PlayerController extends InputAdapter {
         int playerLevel = player.getLV();
         float percent = MathUtils.random();
         if (playerLevel < 10) {
-            if (percent < 0.2f) {
-                System.out.println("목재 획득");
-            } else {
-                System.out.println("나뭇가지 획득");
+            if (percent < 0.1f) {
+                System.out.println("몬스터볼 1개 획득");
+                db.ITEM_UPDATE("ITEM_32",1);
+                player.inventory.addItem("ITEM_32",1);
+            }else if (percent < 0.3f) {
+                System.out.println("나무 3개 획득");
+                db.ITEM_UPDATE("ITEM_03",2);
+                player.inventory.addItem("ITEM_03",2);
+            } else{
+                System.out.println("나무 1개 획득");
+                db.ITEM_UPDATE("ITEM_03",1);
+                player.inventory.addItem("ITEM_03",1);
             }
         } else if (playerLevel < 20){
-            if (percent < 0.2f) {
-                System.out.println("단단한목재 획득");
-            } else if (percent < 0.5f) {
-                System.out.println("목재 획득");
+            if (percent < 0.1f) {
+                System.out.println("몬스터볼 2개 획득");
+                db.ITEM_UPDATE("ITEM_32",2);
+                player.inventory.addItem("ITEM_32",2);
+            }else if (percent < 0.3f) {
+                System.out.println("나무 10개 획득");
+                db.ITEM_UPDATE("ITEM_03",10);
+                player.inventory.addItem("ITEM_03",10);
+            }  else if (percent < 0.5f) {
+                System.out.println("나무 5개 획득");
+                db.ITEM_UPDATE("ITEM_03",5);
+                player.inventory.addItem("ITEM_03",5);
             } else {
-                System.out.println("나뭇가지 획득");
+                System.out.println("나무 3개 획득");
+                db.ITEM_UPDATE("ITEM_03",3);
+                player.inventory.addItem("ITEM_03",3);
             }
         } else if (playerLevel < 30){
-            if (percent < 0.3f) {
-                System.out.println("단단한목재 획득");
-            } else {
-                System.out.println("목재 획득");
+            if (percent < 0.1f) {
+                System.out.println("마스터볼 1개 획득");
+                db.ITEM_UPDATE("ITEM_34",1);
+                player.inventory.addItem("ITEM_34",1);
+            } else if(percent < 0.3f){
+                System.out.println("수퍼볼 1개 획득");
+                db.ITEM_UPDATE("ITEM_33",1);
+                player.inventory.addItem("ITEM_33",1);
+            }
+            else if(percent < 0.3f){
+                System.out.println("몬스터볼 10개 획득");
+                db.ITEM_UPDATE("ITEM_32",10);
+                player.inventory.addItem("ITEM_32",10);
+            }
+            else {
+                System.out.println("나무 20개 획득");
+                db.ITEM_UPDATE("ITEM_03",20);
+                player.inventory.addItem("ITEM_03",20);
             }
         }
     }
