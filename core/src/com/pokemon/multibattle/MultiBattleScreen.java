@@ -403,11 +403,11 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
                 } else if (battle.getState() == Battle.STATE.WIN) {
                     db.RANK_SET_RANK(playerID,10);
                     player.setRANK(10);
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
                 } else if (battle.getState() == Battle.STATE.LOSE) {
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
                 } else if (battle.getState() == Battle.STATE.RAN) {
-                    game.setScreen(new GameScreen(game));
+                    game.setScreen(gameScreen);
                 }
                 break;
             } else {					// event queued up
