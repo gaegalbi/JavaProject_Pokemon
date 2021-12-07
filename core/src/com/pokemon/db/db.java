@@ -1093,4 +1093,31 @@ public class db {
             e.printStackTrace();
         }
     }
+
+    public static void CAPTURE(String id) {
+        String sql ="INSERT INTO PM(U_ID,PM_ID,PM_NUM,PM_ATT,PM_DEF,PM_HP,PM_currentHP,PM_SPEED,PM_LV,PM_EXP,PM_BATTLE,PM_SK_S_01,PM_SK_S_02,PM_SK_S_03,PM_SK_S_04) VALUES" +
+                "('"+playerID+"', '" + id +"',1, (select PM_ATT FROM PM_INFO WHERE PM_ID = '"+id+"'), " +
+                "(select PM_DEF FROM PM_INFO WHERE PM_ID = '"+id+"'), " +
+                "(select PM_HP FROM PM_INFO WHERE PM_ID =  '"+id+"'), " +
+                "(select PM_HP + sk_lv+10 AS currentHP FROM PM_INFO,sk b WHERE PM_ID =  '"+id+"' AND b.SK_ID = 'SK_05' AND U_ID = '"+playerID+"'), " +
+                "(select PM_SPEED FROM PM_INFO WHERE PM_ID =  '"+id+"')" +
+                ",1,0,"+(PM_COUNT()+1)+"," +
+                "(select PM_SK_S_01 from PM_INFO where PM_ID='"+id+"')," +
+                "(select PM_SK_S_02 from PM_INFO where PM_ID='"+id+"')," +
+                "(select PM_SK_S_03 from PM_INFO where PM_ID='"+id+"')," +
+                "(select PM_SK_S_04 from PM_INFO where PM_ID='"+id+"'));";
+        try {
+            Statement stmt = con.createStatement();
+            System.out.println(sql);
+            stmt.executeUpdate(sql);
+            System.out.println("DB 삽입 Success");
+        } catch (SQLException e) {
+            System.out.println("삽입SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
 }

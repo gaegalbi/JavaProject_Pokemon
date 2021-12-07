@@ -210,6 +210,9 @@ public class SingleBattle implements BattleEventQueuer {
                if(per>match) capture = true;
                else capture = false;
                pokeball = true;
+               if(capture){
+                   db.CAPTURE(getO_P().getRealName());
+               }
            }
         }else {
             //잡히지않아야 실행

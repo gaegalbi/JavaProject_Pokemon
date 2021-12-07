@@ -74,6 +74,9 @@ public class PK {
         this.current_SK_CNT[2] = db.GET_PM_SK_CNT(this.skill[2]);
         this.current_SK_CNT[3] = db.GET_PM_SK_CNT(this.skill[3]);
     }
+    public String getRealName(){
+        return name;
+    }
     //멀티 배틀용
     public PK(String[] key,Animation<TextureRegion> image) {
         skill = db.GET_SK(key[0]);
