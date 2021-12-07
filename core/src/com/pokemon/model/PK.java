@@ -158,9 +158,11 @@ public class PK {
             //스킬로 변경된 스텟
             for(int i=0;i<stat.length;i++){
                 if(i==2)
-                    chStat[i]= stat[i]+ player.getSKLV(i+2)+10; //체력
+                    chStat[i]= stat[i]+ player.getSkillLV(i+2)+10; //체력
+                if(i==3)
+                    chStat[i]= stat[i]+ player.getSkillLV(i+2)+100; //스피드
                 else
-                    chStat[i]= stat[i]+ player.getSKLV(i+2)*5;
+                    chStat[i]= stat[i]+ player.getSkillLV(i+2)*5;
 
             }
             this.currentHP = stat[2];

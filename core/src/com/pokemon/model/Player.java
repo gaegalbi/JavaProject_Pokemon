@@ -59,11 +59,11 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
 
     public Player(int x, int y, AnimationSet<TextureRegion> animations) {
         inventory = new Inventory(playerID);
-        equips = new Equipment(playerID);
         crafts = new Crafting();
         skill = db.GET_SK(playerID);
         skill_LV = db.GET_SK_LV(playerID);
         skill_EXP = db.GET_SK_EXP(playerID);
+        equips = new Equipment(playerID,this);
 
         String sql = "SELECT U_LV,U_EXP,U_RANK FROM USER WHERE U_ID ='"+playerID+"';";
         try {
@@ -73,8 +73,6 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
                 this.LV = rs.getInt("U_LV");
                 this.EXP = rs.getInt("U_EXP");
                 this.RANK = rs.getInt("U_RANK");
-                //this.GOLD = rs.getInt("U_GOLD");
-
             }
         }catch(SQLException e){
             System.out.println("SQLException" + e);
@@ -140,18 +138,20 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
 
     public void equip(Item item) {
         //아이템 효과에 따라 스킬 레벨 증가
-        for(int i=0;i<6;i++){
-            if(skill[i].equals(item.getEffect())){
-                skill_LV[i] +=db.GET_E_V(item.getProperty());
-            }
+        if(item.getType()==6){
+            skill_LV[0] +=db.GET_E_V(item.getProperty());
+            System.out.println("값" + db.GET_E_V(item.getProperty()));
+            System.out.println(getSkillLV(0));
         }
     }
 
     public void unequip(Item item) {
-        for(int i=0;i<6;i++){
-            if(skill[i].equals(item.getEffect())){
-                skill_LV[i] -=db.GET_E_V(item.getProperty());
-            }
+        if(item.getType()==6){
+            skill_LV[0] -=db.GET_E_V(item.getProperty());
+            if(skill_LV[0]<=0)
+                skill_LV[0]=1;
+            System.out.println("해제값" + db.GET_E_V(item.getProperty()));
+            System.out.println(getSkillLV(0));
         }
     }
     //public int getGold(){return gold;}
@@ -180,13 +180,6 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
     public int getMaxEXP(){
         return db.GET_MAX_EXP(LV);
     }
-
-    public int getSKLV(int index){return skill_LV[index];}
-    public void setSKLV(int index, int count){skill_LV[index] = count;}
-
-    public int getSKEXP(int index){return skill_EXP[index];}
-    public void setSKEXP(int index,int count){ skill_EXP[index] = count;}
-
 
     public void finishMove() {
         state = PLAYER_STATE.STANDING;

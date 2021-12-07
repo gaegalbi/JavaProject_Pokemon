@@ -293,6 +293,7 @@ public class PlayerController extends InputAdapter {
                         switch (object.getName()) {
                             case "rock":
                                 if (st[0].nextToken().equals("곡괭이")||st[1].nextToken().equals("곡괭이")||st[2].nextToken().equals("곡괭이")||st[3].nextToken().equals("곡괭")) {
+                                   System.out.println(player.getLV());
                                     if (percent < 0.8f) {
                                         Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));

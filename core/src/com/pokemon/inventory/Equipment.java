@@ -1,6 +1,7 @@
 package com.pokemon.inventory;
 
 import com.badlogic.gdx.math.Vector2;
+import com.pokemon.model.Player;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,7 +29,7 @@ public class Equipment {
     public Item[] equips;
     public Vector2[] positions;
 
-    public Equipment(String key) {
+    public Equipment(String key, Player player) {
         equips = new Item[NUM_SLOTS];
         positions = new Vector2[NUM_SLOTS];
            String sql = "SELECT U_HEAD,U_ACC,U_CLOTHES,U_SHOES,U_WEAPON FROM USER WHERE U_ID ='"+playerID+"';";
@@ -46,6 +47,7 @@ public class Equipment {
                     if(name[i]!=null){
                         equips[i]=new Item(name[i]);
                         equips[i].setCNT(1);
+                        player.equip(equips[i]);
                     }
                 }
             } catch (SQLException e) {
