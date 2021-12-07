@@ -158,15 +158,17 @@ public class PK {
             }
             this.RealName =sP(key[0],Integer.parseInt(key[1]));
             this.image = GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("pokemon/back/" + RealName+".gif").read());
+
+
             //스킬로 변경된 스텟
             for(int i=0;i<stat.length;i++){
-                if(i==2)
-                    chStat[i]= stat[i]+ player.getSkillLV(i+2)+10; //체력
-                if(i==3)
+                if(i==2) {
+                    chStat[2] = (stat[2] + player.getSkillLV(i + 2) + 10); //체력
+                }
+                else if(i==3)
                     chStat[i]= stat[i]+ player.getSkillLV(i+2)+100; //스피드
                 else
                     chStat[i]= stat[i]+ player.getSkillLV(i+2)*5;
-
             }
             this.currentHP = stat[2];
             this.type = db.GET_PMType(name);

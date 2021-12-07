@@ -40,9 +40,6 @@ public class pokemonData {
     private AssetManager assetManager;
     private Skin skin;
 
-    private int[] HPs = {100,120,140,160,180,200};
-    private int[] myHPs = {100,100,80,80,60,0};
-
     public pokemonData(int key, String name) {
         this.key = key;
 
@@ -58,8 +55,11 @@ public class pokemonData {
                 this.HP = rs.getInt("PM_HP");
                 this.myHP  = rs.getInt("PM_currentHP");
 
+
                 int skill_LV[] = db.GET_SK_LV(name);
                 HP += skill_LV[4]+10;
+
+                System.out.println(myHP);
 
                 pokemonCreat();
             }

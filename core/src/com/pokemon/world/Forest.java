@@ -87,6 +87,23 @@ public class Forest implements World {
         if (player.y > map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE) {
             player.y = map.getHeight() * SCALED_TILE_SIZE - SCALED_TILE_SIZE;
         }
+        // 전투 테스트 용
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            player.finishMove();
+            gameScreen.getGameMusic().stop();
+            game.getBattleMusic().play();
+            gameScreen.getTransitionScreen().startTransition(
+                    new BattleBlinkTransition(4f, 4 , Color.GRAY, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                    new BattleTransition(1F,  10, true, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
+                    new Action() {
+                        @Override
+                        public void action() {
+                            System.out.println("배틀시작");
+                            game.setScreen(new BattleScreen(game,player,gameScreen));
+                        }
+                    }
+            );
+        }
         for (BattleArea battleArea : battleAreas) {
             if (player.overlaps(battleArea)) {
                 if (battleArea.battleStarter(delta, player.x, player.y)) {
