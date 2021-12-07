@@ -78,9 +78,18 @@ public class Item {
         assetManager.load("texture/수퍼볼.png",Texture.class);
         assetManager.load("texture/마스터볼.png",Texture.class);
         assetManager.load("texture/나무곡괭이.png",Texture.class);
+        assetManager.load("texture/철곡괭이.png",Texture.class);
+        assetManager.load("texture/금곡괭이.png",Texture.class);
+        assetManager.load("texture/다이아곡괭이.png",Texture.class);
         assetManager.load("texture/나무칼.png",Texture.class);
         assetManager.load("texture/나무괭이.png",Texture.class);
+        assetManager.load("texture/철괭이.png",Texture.class);
+        assetManager.load("texture/금괭이.png",Texture.class);
+        assetManager.load("texture/다이아괭이.png",Texture.class);
         assetManager.load("texture/나무도끼.png",Texture.class);
+        assetManager.load("texture/철도끼.png",Texture.class);
+        assetManager.load("texture/금도끼.png",Texture.class);
+        assetManager.load("texture/다이아도끼.png",Texture.class);
         assetManager.load("texture/상처약.png",Texture.class);
         assetManager.load("texture/좋은상처약.png",Texture.class);
         assetManager.load("texture/고급상처약.png",Texture.class);

@@ -12,6 +12,8 @@ import com.pokemon.inventory.Item;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
 
+import java.util.StringTokenizer;
+
 import static com.pokemon.game.Settings.PLAYER_MOVE_SPEED;
 
 public class PlayerController extends InputAdapter {
@@ -281,9 +283,16 @@ public class PlayerController extends InputAdapter {
                 for (RenderHelper object : GameScreen.getWorld().getObjects()) {
                     if (hitRange.overlaps((Rectangle) object)) {
                         percent = MathUtils.random();
+
+                        StringTokenizer[] st = new StringTokenizer[]{
+                                new StringTokenizer(player.equips.equips[4].name,"나무"),
+                                new StringTokenizer(player.equips.equips[4].name,"철"),
+                                new StringTokenizer(player.equips.equips[4].name,"금"),
+                                new StringTokenizer(player.equips.equips[4].name,"다이아")};
+
                         switch (object.getName()) {
                             case "rock":
-                                if (player.equips.equips[4].name.equals("나무곡괭이")) {
+                                if (st[0].nextToken().equals("곡괭이")||st[1].nextToken().equals("곡괭이")||st[2].nextToken().equals("곡괭이")||st[3].nextToken().equals("곡괭")) {
                                     if (percent < 0.8f) {
                                         Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
@@ -312,7 +321,7 @@ public class PlayerController extends InputAdapter {
                                 }
                                 break;
                             case "wood":
-                                if (player.equips.equips[4].name.equals("나무도끼")) {
+                                if (st[0].nextToken().equals("도끼")||st[1].nextToken().equals("도끼")||st[2].nextToken().equals("도끼")||st[3].nextToken().equals("도끼")) {
                                     if (percent < 0.8f) {
                                         Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
@@ -340,7 +349,7 @@ public class PlayerController extends InputAdapter {
                                 }
                                 break;
                             case "grass":
-                                if (player.equips.equips[4].name.equals("나무괭이")) {
+                                if (st[0].nextToken().equals("괭이")||st[1].nextToken().equals("괭이")||st[2].nextToken().equals("괭이")||st[3].nextToken().equals("괭")) {
                                     if (percent < 0.8f) {
                                         Sound.hitBlock.play();
                                         gameScreen.getEffects().add(new Effect(0.43f, false));
