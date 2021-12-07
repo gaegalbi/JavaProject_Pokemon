@@ -42,7 +42,8 @@ public class BattleLoadingScreen implements Screen {
     }
 
     public void select(){
-       game.setScreen(new PokemonSelectScreen(game,bc,gameScreen,player));
+        game.getBattleMusic().play();
+        game.setScreen(new PokemonSelectScreen(game,bc,gameScreen,player));
         dispose();
     }
     @Override

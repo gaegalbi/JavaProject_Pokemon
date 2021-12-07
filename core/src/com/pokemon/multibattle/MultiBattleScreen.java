@@ -19,9 +19,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pokemon.battle.BATTLE_PARTY;
 import com.pokemon.battle.Battle;
+import com.pokemon.battle.SingleBattle;
 import com.pokemon.battle.event.*;
 import com.pokemon.controller.BattleScreenController;
 import com.pokemon.db.db;
+import com.pokemon.game.Sound;
 import com.pokemon.model.Player;
 import com.pokemon.screen.EventQueueRenderer;
 import com.pokemon.ui.*;
@@ -65,6 +67,7 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
     private int enemycount=0;
     private int ballTime1=0;
     private int ballTime2=0;
+    private boolean battleFinish;
     /*private String pokemonSelectedList = selectButton.pokemonList.list;*/
     private String[] selectedPokemon = new String[4];
     private String[] selectedPokemon2 = new String[4];
@@ -371,6 +374,27 @@ public class MultiBattleScreen implements Screen, BattleEventPlayer {
         queue.add(event);
     }
     public void update(float delta) {
+        if (queue.isEmpty()) {
+            if (battle.getState() == Battle.STATE.WIN) {
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.win.play(0.05f);
+                }
+                battleFinish = true;
+            } else if (battle.getState() == Battle.STATE.LOSE){
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.lose.play(0.05f);
+                }
+                battleFinish = true;
+            } else if (battle.getState() == Battle.STATE.RAN) {
+                if (!battleFinish) {
+                    game.getBattleMusic().stop();
+                    Sound.lose.play(0.05f);
+                }
+                battleFinish = true;
+            }
+        }
         while (currentEvent == null || currentEvent.finished()) { // no active event
             if (queue.peek() == null) { // no event queued up
                 currentEvent = null;
