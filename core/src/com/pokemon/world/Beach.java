@@ -88,6 +88,7 @@ public class Beach implements World {
             if (battleArea.battleStarter(delta, player.x, player.y)) {
                 player.finishMove();
                 gameScreen.getGameMusic().stop();
+                game.getBattleMusic().play();
                 gameScreen.getTransitionScreen().startTransition(
                         new BattleBlinkTransition(4f, 4 , Color.GRAY, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
                         new BattleTransition(1F,  10, true, gameScreen.getTransitionShader(), getTweenManager(), getAssetManager()),
