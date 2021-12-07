@@ -77,7 +77,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
     /* 이벤트 시스템 */
     private BattleEvent currentEvent;
-    private EventQueueRenderer eventRenderer;
     private Queue<BattleEvent> queue = new ArrayDeque<>();
 
     private Stack<AbstractUi> uiStack;
@@ -113,7 +112,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
         skillEvent = new SingleSkillEvent(this,battle,game.batch,game,battle.getP_P().getType(),battle.getO_P().getType(),battle.isSkill());
 
-        eventRenderer = new EventQueueRenderer(skin, queue);
         initUI();
 
         controller = new SingleBattleScreenController(this.game,this,battle, queue, dialogueBox, moveSelectBox, optionBox,uiStack,player);
@@ -265,9 +263,6 @@ public class BattleScreen implements Screen, BattleEventPlayer {
 
         this.update(delta);
         battleRenderer.render(game.batch,elapsed);
-        if (currentEvent != null) {
-            eventRenderer.render(game.batch, currentEvent);
-        }
         if(game.isOnoff()){
             skillEvent.effectSkill();
         }

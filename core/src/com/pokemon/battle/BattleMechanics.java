@@ -14,50 +14,50 @@ public class BattleMechanics {
 		switch (user.getType()){
 			case "물":
 				if(tType.equals("물"))
-					return 0.8;
-				else if(tType.equals("불"))
 					return 2;
+				else if(tType.equals("불"))
+					return 4;
 				else if(tType.equals("전기"))
-					return 1;
+					return 3;
 				else if(tType.equals("풀"))
-					return 0.8;
+					return 2;
 				else
-					return 1;
+					return 2;
 			case "불":
 				if(tType.equals("불"))
-					return 0.8;
+					return 2;
 				else if(tType.equals("풀"))
-					return 5;
+					return 4;
 				else if(tType.equals("전기"))
-					return 1;
+					return 3;
 				else if(tType.equals("물"))
-					return 0.8;
+					return 2;
 				else
-					return 1;
+					return 2;
 			case "풀":
 				if(tType.equals("풀"))
-					return 0.8;
-				else if(tType.equals("전기"))
 					return 2;
+				else if(tType.equals("전기"))
+					return 4;
 				else if(tType.equals("물"))
-					return 1;
+					return 3;
 				else if(tType.equals("불"))
-					return 0.8;
+					return 2;
 				else
-					return 1;
+					return 2;
 			case "전기":
 				if(tType.equals("전기"))
-					return 0.8;
-				else if(tType.equals("물"))
 					return 2;
+				else if(tType.equals("물"))
+					return 4;
 				else if(tType.equals("불"))
-					return 1;
+					return 3;
 				else if(tType.equals("풀"))
-					return 0.8;
+					return 2;
 				else
-					return 1;
+					return 2;
 			default:
-				return 0.8; //노말은 0.8
+				return 2; //노말은 0.8
 			//물 => 불 => 풀 => 전기  / 노말은 1고정
 		}
 	}
