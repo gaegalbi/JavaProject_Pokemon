@@ -103,7 +103,7 @@ public class SingleBattleScreenController extends InputAdapter {
             } else if (keycode == Keys.RIGHT) {
                 moveSelect.moveRight();
                 return true;
-            } else if (keycode == Keys.F9) {
+            } else if (keycode == Keys.F1) {
                 battle.selectItem();
                 uiStack.add(new useItemUi(this, battle, battleScreen, game, player));
             }

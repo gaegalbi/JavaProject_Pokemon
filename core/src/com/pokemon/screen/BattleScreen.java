@@ -238,7 +238,7 @@ public class BattleScreen implements Screen, BattleEventPlayer {
             currentEvent.update(delta);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)){
             useCheck = (!useCheck);
             if(uiStack!=null&&useCheck) {
                 AbstractUi popped = uiStack.pop();
