@@ -44,7 +44,9 @@ public class PlayerController extends InputAdapter {
     }
 
     public void pickRock() {
+
         int playerLevel = player.getSkillLV(0);
+        System.out.println(playerLevel);
         float percent = MathUtils.random();
         if (playerLevel < 3) {
             if (percent < 0.2f) {
@@ -70,7 +72,7 @@ public class PlayerController extends InputAdapter {
                 db.ITEM_UPDATE("ITEM_02",10);
                 player.inventory.addItem("ITEM_02",10);
             }
-        } else if (playerLevel < 9){
+        } else if (playerLevel < 15){
             if (percent < 0.1f) {
                 System.out.println("다이아 1개 획득");
                 db.ITEM_UPDATE("ITEM_06",1);
@@ -134,7 +136,7 @@ public class PlayerController extends InputAdapter {
                 db.ITEM_UPDATE("ITEM_01",5);
                 player.inventory.addItem("ITEM_01",5);
             }
-        } else if (playerLevel < 9){
+        } else if (playerLevel < 15){
             if (percent < 0.1f) {
                 System.out.println("풀회복약 1개 획득");
                 db.ITEM_UPDATE("ITEM_38",1);
@@ -195,7 +197,7 @@ public class PlayerController extends InputAdapter {
                 db.ITEM_UPDATE("ITEM_03",3);
                 player.inventory.addItem("ITEM_03",3);
             }
-        } else if (playerLevel < 9){
+        } else if (playerLevel < 15){
             if (percent < 0.1f) {
                 System.out.println("마스터볼 1개 획득");
                 db.ITEM_UPDATE("ITEM_34",1);
