@@ -184,7 +184,7 @@ public class SingleBattle implements BattleEventQueuer {
             pokeUser = opponent;
             pokeTarget = player;
         }
-        System.out.println(pokeUser.getName() + "   " + pokeUser.getCurrentChHP() + "  / " + pokeUser.getChStat()[2]);
+
         if(input==4) {
             this.input = input;
             int hpBefore = pokeUser.getCurrentChHP();
@@ -276,9 +276,7 @@ public class SingleBattle implements BattleEventQueuer {
                                     pokeUser.getChStat()[2],
                                     0.8f));
                 }
-                System.out.println("유저 데미지 " +uDamage);
-                System.out.println("상대 데미지 " +oDamage);
-                System.out.println(damage);
+
 
             }
         }

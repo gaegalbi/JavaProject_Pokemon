@@ -100,7 +100,6 @@ public class Hospital implements World{
             if (heal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
                 gameScreen.setTransition(true);
-                System.out.println("HEAL");
                 for (int i = 0; i < db.PM_COUNT(); i++)
                     db.PM_HEAL(i);
                 gameScreen.setTransition(false);

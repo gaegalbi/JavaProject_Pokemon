@@ -273,7 +273,6 @@ public class PK {
         if (currentChHP < 0) {
             currentChHP = 0;
         }
-        System.out.println(currentChHP);
     }
     public void applyHeal(int amount) {
         currentChHP += amount;

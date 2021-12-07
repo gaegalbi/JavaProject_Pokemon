@@ -243,7 +243,6 @@ public class Battle implements BattleEventQueuer {
     }
 
     public void beginBattle() {
-        System.out.print(player.getName());
         //queueEvent(new PokeSpriteEvent(opponent.getSprite(), BATTLE_PARTY.OPPONENT));
         queueEvent(new TextEvent("가랏! " + player.getName() + "!", 1f));
         //queueEvent(new PokeSpriteEvent(player.getSprite(), BATTLE_PARTY.PLAYER));
@@ -321,8 +320,6 @@ public class Battle implements BattleEventQueuer {
             int damage = mechanics.calculateDamage(pokeUser, input, pokeTarget);
 
             int hpBefore = pokeTarget.getCurrentChHP();
-
-        System.out.println(damage+","+hpBefore);
             //해당 데미지 입음
             pokeTarget.applyDamage(damage);
             /* Broadcast HP change */
