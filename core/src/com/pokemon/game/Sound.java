@@ -10,4 +10,5 @@ public class Sound {
     public static com.badlogic.gdx.audio.Sound getGrass = Gdx.audio.newSound(Gdx.files.internal("sound/getGrass.ogg"));
     public static com.badlogic.gdx.audio.Sound win = Gdx.audio.newSound(Gdx.files.internal("sound/win.ogg"));
     public static com.badlogic.gdx.audio.Sound lose = Gdx.audio.newSound(Gdx.files.internal("sound/lose.ogg"));
+    public static com.badlogic.gdx.audio.Sound orb = Gdx.audio.newSound(Gdx.files.internal("sound/orb.ogg"));
 }

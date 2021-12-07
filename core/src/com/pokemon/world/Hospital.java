@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.pokemon.db.db;
 import com.pokemon.game.Pokemon;
+import com.pokemon.game.Sound;
 import com.pokemon.model.*;
 import com.pokemon.screen.GameScreen;
 import com.pokemon.transition.FadeInTransition;
@@ -98,9 +99,12 @@ public class Hospital implements World{
             }
             if (heal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
+                gameScreen.setTransition(true);
                 System.out.println("HEAL");
                 for (int i = 0; i < db.PM_COUNT(); i++)
                     db.PM_HEAL(i);
+                gameScreen.setTransition(false);
+                Sound.orb.play();
             }
         }
     }
