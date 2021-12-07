@@ -30,7 +30,7 @@ public class EventQueueRenderer {
 	}
 	
 	public void render(SpriteBatch batch, Object event) {
-		if (event == null) {
+		/*if (event == null) {
 			return;
 		}
 		renderEvent(batch, event.getClass().getSimpleName(), 0);
@@ -39,16 +39,16 @@ public class EventQueueRenderer {
 		for (Object e : eventQueue.toArray()) {
 			renderEvent(batch, e.getClass().getSimpleName(), y);
 			y += boxHeight;
-		}
+		}*/
 	}
 	
 	private void renderEvent(SpriteBatch batch, String text, float y) {
-		layout.setText(font, text);
+		/*layout.setText(font, text);
 
 		float textWidth = layout.width;
 		float textHeight = layout.height;
 		
 		patch.draw(batch, 0, y, textWidth+10, boxHeight);
-		font.draw(batch, text, (textWidth+10)/2-textWidth/2, boxHeight/2+textHeight/2+y);
+		font.draw(batch, text, (textWidth+10)/2-textWidth/2, boxHeight/2+textHeight/2+y);*/
 	}
 }
