@@ -24,7 +24,7 @@ public class BattleArea extends Rectangle {
         tempX = 0;
         tempY = 0;
         battleChance = MathUtils.random() * 10 + 3;
-        System.out.println("battleChance: " + battleChance);
+//        System.out.println("battleChance: " + battleChance);
     }
 
     public boolean battleStarter(float delta, float x, float y) {
@@ -36,7 +36,7 @@ public class BattleArea extends Rectangle {
         tempX = x;
         tempY = y;
         value += delta;
-        System.out.println("Value:" + value);
+//        System.out.println("Value:" + value);
         if (value > battleChance) {
             resetChance();
             return true;
