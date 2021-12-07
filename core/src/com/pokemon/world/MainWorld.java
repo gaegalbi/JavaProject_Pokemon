@@ -168,7 +168,6 @@ public class MainWorld implements World {
             }
             if (rankBoard.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
-                gameScreen.getGameMusic().stop();
                 if (gameScreen.getUiStack().isEmpty()) {
                     gameScreen.pushUi(new rankUI(gameScreen, game, player));
                 } else {
@@ -178,6 +177,7 @@ public class MainWorld implements World {
             }
             if (multiBattlePortal.overlaps(player) && player.getFacing() == DIRECTION.NORTH) {
                 player.finishMove();
+                gameScreen.getGameMusic().stop();
                 gameScreen.loadingStart();
             }
         }
