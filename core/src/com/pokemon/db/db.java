@@ -705,6 +705,22 @@ public class db {
         }
     }
 
+    // 유저 스킬 경험치 +1
+    public static void user_SK_EXP_UP() {
+        String sql = "UPDATE SK SET SK_EXP= SK_EXP + 1 WHERE U_ID='" + playerID + "' AND SK_ID = 'SK_01';";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
     // 유저 레벨 +1, 경험치 = 0
     public static void user_LV_UP() {
         String sql = "UPDATE user SET U_LV = U_LV + 1, U_EXP = 0 WHERE U_ID='" + playerID + "';";
@@ -721,9 +737,46 @@ public class db {
         }
     }
 
+    public static void user_SK_LV_UP() {
+        String sql = "UPDATE SK SET SK_LV = SK_LV + 1, SK_EXP = 0 WHERE U_ID='" + playerID + "'  AND SK_ID = 'SK_01' ;";
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+        }
+    }
+
     public static int user_EXP_need() {
         int NEED_EXP = 0;
         String sql = "select NEED_EXP from u_LV_INFO WHERE U_LV = "+ user_LV_get() + ";";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                NEED_EXP = rs.getInt("NEED_EXP");
+            }
+            return NEED_EXP;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return NEED_EXP;
+        }
+    }
+
+    public static int user_SK_EXP_need() {
+        int NEED_EXP = 0;
+        String sql = "select NEED_EXP from SK_LV_INFO WHERE SK_LV = "+ user_SK_LV_get() + ";";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -765,6 +818,28 @@ public class db {
             return U_LV;
         }
     }
+    // 유저 스킬 레벨 확인
+    public static int user_SK_LV_get() {
+        int U_LV = 0;
+        String sql = "select SK_LV from SK WHERE U_ID = '"+ playerID + "' AND SK_ID = 'SK_01';";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_LV = rs.getInt("SK_LV");
+            }
+            return U_LV;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_LV;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_LV;
+        }
+    }
 
     // 유저 경험치 확인
     public static int user_EXP_get() {
@@ -788,6 +863,30 @@ public class db {
             return U_EXP;
         }
     }
+
+    // 유저 스킬 경험치 확인
+    public static int user_SK_EXP_get() {
+        int U_EXP = 0;
+        String sql = "select SK_EXP from SK WHERE U_ID = '"+ playerID + "' AND SK_ID = 'SK_01'; ;";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                U_EXP = rs.getInt("SK_EXP");
+            }
+            return U_EXP;
+        } catch (SQLException e) {
+            System.out.println("업데이트하는 SQL문이 틀렸습니다.");
+            System.out.print("이유 : " + e);
+            e.printStackTrace();
+            return U_EXP;
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            e.printStackTrace();
+            return U_EXP;
+        }
+    }
+
 
     public static void DELETE() {
         String sql = "DELETE FROM INVEN WHERE ITEM_CNT <=0 AND U_ID= '" + playerID + "';";

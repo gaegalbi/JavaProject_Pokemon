@@ -295,10 +295,18 @@ public class PlayerController extends InputAdapter {
                                         db.user_EXP_UP();
                                         player.setEXP(1);
 
+                                        db.user_SK_EXP_UP();
+                                        player.setSkillEXP(0,1);
+
                                         // 경험치 도달하면 레벨업
                                         if(db.user_EXP_get() == db.user_EXP_need()) {
                                             db.user_LV_UP();
                                             player.setLV(1);
+                                        }
+
+                                        if(db.user_SK_EXP_get() == db.user_SK_EXP_need()) {
+                                            db.user_SK_LV_UP();
+                                            player.setSkillLV(0,1);;
                                         }
                                     }
                                 }
@@ -316,10 +324,17 @@ public class PlayerController extends InputAdapter {
                                         db.user_EXP_UP();
                                         player.setEXP(1);
 
+                                        db.user_SK_EXP_UP();
+                                        player.setSkillEXP(0,1);
+
                                         // 경험치 도달하면 레벨업
                                         if(db.user_EXP_get() == db.user_EXP_need()) {
                                             db.user_LV_UP();
                                             player.setLV(1);
+                                        }
+                                        if(db.user_SK_EXP_get() == db.user_SK_EXP_need()) {
+                                            db.user_SK_LV_UP();
+                                            player.setSkillLV(0,1);;
                                         }
                                     }
                                 }
@@ -337,10 +352,17 @@ public class PlayerController extends InputAdapter {
                                         db.user_EXP_UP();
                                         player.setEXP(1);
 
+                                        db.user_SK_EXP_UP();
+                                        player.setSkillEXP(0,1);
+
                                         // 경험치 도달하면 레벨업
                                         if(db.user_EXP_get() == db.user_EXP_need()) {
                                             db.user_LV_UP();
                                             player.setLV(1);
+                                        }
+                                        if(db.user_SK_EXP_get() == db.user_SK_EXP_need()) {
+                                            db.user_SK_LV_UP();
+                                            player.setSkillLV(0,1);;
                                         }
                                     }
                                 }

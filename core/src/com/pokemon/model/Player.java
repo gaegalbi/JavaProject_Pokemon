@@ -120,9 +120,11 @@ public class Player extends Rectangle implements RenderHelper, Comparable<Render
 
     public int getSkillLV(int i) {return skill_LV[i];
     }
-
-    public int getSkillEXP(int i) {return skill_EXP[i];
+    public void setSkillLV(int i, int num) {skill_LV[i] += num;
     }
+
+    public int getSkillEXP(int i) {return skill_EXP[i];}
+    public void setSkillEXP(int i, int num) {skill_EXP[i]+=num;}
 
     public enum PLAYER_STATE {
         WALKING,
